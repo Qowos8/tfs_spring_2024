@@ -2,12 +2,12 @@ package com.example.homework_1
 
 import android.annotation.SuppressLint
 import android.app.Service
-import android.content.ContentResolver
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.IBinder
 import android.provider.CalendarContract
-import android.util.Log
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.homework_1.KeyModule.ACTION_NAME
+import com.example.homework_1.KeyModule.DATA_KEY
 
 class CalendarService : Service() {
 
@@ -40,11 +40,6 @@ class CalendarService : Service() {
     private fun sendEvents(data: ArrayList<String>) {
         val intent = Intent(ACTION_NAME)
         intent.putStringArrayListExtra(DATA_KEY, data)
-        sendBroadcast(intent)
-    }
-
-    companion object {
-        private const val ACTION_NAME = "CalendarEvents"
-        private const val DATA_KEY = "data_key"
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 }
