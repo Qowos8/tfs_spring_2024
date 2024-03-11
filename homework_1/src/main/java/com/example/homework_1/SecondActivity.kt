@@ -25,7 +25,6 @@ class SecondActivity : AppCompatActivity() {
 
     private val CALENDAR_PERMISSION_REQUEST_CODE = 100
 
-
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val receivedData = intent.getStringArrayListExtra(DATA_KEY)
@@ -56,7 +55,6 @@ class SecondActivity : AppCompatActivity() {
                     startCalendarService()
                 } else {
                     Toast.makeText(this,"ДЛЯ ПРОДОЛЖЕНИЯ РАЗРЕШИТЕ ДОСТУП К КАЛЕНДАРЮ", LENGTH_SHORT).show()
-                    checkCalendarPermission()
                 }
                 return
             }
