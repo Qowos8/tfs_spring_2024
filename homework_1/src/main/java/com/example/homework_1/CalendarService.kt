@@ -5,11 +5,13 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.provider.CalendarContract
+import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.homework_1.KeyModule.ACTION_NAME
 import com.example.homework_1.KeyModule.DATA_KEY
+import java.lang.RuntimeException
 
-class CalendarService : Service() {
+internal class CalendarService : Service() {
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
@@ -26,14 +28,24 @@ class CalendarService : Service() {
             null,
             null
         )
-        val eventDataList = ArrayList<String>()
-        cursor?.use {
-            while (it.moveToNext()) {
-                val title = it.getString(it.getColumnIndex(CalendarContract.Events.TITLE))
-                eventDataList.add(title)
+        val eventDataList = mutableListOf<String>()
+        if (cursor != null) {
+            cursor.use {
+                val titleIndex = it.getColumnIndex(CalendarContract.Events.TITLE)
+                if (titleIndex != -1) {
+                    while (it.moveToNext()) {
+                        val title = it.getString(titleIndex)
+                        eventDataList.add(title)
+                    }
+                    sendEvents(ArrayList(eventDataList))
+                } else {
+                    Log.e("CalendarService", "Index not found")
+                }
             }
+            cursor.close()
+        } else {
+            Log.e("CalendarService", "Cursor is empty")
         }
-        sendEvents(eventDataList)
         return START_NOT_STICKY
     }
 

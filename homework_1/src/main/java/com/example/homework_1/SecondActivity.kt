@@ -29,7 +29,7 @@ class SecondActivity : AppCompatActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             val receivedData = intent.getStringArrayListExtra(DATA_KEY)
             if (receivedData != null) {
-                openMainActivity(receivedData)
+                finishWithResult(receivedData)
                 Log.d("SecondActivity", receivedData.toString())
             } else {
                 Log.d("SecondActivity", "data is null")
@@ -54,7 +54,7 @@ class SecondActivity : AppCompatActivity() {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startCalendarService()
                 } else {
-                    Toast.makeText(this,"ДЛЯ ПРОДОЛЖЕНИЯ РАЗРЕШИТЕ ДОСТУП К КАЛЕНДАРЮ", LENGTH_SHORT).show()
+                    Toast.makeText(this,"TO CONTINUE, ALLOW ACCESS TO THE CALENDAR", LENGTH_SHORT).show()
                 }
                 return
             }
@@ -86,7 +86,7 @@ class SecondActivity : AppCompatActivity() {
         localBroadcastManager.registerReceiver(broadcastReceiver, filter)
     }
 
-    private fun openMainActivity(data: ArrayList<String>) {
+    private fun finishWithResult(data: ArrayList<String>) {
         val intent = Intent(this, MainActivity::class.java)
         intent.putStringArrayListExtra(DATA_KEY, data)
         setResult(Activity.RESULT_OK, intent)

@@ -16,4 +16,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "tfs_spring_2024"
 include(":homework_1")
-include(":homework_2")

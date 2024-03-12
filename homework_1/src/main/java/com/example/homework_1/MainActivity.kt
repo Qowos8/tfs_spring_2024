@@ -14,11 +14,12 @@ import com.example.homework_1.databinding.FirstActivityBinding
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: FirstActivityBinding
     private lateinit var localBroadcastReceiver: LocalBroadcastManager
+    private lateinit var listAdapter: ListAdapter
 
     private val secondActivityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             intent.getStringArrayListExtra(DATA_KEY)?.let {
-                binding.recycler.adapter = ListAdapter(it)
+                listAdapter.updateData(it)
             }
         }
     }
@@ -28,10 +29,18 @@ class MainActivity : AppCompatActivity() {
         binding = FirstActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        listAdapter = ListAdapter()
+
+        binding.recycler.adapter = listAdapter
+
         binding.button.setOnClickListener {
             startActivity(Intent(this, SecondActivity::class.java))
         }
 
+        createReceiver()
+    }
+
+    private fun createReceiver() {
         val secondActivityIntentFilter = IntentFilter(ACTION_NAME)
         localBroadcastReceiver = LocalBroadcastManager.getInstance(this)
         localBroadcastReceiver.registerReceiver(

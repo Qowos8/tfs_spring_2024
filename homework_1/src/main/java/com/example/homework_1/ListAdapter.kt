@@ -5,7 +5,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.homework_1.databinding.ListItemBinding
 
-class ListAdapter(private val items: ArrayList<String>): RecyclerView.Adapter<ListAdapter.ListViewHolder>() {
+internal class ListAdapter: RecyclerView.Adapter<ListAdapter.ListViewHolder>() {
+
+    private var items: ArrayList<String> = arrayListOf()
+
+    fun updateData(data: ArrayList<String>) {
+        this.items.clear()
+        this.items.addAll(data)
+        notifyItemRangeChanged(0, data.size)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
         val inflater = LayoutInflater.from(parent.context)
