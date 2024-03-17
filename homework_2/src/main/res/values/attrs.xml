@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="EmodjiCustomView" >
+        <attr name="aivBorderColor" format="color" />
+        <attr name="aivBorderWidth" format="dimension" />
+        <attr name="aivInitials" format="string" />
+        <attr name="aivEmoji" format="string" />
+        <attr name="reactionCount" format="integer" />
+
+    </declare-styleable>
+</resources>

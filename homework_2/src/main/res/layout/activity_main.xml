@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.homework_2.MessengerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="40dp"
+    tools:context=".MainActivity"
+    >
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/batman"
+        android:background="@drawable/avatar_shape"
+        />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="UserName"
+        android:textStyle="bold"
+        android:textSize="19sp"
+        android:textColor="@color/turqiose"
+        android:background="@drawable/button_shape"
+        android:padding="4dp"
+        />
+
+    <TextView
+        android:id="@+id/message_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Some message"
+        android:textSize="17sp"
+        android:textColor="@color/black"
+        android:layout_marginStart="300dp"
+        android:background="@drawable/avatar_shape"
+      />
+
+    <com.example.homework_2.FlexBoxLayout
+        android:id="@+id/flex"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <com.example.homework_2.EmodjiCustomView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/view_bg"
+            app:aivEmoji="😃"
+            android:padding="8dp" />
+
+        <ImageView
+            android:id="@+id/add_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/add" />
+
+    </com.example.homework_2.FlexBoxLayout>
+
+</com.example.homework_2.MessengerLayout>
