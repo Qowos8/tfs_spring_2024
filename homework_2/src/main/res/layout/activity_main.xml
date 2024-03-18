@@ -1,66 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.homework_2.MessengerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:padding="40dp"
-    tools:context=".MainActivity"
-    >
+    android:padding="16dp"
+    tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/avatar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/batman"
-        android:background="@drawable/avatar_shape"
-        />
-
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="UserName"
-        android:textStyle="bold"
-        android:textSize="19sp"
-        android:textColor="@color/turqiose"
-        android:background="@drawable/button_shape"
-        android:padding="4dp"
-        />
-
-    <TextView
-        android:id="@+id/message_user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Some message"
-        android:textSize="17sp"
-        android:textColor="@color/black"
-        android:layout_marginStart="300dp"
-        android:background="@drawable/avatar_shape"
-      />
-
-    <com.example.homework_2.FlexBoxLayout
-        android:id="@+id/flex"
+    <Button
+        android:id="@+id/avatar_button"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add avatar"
+        app:layout_constraintBottom_toTopOf="@id/name_button"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/name_input"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:singleLine="true"
+        app:layout_constraintBottom_toTopOf="@id/message_input"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/name_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add name"
+        app:layout_constraintBottom_toTopOf="@id/message_input"
+        app:layout_constraintStart_toEndOf="@id/name_input" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/message_input"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:singleLine="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/message_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add message"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/message_input" />
+
+    <com.example.homework_2.MessengerLayout
+        android:id="@+id/messenger_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
         >
 
-        <com.example.homework_2.EmodjiCustomView
+        <ImageView
+            android:id="@+id/avatar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/view_bg"
-            app:aivEmoji="😃"
-            android:padding="8dp" />
+            android:background="@drawable/avatar_shape"
+            android:padding="8dp"
+            android:src="@drawable/question" />
 
-        <ImageView
-            android:id="@+id/add_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/add" />
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_shape"
+            android:padding="4dp"
+            android:text="@string/name_hint"
+            android:textColor="@color/turqiose"
+            android:textSize="19sp"
+            android:textStyle="bold" />
 
-    </com.example.homework_2.FlexBoxLayout>
+        <TextView
+            android:id="@+id/message_user"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_shape"
+            android:text="@string/message_hint"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
-</com.example.homework_2.MessengerLayout>
+        <com.example.homework_2.FlexBoxLayout
+            android:id="@+id/flex"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/add_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/add" />
+
+        </com.example.homework_2.FlexBoxLayout>
+
+    </com.example.homework_2.MessengerLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

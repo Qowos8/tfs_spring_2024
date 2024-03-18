@@ -4,29 +4,26 @@ import android.content.Context
 import android.os.Bundle
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.setMargins
 import androidx.core.view.setPadding
 import com.example.homework_2.databinding.ActivityMainBinding
-import com.example.homework_2.databinding.EmojiFieldBinding
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var fieldBinding: EmojiFieldBinding
+    private var currentEmojiIndex = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        fieldBinding = EmojiFieldBinding.bind(binding.root)
+
         binding.addButton.setOnClickListener {
             addEmojiView(this)
         }
-//        binding.flex.setOnClickListener {
-//            (it as EmodjiCustomView).reactionCount++
-//            it.isSelected = !it.isSelected
-//        }
+        setAvatar()
+        setName()
+        setMessage()
 
     }
 
@@ -39,6 +36,54 @@ class MainActivity : AppCompatActivity() {
             ViewGroup.LayoutParams.WRAP_CONTENT,
         )
         emojiView.layoutParams = params
-        binding.flex.addView(emojiView, binding.flex.childCount)
+
+        if (currentEmojiIndex < emojiSetNCU.size) {
+            val emoji = emojiSetNCU[currentEmojiIndex]
+            emojiView.emoji = emoji.getCodeString()
+            currentEmojiIndex++
+            binding.flex.addView(emojiView, binding.flex.childCount)
+        }
+        else {
+            emojiView.reactionCount++
+        }
+        changeReaction(emojiView)
+    }
+
+    private fun changeReaction(emoji: EmodjiCustomView) {
+        emoji.setOnClickListener {
+            if (!it.isSelected) {
+                (it as EmodjiCustomView).reactionCount++
+                it.isSelected = !it.isSelected
+            } else {
+                (it as EmodjiCustomView).reactionCount--
+                it.isSelected = !it.isSelected
+            }
+        }
+    }
+
+    private fun setAvatar() {
+        binding.apply {
+            avatarButton.setOnClickListener {
+                avatar.setImageResource(R.drawable.batman)
+            }
+        }
+    }
+
+    private fun setName() {
+        binding.apply {
+            val nameText = nameInput.text
+            nameButton.setOnClickListener {
+                name.text = nameText
+            }
+        }
+    }
+
+    private fun setMessage() {
+        binding.apply {
+            val messageText = messageInput.text
+            messageButton.setOnClickListener {
+                messageUser.text = messageText
+            }
+        }
     }
 }
