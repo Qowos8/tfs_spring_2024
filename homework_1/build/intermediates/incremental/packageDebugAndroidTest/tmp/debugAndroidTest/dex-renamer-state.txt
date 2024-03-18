@@ -1,0 +1,7 @@
+#Sun Mar 17 14:41:25 MSK 2024
+base.0=C\:\\Users\\ASUS\\Downloads\\tfs_spring_2024\\homework_1\\build\\intermediates\\dex\\debugAndroidTest\\mergeExtDexDebugAndroidTest\\classes.dex
+base.1=C\:\\Users\\ASUS\\Downloads\\tfs_spring_2024\\homework_1\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\0\\classes.dex
+path.0=classes.dex
+path.1=0/classes.dex
+renamed.0=classes.dex
+renamed.1=classes2.dex

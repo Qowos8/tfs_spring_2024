@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "com.example.homework_1-mergeDebugResources-29:/layout/second_activity.xml",
+        "source": "com.example.homework_1-main-32:/layout/second_activity.xml"
+    },
+    {
+        "merged": "com.example.homework_1-mergeDebugResources-29:/layout/list_item.xml",
+        "source": "com.example.homework_1-main-32:/layout/list_item.xml"
+    },
+    {
+        "merged": "com.example.homework_1-mergeDebugResources-29:/layout/first_activity.xml",
+        "source": "com.example.homework_1-main-32:/layout/first_activity.xml"
+    }
+]
