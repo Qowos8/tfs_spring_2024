@@ -16,7 +16,7 @@ class EmodjiCustomView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
     defThemeAttr: Int = 0,
     ) : View(context, attrs, defStyleAttr, defThemeAttr) {
-    //"😃"
+
     var emoji: String = "😃"
         set(value) {
             if (field != value) {
