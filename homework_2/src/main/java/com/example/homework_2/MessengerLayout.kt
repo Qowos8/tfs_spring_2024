@@ -59,48 +59,44 @@ class MessengerLayout @JvmOverloads constructor(
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        val avatarView = avatar
-        val nameView = name
-        val messageView = message
+        avatar?.let { avatarView ->
+            val avatarLeft = paddingLeft + avatarView.marginLeft
+            val avatarTop = paddingTop + avatarView.marginTop
+            avatarView.layout(
+                avatarLeft,
+                avatarTop,
+                avatarLeft + avatarView.measuredWidth,
+                avatarTop + avatarView.measuredHeight
+            )
+        }
 
-        val avatarLeft = paddingLeft + avatarView!!.marginLeft
-        val avatarTop = paddingTop + avatarView.marginTop
-        val avatarRight = avatarLeft + avatarView.measuredWidth
-        val avatarBottom = avatarTop + avatarView.measuredHeight
+        name?.let { nameView ->
+            val nameLeft = (avatar?.right ?: 0) + nameView.marginLeft
+            val nameTop = paddingTop + nameView.marginTop
+            nameView.layout(
+                nameLeft,
+                nameTop,
+                nameLeft + nameView.measuredWidth,
+                nameTop + nameView.measuredHeight
+            )
+        }
 
-        avatarView.layout(
-            avatarLeft,
-            avatarTop,
-            avatarRight,
-            avatarBottom
-        )
-
-        val nameLeft = avatarRight + avatarView.marginRight + nameView!!.marginLeft
-        val nameTop = paddingTop + nameView.marginTop
-        val nameRight = nameLeft + nameView.measuredWidth
-        val nameBottom = nameTop + nameView.measuredHeight
-
-        nameView.layout(
-            nameLeft,
-            nameTop,
-            nameRight,
-            nameBottom
-        )
-
-        val messageLeft = nameLeft + nameView.marginRight
-        val messageTop = nameBottom + nameView.marginBottom + messageView!!.marginTop
-        val messageRight = messageLeft + messageView.measuredWidth
-        val messageBottom = messageTop + messageView.measuredHeight
-
-        messageView.layout(
-            messageLeft,
-            messageTop,
-            messageRight,
-            messageBottom
-        )
+        message?.let { messageView ->
+            val messageLeft = (name?.right ?: 0) + messageView.marginLeft
+            val messageTop = (name?.bottom ?: 0) + messageView.marginTop
+            messageView.layout(
+                messageLeft,
+                messageTop,
+                messageLeft + messageView.measuredWidth,
+                messageTop + messageView.measuredHeight
+            )
+        }
 
         val flexBoxLayoutLeft = paddingLeft
-        val flexBoxLayoutTop = maxOf(messageBottom + messageView.marginBottom, avatarBottom + avatarView.marginBottom )
+        val flexBoxLayoutTop = maxOf(
+            (message?.bottom ?: 0) + (message?.marginBottom ?: 0),
+            (avatar?.bottom ?: 0) + (avatar?.marginBottom ?: 0)
+        )
         val flexBoxLayoutRight = right - left - paddingRight
         val flexBoxLayoutBottom = bottom - top - paddingBottom
 
