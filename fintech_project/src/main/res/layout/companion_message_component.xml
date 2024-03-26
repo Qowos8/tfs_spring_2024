@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.homework_2.MessengerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/messenger_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/chat_background"
+    android:layout_gravity="start">
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="37dp"
+        android:layout_height="37dp"
+        android:background="@drawable/avatar_shape"
+        android:padding="8dp"
+        android:src="@drawable/question" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/companion_message_shape"
+        android:orientation="vertical"
+        android:gravity="start"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/userNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Имя пользователя"
+            android:textColor="@color/turquoise"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/messageTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Текст сообщения"
+            android:textColor="@color/digit_color"
+            android:textSize="19sp" />
+    </LinearLayout>
+
+
+    <com.example.homework_2.FlexBoxLayout
+        android:id="@+id/flex"
+        android:layout_width="@+id/message_field"
+        android:layout_height="wrap_content"
+        android:background="@color/chat_background">
+
+        <ImageView
+            android:id="@+id/add_button"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@drawable/plus_shape"
+            android:padding="16dp"
+            android:src="@drawable/add_emoji"
+            android:visibility="gone" />
+
+    </com.example.homework_2.FlexBoxLayout>
+</com.example.homework_2.MessengerLayout>

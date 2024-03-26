@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="EmodjiCustomView" >
+        <attr name="reactionCount" format="integer" />
+        <attr name="emoji" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="MessengerLayout">
+        <attr name="layout_gravity" format="enum">
+            <enum name="start" value="8388611" />
+            <enum name="end" value="8388613" />
+        </attr>
+    </declare-styleable>
+</resources>
