@@ -1,6 +1,9 @@
 package com.example.homework_2
 
 import android.content.Context
+import android.graphics.Paint
+import android.graphics.Rect
+import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -74,6 +77,7 @@ class FlexBoxLayout @JvmOverloads constructor(
 
             val lp = child.layoutParams as MarginLayoutParams
             val childRight = childLeft + child.measuredWidth
+            val childBottom = childTop + child.measuredHeight
 
             if (childRight + lp.rightMargin > right - left - paddingRight) {
                 childLeft = paddingLeft
