@@ -6,9 +6,9 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.text.TextPaint
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.View
 import androidx.core.content.withStyledAttributes
+import com.example.homework_2.utils.SpUtils.sp
 
 class EmojiCustomView @JvmOverloads constructor(
     context: Context,
@@ -66,8 +66,4 @@ class EmojiCustomView @JvmOverloads constructor(
         val topOffset = height / 2 - rectangle.exactCenterY()
         canvas.drawText(textToDraw, paddingLeft.toFloat(), topOffset, textPaint)
     }
-
-    private fun Float.sp(context: Context) = TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_SP, this, context.resources.displayMetrics
-    )
 }

@@ -1,5 +1,5 @@
 package com.example.homework_2
 
 interface BottomSheetClickListener {
-    fun onEmojiClicked(emoji: String)
+    fun onEmojiClicked(messageItem: MessageItem, emoji: String)
 }

@@ -1,43 +1,49 @@
 package com.example.homework_2
 
-import android.icu.util.Calendar
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.homework_2.bottom_sheet.EmojiBottomSheetFragment
 import com.example.homework_2.databinding.ActivityMainBinding
+import com.example.homework_2.utils.CalendarUtils.stringMonth
+import java.util.Calendar
 
 
 class MainActivity : AppCompatActivity(), BottomSheetClickListener {
     private lateinit var binding: ActivityMainBinding
-    val messagesList = mutableListOf<MessageItem>()
+    private val messagesList = mutableListOf<MessageItem>()
     private var currentMessageIndex = 0
-    private lateinit var adapter: MessageAdapter
+    private lateinit var messageAdapter: MessageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val itemDecoration = ItemDecoration(this, R.drawable.divider, getDateString())
+
         binding.apply {
             addTextChangedListener()
             sendMessage()
         }
-        adapter = MessageAdapter(
+        messageAdapter = MessageAdapter(
             onLongItemClick = { messageItem ->
                 openBottomSheet(messageItem)
             },
             onItemClick = { messageItem ->
                 openBottomSheet(messageItem)
             },
-            messagesList,
-            1,
             this@MainActivity
         )
-        binding.messageRecycler.adapter = adapter
+
+        binding.messageRecycler.apply {
+            itemAnimator = null
+            addItemDecoration(itemDecoration)
+            adapter = messageAdapter
+        }
+
     }
 
     private fun ActivityMainBinding.addTextChangedListener() {
@@ -47,13 +53,14 @@ class MainActivity : AppCompatActivity(), BottomSheetClickListener {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val inputText = s.toString()
                 if (inputText.isNotEmpty()) {
-                    binding.messageButton.visibility = View.VISIBLE
-                    binding.resourceButton.visibility = View.GONE
+                    messageButton.visibility = View.VISIBLE
+                    resourceButton.visibility = View.GONE
                 } else {
-                    binding.messageButton.visibility = View.GONE
-                    binding.resourceButton.visibility = View.VISIBLE
+                    messageButton.visibility = View.GONE
+                    resourceButton.visibility = View.VISIBLE
                 }
             }
+
             override fun afterTextChanged(s: Editable?) {}
         })
     }
@@ -65,28 +72,14 @@ class MainActivity : AppCompatActivity(), BottomSheetClickListener {
                     MessageItem(
                         currentMessageIndex,
                         messageInput.text.toString(),
-                        1,
-                        sendTime = getSendTime()
+                        1
                     )
                 )
-                binding.messageRecycler.adapter = adapter
-                Log.d("input", messageInput.text.toString())
+                currentMessageIndex++
+                messageAdapter.submitList(messagesList.toList())
                 messageInput.text?.clear()
             }
         }
-    }
-
-    private fun getSendTime(): String {
-        val messageTimestamp: Long = System.currentTimeMillis()
-
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = messageTimestamp
-
-        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
-        val month = calendar.get(Calendar.MONTH) + 1
-        val year = calendar.get(Calendar.YEAR)
-
-        return "$dayOfMonth.$month.$year"
     }
 
     private fun openBottomSheet(messageItem: MessageItem) {
@@ -95,18 +88,21 @@ class MainActivity : AppCompatActivity(), BottomSheetClickListener {
         bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
     }
 
-    override fun onEmojiClicked(emoji: String) {
-        val lastMessage = messagesList.lastOrNull()
-        if (lastMessage != null) {
+    override fun onEmojiClicked(messageItem: MessageItem, emoji: String) {
+        val position = messagesList.indexOf(messageItem)
+        if (position != -1) {
+            val lastMessage = messagesList[position]
             val reactionsMap = lastMessage.reactions
             if (!reactionsMap.containsKey(emoji)) {
                 reactionsMap[emoji] = reactionsMap.getOrDefault(emoji, 0)
             } else {
                 reactionsMap[emoji] = reactionsMap[emoji]!! + 1
             }
-
-            val position = messagesList.size - 1
-            adapter.notifyItemChanged(position)
+            messageAdapter.notifyItemChanged(position)
         }
+    }
+    private fun getDateString():String {
+        val currentDate = Calendar.getInstance()
+        return "${currentDate.get(Calendar.DAY_OF_MONTH)} ${stringMonth(currentDate.get(Calendar.MONTH))}"
     }
 }

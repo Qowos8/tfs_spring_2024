@@ -54,11 +54,6 @@ class MessengerLayout @JvmOverloads constructor(
         attrs.recycle()
     }
 
-    fun setLayoutGravity(gravity: Int) {
-        layoutGravity = gravity
-        requestLayout()
-    }
-
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         measureChildren(widthMeasureSpec, heightMeasureSpec)
 

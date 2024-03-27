@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/chat_background"
-    android:layout_gravity="start">
+    android:layout_gravity="start"
+    >
 
     <ImageView
         android:id="@+id/avatar"
@@ -15,6 +16,7 @@
         android:src="@drawable/question" />
 
     <LinearLayout
+        android:id="@+id/linear_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/companion_message_shape"
@@ -43,18 +45,18 @@
 
     <com.example.homework_2.FlexBoxLayout
         android:id="@+id/flex"
-        android:layout_width="@+id/message_field"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/chat_background">
 
         <ImageView
             android:id="@+id/add_button"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:background="@drawable/plus_shape"
-            android:padding="16dp"
             android:src="@drawable/add_emoji"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_margin="8dp"/>
 
     </com.example.homework_2.FlexBoxLayout>
 </com.example.homework_2.MessengerLayout>

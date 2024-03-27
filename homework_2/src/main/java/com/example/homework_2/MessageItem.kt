@@ -5,6 +5,6 @@ data class MessageItem(
     val message: String,
     val senderId: Int,
     val senderName: String? = "user",
-    val sendTime: String,
-    val reactions: MutableMap<String, Int> = mutableMapOf()
+    val reactions: MutableMap<String, Int> = mutableMapOf(),
+    val reactionsView: MutableList<EmojiCustomView> = mutableListOf(),
 )

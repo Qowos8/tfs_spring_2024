@@ -6,14 +6,17 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.homework_2.BottomSheetClickListener
+import com.example.homework_2.MessageItem
 
-class EmojiBottomSheetAdapter(private val emojiList: List<String>) :
+class EmojiBottomSheetAdapter(
+    private val emojiList: List<String>,
+    private val messageItem: MessageItem) :
     RecyclerView.Adapter<EmojiBottomSheetAdapter.ViewHolder>() {
 
     private lateinit var emojiClickListener: BottomSheetClickListener
 
-    fun setEmojiClickListener(listener: BottomSheetClickListener) {
-        this.emojiClickListener = listener
+    fun setEmojiClickListener(listener: BottomSheetClickListener){
+        emojiClickListener = listener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -25,7 +28,7 @@ class EmojiBottomSheetAdapter(private val emojiList: List<String>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val emoji = emojiList[position]
-        holder.bind(emoji)
+        holder.bind(emoji, messageItem)
     }
 
     override fun getItemCount(): Int {
@@ -35,12 +38,14 @@ class EmojiBottomSheetAdapter(private val emojiList: List<String>) :
     inner class ViewHolder(itemView: View, private val clickListener: BottomSheetClickListener) : RecyclerView.ViewHolder(itemView) {
         private val emojiTextView: TextView = itemView.findViewById(android.R.id.text1)
 
-        fun bind(emoji: String) {
+        fun bind(emoji: String, selectedItem: MessageItem) {
             emojiTextView.apply {
                 text = emoji
                 textSize = 22f
                 setOnClickListener {
-                    clickListener.onEmojiClicked(emoji)
+                    selectedItem.let {
+                        clickListener.onEmojiClicked(it, emoji)
+                    }
                 }
             }
         }
