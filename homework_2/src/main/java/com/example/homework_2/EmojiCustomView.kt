@@ -42,12 +42,6 @@ class EmojiCustomView @JvmOverloads constructor(
         textSize = 24f.sp(context)
     }
 
-    init {
-        context.withStyledAttributes(attrs, R.styleable.EmodjiCustomView){
-            reactionCount = getInt(R.styleable.EmodjiCustomView_reactionCount, 0)
-        }
-    }
-
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         textPaint.getTextBounds(textToDraw, 0, textToDraw.length, rectangle)
 

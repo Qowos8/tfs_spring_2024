@@ -8,5 +8,6 @@
     android:background="@drawable/view_bg"
     android:padding="8dp"
     app:reactionCount="0"
-
+    app:emojiSize="24sp"
+    app:textColor="@color/white"
     android:layout_margin="10dp"/>

@@ -21,37 +21,24 @@ class MessengerLayout @JvmOverloads constructor(
 
     private var layoutGravity: Int = Gravity.START
 
-    val avatar: View?
-        get() = if (childCount > 0)
-            getChildAt(0)
-        else null
+    var avatar: View? = null
 
-    val message: LinearLayout?
-        get() = if (childCount > 0) {
-            if (avatar != null) {
-                if (childCount > 1)
-                    getChildAt(1) as? LinearLayout
-                else null
-            } else {
-                getChildAt(0) as? LinearLayout
-            }
-        } else null
+    var message: LinearLayout? = null
 
-    val flexBoxLayout: FlexBoxLayout?
-        get() = if (childCount > 0) {
-            if (avatar != null) {
-                if (childCount > 1)
-                    getChildAt(2) as? FlexBoxLayout
-                else null
-            } else {
-                getChildAt(1) as? FlexBoxLayout
-            }
-        } else null
+    var flexBoxLayout: FlexBoxLayout? = null
 
     init {
         val attrs = context.obtainStyledAttributes(attributeSet, R.styleable.MessengerLayout)
         layoutGravity = attrs.getInt(R.styleable.MessengerLayout_layout_gravity, Gravity.START)
         attrs.recycle()
+    }
+
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+
+        avatar = findViewById(R.id.avatar)
+        flexBoxLayout = findViewById(R.id.flex)
+        message = findViewById(R.id.linear_layout)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

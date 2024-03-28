@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="EmodjiCustomView" >
+    <declare-styleable name="EmojiCustomView" >
         <attr name="reactionCount" format="integer" />
         <attr name="emoji" format="string" />
+        <attr name="emojiSize" format="dimension" />
+        <attr name="textColor" format="color" />
     </declare-styleable>
 
     <declare-styleable name="MessengerLayout">
