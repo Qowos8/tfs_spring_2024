@@ -1,4 +1,4 @@
-package com.example.homework_2
+package com.example.homework_2.view
 
 import android.content.Context
 import android.util.AttributeSet
@@ -10,6 +10,7 @@ import androidx.core.view.marginBottom
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
 import androidx.core.view.marginTop
+import com.example.homework_2.R
 
 class MessengerLayout @JvmOverloads constructor(
     context: Context,

@@ -1,108 +1,73 @@
 package com.example.homework_2
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.example.homework_2.bottom_sheet.EmojiBottomSheetFragment
+import com.example.homework_2.channels.OnChildClickListener
+import com.example.homework_2.channels.TopicItem
 import com.example.homework_2.databinding.ActivityMainBinding
-import com.example.homework_2.utils.CalendarUtils.stringMonth
-import java.util.Calendar
+import com.example.homework_2.people.OnUserClickListener
+import com.example.homework_2.people.PeopleItem
+import com.github.terrakok.cicerone.androidx.AppNavigator
 
 
-class MainActivity : AppCompatActivity(), BottomSheetClickListener {
+class MainActivity : AppCompatActivity(), OnChildClickListener,
+    OnUserClickListener {
     private lateinit var binding: ActivityMainBinding
-    private val messagesList = mutableListOf<MessageItem>()
-    private var currentMessageIndex = 0
-    private lateinit var messageAdapter: MessageAdapter
+    private val applicationInstance: Application
+        get() = application as Application
+    private val navigator = AppNavigator(this, R.id.nav_host_fragment)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val itemDecoration = ItemDecoration(this, R.drawable.divider, getDateString())
+        applicationInstance.navigatorHolder.setNavigator(navigator)
+        binding.bottomNavView.visibility = View.VISIBLE
 
-        binding.apply {
-            addTextChangedListener()
-            sendMessage()
-        }
-        messageAdapter = MessageAdapter(
-            onLongItemClick = { messageItem ->
-                openBottomSheet(messageItem)
-            },
-            onItemClick = { messageItem ->
-                openBottomSheet(messageItem)
-            },
-            this@MainActivity
-        )
-
-        binding.messageRecycler.apply {
-            itemAnimator = null
-            addItemDecoration(itemDecoration)
-            adapter = messageAdapter
+        if (savedInstanceState == null) {
+            applicationInstance.router.navigateTo(Screens.Channels())
         }
 
-    }
+        binding.bottomNavView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.people -> {
+                    applicationInstance.router.navigateTo(Screens.People())
+                    binding.bottomNavView.visibility = View.VISIBLE
+                }
 
-    private fun ActivityMainBinding.addTextChangedListener() {
-        messageInput.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                R.id.profile -> {
+                    applicationInstance.router.navigateTo(Screens.Profile())
+                    binding.bottomNavView.visibility = View.VISIBLE
+                }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val inputText = s.toString()
-                if (inputText.isNotEmpty()) {
-                    messageButton.visibility = View.VISIBLE
-                    resourceButton.visibility = View.GONE
-                } else {
-                    messageButton.visibility = View.GONE
-                    resourceButton.visibility = View.VISIBLE
+                R.id.channels -> {
+                    applicationInstance.router.navigateTo(Screens.Channels())
+                    binding.bottomNavView.visibility = View.VISIBLE
                 }
             }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-    }
-
-    private fun ActivityMainBinding.sendMessage() {
-        if (messageButton.isEnabled) {
-            messageButton.setOnClickListener {
-                messagesList.add(
-                    MessageItem(
-                        currentMessageIndex,
-                        messageInput.text.toString(),
-                        1
-                    )
-                )
-                currentMessageIndex++
-                messageAdapter.submitList(messagesList.toList())
-                messageInput.text?.clear()
-            }
+            true
         }
     }
 
-    private fun openBottomSheet(messageItem: MessageItem) {
-        val bottomSheetDialogFragment = EmojiBottomSheetFragment()
-        bottomSheetDialogFragment.setMessageItem(messageItem)
-        bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
+    override fun onTopicClicked(topic: TopicItem) {
+        applicationInstance.router.navigateTo(Screens.Chat())
+        DataHolder.topicData = topic
     }
 
-    override fun onEmojiClicked(messageItem: MessageItem, emoji: String) {
-        val position = messagesList.indexOf(messageItem)
-        if (position != -1) {
-            val lastMessage = messagesList[position]
-            val reactionsMap = lastMessage.reactions
-            if (!reactionsMap.containsKey(emoji)) {
-                reactionsMap[emoji] = reactionsMap.getOrDefault(emoji, 0)
-            } else {
-                reactionsMap[emoji] = reactionsMap[emoji]!! + 1
-            }
-            messageAdapter.notifyItemChanged(position)
-        }
+//    override fun onEmojiClicked(messageItem: MessageItem, emoji: String) {
+//        val chatActivity = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as? ChatActivity
+//        chatActivity?.onEmojiClicked(messageItem, emoji)
+//    }
+
+    override fun onUserClicked(user: PeopleItem) {
+        applicationInstance.router.navigateTo(Screens.AnotherProfile())
+        DataHolder.userData = user
     }
-    private fun getDateString():String {
-        val currentDate = Calendar.getInstance()
-        return "${currentDate.get(Calendar.DAY_OF_MONTH)} ${stringMonth(currentDate.get(Calendar.MONTH))}"
+
+    object DataHolder {
+        var userData: PeopleItem? = null
+        var topicData: TopicItem? = null
     }
 }

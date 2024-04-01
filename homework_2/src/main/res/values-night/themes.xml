@@ -8,4 +8,10 @@
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
     </style>
+
+    <style name="Base.Theme.channels" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="android:colorButtonNormal">@color/logout_button_color</item>
+        <item name="colorAccent">@color/logout_button_color</item>
+    </style>
 </resources>

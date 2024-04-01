@@ -1,4 +1,4 @@
-package com.example.homework_2
+package com.example.homework_2.chat
 
 import android.content.Context
 import android.graphics.Canvas
@@ -10,6 +10,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
+import com.example.homework_2.R
 
 class ItemDecoration(context: Context, resId: Int, private val date: String) : RecyclerView.ItemDecoration() {
 

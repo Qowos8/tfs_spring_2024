@@ -1,4 +1,6 @@
-package com.example.homework_2
+package com.example.homework_2.chat
+
+import com.example.homework_2.view.EmojiCustomView
 
 data class MessageItem(
     val messageId: Int,

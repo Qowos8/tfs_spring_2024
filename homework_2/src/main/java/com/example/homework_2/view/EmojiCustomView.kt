@@ -1,4 +1,4 @@
-package com.example.homework_2
+package com.example.homework_2.view
 
 import android.content.Context
 import android.graphics.Canvas
@@ -7,7 +7,6 @@ import android.graphics.Rect
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
-import androidx.core.content.withStyledAttributes
 import com.example.homework_2.utils.SpUtils.sp
 
 class EmojiCustomView @JvmOverloads constructor(

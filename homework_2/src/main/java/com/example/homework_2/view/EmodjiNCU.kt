@@ -1,4 +1,4 @@
-package com.example.homework_2
+package com.example.homework_2.view
 
 // Class Emoji with Name and Code as Unicode (Int)
 data class EmojiNCU(

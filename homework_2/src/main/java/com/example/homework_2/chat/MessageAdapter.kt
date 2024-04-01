@@ -1,4 +1,4 @@
-package com.example.homework_2
+package com.example.homework_2.chat
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,8 +7,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.example.homework_2.DiffUtilAdapterItemCallback
+import com.example.homework_2.R
 import com.example.homework_2.databinding.CompanionMessageComponentBinding
 import com.example.homework_2.databinding.UserMessageComponentBinding
+import com.example.homework_2.view.EmojiCustomView
 
 class MessageAdapter(
     private val onLongItemClick: (MessageItem) -> Unit,
@@ -56,9 +59,7 @@ class MessageAdapter(
     }
 
 
-    override fun getItemCount(): Int {
-        return currentList.size
-    }
+    override fun getItemCount(): Int = currentList.size
 
     override fun getItemViewType(position: Int): Int {
         val message = currentList[position]

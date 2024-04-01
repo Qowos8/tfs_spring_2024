@@ -5,16 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.homework_2.BottomSheetClickListener
-import com.example.homework_2.MessageItem
-import com.example.homework_2.emojiSetNCU
+import com.example.homework_2.chat.ChatActivity
+import com.example.homework_2.chat.MessageItem
+import com.example.homework_2.view.emojiSetNCU
 import com.example.homework_2.databinding.BottomSheetDialogFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class EmojiBottomSheetFragment : BottomSheetDialogFragment() {
     private lateinit var binding: BottomSheetDialogFragmentBinding
     private var selectedMessageItem: MessageItem? = null
-
+    private lateinit var chatActivity: ChatActivity
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,6 +27,7 @@ class EmojiBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //chatFragment = parentFragmentManager.findFragmentById(R.id.channels_container) as ChatFragment
         val data = emojiSetNCU.take(42).map { it.getCodeString() }
         val layoutManager = GridLayoutManager(requireContext(), 7)
         val adapter = EmojiBottomSheetAdapter(data, selectedMessageItem!!)
@@ -34,7 +35,7 @@ class EmojiBottomSheetFragment : BottomSheetDialogFragment() {
             bottomSheetRecycler.adapter = adapter
             adapter.setEmojiClickListener(object : BottomSheetClickListener {
                 override fun onEmojiClicked(messageItem: MessageItem, emoji: String) {
-                    (activity as? BottomSheetClickListener)?.onEmojiClicked(messageItem, emoji)
+                    (activity as BottomSheetClickListener).onEmojiClicked(messageItem, emoji)
                     dismiss()
                 }
             })

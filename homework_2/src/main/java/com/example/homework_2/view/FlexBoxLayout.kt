@@ -1,9 +1,6 @@
-package com.example.homework_2
+package com.example.homework_2.view
 
 import android.content.Context
-import android.graphics.Paint
-import android.graphics.Rect
-import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup

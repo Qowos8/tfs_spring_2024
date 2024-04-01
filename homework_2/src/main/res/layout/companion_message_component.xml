@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.homework_2.MessengerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.homework_2.view.MessengerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/messenger_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/chat_background"
-    android:layout_gravity="start"
-    >
+    android:layout_gravity="start">
 
     <ImageView
         android:id="@+id/avatar"
@@ -43,7 +42,7 @@
     </LinearLayout>
 
 
-    <com.example.homework_2.FlexBoxLayout
+    <com.example.homework_2.view.FlexBoxLayout
         android:id="@+id/flex"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,5 +57,5 @@
             android:visibility="gone"
             android:layout_margin="8dp"/>
 
-    </com.example.homework_2.FlexBoxLayout>
-</com.example.homework_2.MessengerLayout>
+    </com.example.homework_2.view.FlexBoxLayout>
+</com.example.homework_2.view.MessengerLayout>

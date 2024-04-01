@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/Base.Theme.channels">
+
+    <include
+        layout="@layout/toolbar_profile"
+        android:id="@+id/toolbar_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="visible"
+        />
+
+    <include
+        layout="@layout/profile_square_card"
+        android:id="@+id/avatar_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/logout_button"
+        android:src="@drawable/profile_image"
+        android:adjustViewBounds = "true"
+        />
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Some user"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/avatar_image"
+        android:textColor="@color/white"
+        android:textSize="32sp"
+        />
+    <TextView
+        android:id="@+id/user_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/avatar_image"
+        app:layout_constraintTop_toBottomOf="@id/user_name"
+        android:text="In a meeting"
+        android:textSize="20sp"
+        android:textColor="@color/status_color"
+        />
+
+    <TextView
+        android:id="@+id/is_online"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Online"
+        android:textColor="@color/online_color"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/user_status"
+        app:layout_constraintStart_toEndOf="@id/user_status" />
+    <Button
+        android:id="@+id/logout_button"
+        android:layout_width="184dp"
+        android:layout_height="52dp"
+        android:text="Log out"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="30dp"
+        android:backgroundTint="@color/logout_button_color"
+        android:visibility="visible"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>
