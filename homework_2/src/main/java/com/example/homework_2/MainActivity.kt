@@ -56,11 +56,6 @@ class MainActivity : AppCompatActivity(), OnChildClickListener,
         DataHolder.topicData = topic
     }
 
-//    override fun onEmojiClicked(messageItem: MessageItem, emoji: String) {
-//        val chatActivity = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as? ChatActivity
-//        chatActivity?.onEmojiClicked(messageItem, emoji)
-//    }
-
     override fun onUserClicked(user: PeopleItem) {
         applicationInstance.router.navigateTo(Screens.AnotherProfile())
         DataHolder.userData = user

@@ -14,7 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 class EmojiBottomSheetFragment : BottomSheetDialogFragment() {
     private lateinit var binding: BottomSheetDialogFragmentBinding
     private var selectedMessageItem: MessageItem? = null
-    private lateinit var chatActivity: ChatActivity
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,7 +27,6 @@ class EmojiBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //chatFragment = parentFragmentManager.findFragmentById(R.id.channels_container) as ChatFragment
         val data = emojiSetNCU.take(42).map { it.getCodeString() }
         val layoutManager = GridLayoutManager(requireContext(), 7)
         val adapter = EmojiBottomSheetAdapter(data, selectedMessageItem!!)
