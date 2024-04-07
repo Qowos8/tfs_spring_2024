@@ -1,4 +1,4 @@
-package com.example.homework_2.channels
+package com.example.homework_2.channels.parent
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

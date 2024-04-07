@@ -23,6 +23,7 @@
         app:boxStrokeColor="@color/black"
         android:background="@drawable/block_shape"
         app:endIconDrawable="@drawable/baseline_search_24"
+        app:cursorColor="@color/white"
         app:endIconTint="@color/white">
     <com.google.android.material.textfield.TextInputEditText
         android:layout_width="match_parent"

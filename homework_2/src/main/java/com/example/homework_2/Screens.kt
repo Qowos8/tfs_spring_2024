@@ -1,8 +1,7 @@
 package com.example.homework_2
 
 import android.content.Intent
-import com.example.homework_2.channels.ChannelsFragment
-import com.example.homework_2.channels.TopicItem
+import com.example.homework_2.channels.parent.ChannelsFragment
 import com.example.homework_2.chat.ChatActivity
 import com.example.homework_2.people.PeopleFragment
 import com.example.homework_2.profile.AnotherProfileActivity

@@ -10,9 +10,13 @@ import com.example.homework_2.R
 import com.example.homework_2.bottom_sheet.BottomSheetClickListener
 import com.example.homework_2.bottom_sheet.EmojiBottomSheetFragment
 import com.example.homework_2.channels.TopicItem
+import com.example.homework_2.chat.delegate.CompanionMessageDelegate
+import com.example.homework_2.chat.delegate.UserMessageDelegate
 import com.example.homework_2.databinding.ChatFragmentBinding
 import com.example.homework_2.databinding.ToolbarFragmentBinding
+import com.example.homework_2.delegate.MainAdapter
 import com.example.homework_2.utils.CalendarUtils
+import com.google.android.material.snackbar.Snackbar
 import java.util.Calendar
 
 class ChatActivity : AppCompatActivity(), BottomSheetClickListener {
@@ -21,6 +25,7 @@ class ChatActivity : AppCompatActivity(), BottomSheetClickListener {
     private var currentMessageIndex = 0
     private lateinit var topicItem: TopicItem
     private lateinit var messageAdapter: MessageAdapter
+    private val mainAdapter: MainAdapter by lazy(LazyThreadSafetyMode.NONE) { MainAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +39,8 @@ class ChatActivity : AppCompatActivity(), BottomSheetClickListener {
             addTextChangedListener()
             sendMessage()
         }
+        setAdapter()
+        binding.messageRecycler.adapter = mainAdapter
         messageAdapter = MessageAdapter(
             onLongItemClick = { messageItem ->
                 openBottomSheet(messageItem)
@@ -87,6 +94,7 @@ class ChatActivity : AppCompatActivity(), BottomSheetClickListener {
                 )
                 currentMessageIndex++
                 messageAdapter.submitList(messagesList.toList())
+                //mainAdapter.submitList()
                 messageInput.text?.clear()
             }
         }
@@ -123,10 +131,31 @@ class ChatActivity : AppCompatActivity(), BottomSheetClickListener {
         }"
     }
 
-    private fun setToolBar(binding: ToolbarFragmentBinding){
+    private fun setToolBar(binding: ToolbarFragmentBinding) {
         binding.toolbar.title = topicItem.parentName
         binding.backButton.setOnClickListener {
             finish()
         }
+    }
+
+    private fun setAdapter() {
+        val defaultEmojiService = DefaultEmojiService()
+        mainAdapter.addDelegate(
+            UserMessageDelegate(
+                defaultEmojiService,
+                onLongItemClick = { messageItem -> openBottomSheet(messageItem) },
+                onItemClick = { messageItem -> openBottomSheet(messageItem) },
+                this
+            )
+        )
+
+        mainAdapter.addDelegate(
+            CompanionMessageDelegate(
+                defaultEmojiService,
+                onLongItemClick = { messageItem -> openBottomSheet(messageItem) },
+                onItemClick = { messageItem -> openBottomSheet(messageItem) },
+                this
+            )
+        )
     }
 }

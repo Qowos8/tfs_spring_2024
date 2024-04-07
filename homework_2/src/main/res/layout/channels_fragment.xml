@@ -7,7 +7,7 @@
     style="@style/Base.Theme.channels">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/channels_search"
+        android:id="@+id/channels_text_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,9 +17,11 @@
         app:endIconTint="@color/white"
         app:endIconMode="custom"
         app:endIconDrawable="@drawable/baseline_search_24"
+        app:cursorColor="@color/white"
         app:boxBackgroundColor="@color/bottom_background_color">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/channels_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/search_hint"
@@ -35,7 +37,7 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/channels_search"
+        app:layout_constraintTop_toBottomOf="@id/channels_text_layout"
         android:background="@color/bottom_background_color"
         app:tabMode="fixed"
         app:tabGravity="fill"

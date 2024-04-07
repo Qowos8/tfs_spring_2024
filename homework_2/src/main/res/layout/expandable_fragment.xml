@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/Base.Theme.channels"
+    style="@style/Base.Theme.Tfs_spring_2024"
     android:id="@+id/expandable_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <ExpandableListView
         android:id="@+id/expandable_list_view"
@@ -14,4 +14,24 @@
         android:pointerIcon="arrow"
         android:indicatorEnd="750dp"
         />
+    <TextView
+        android:id="@+id/empty_list_phrase"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/empty_list"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="100dp"
+        android:layout_marginStart="60dp"
+        android:visibility="gone"
+        />
+    <include layout="@layout/skeleton_fragment"
+        android:id="@+id/skelet"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_width="match_parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,22 +1,25 @@
-package com.example.homework_2
+package com.example.homework_2.channels
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.homework_2.channels.StreamItem
-import com.example.homework_2.databinding.ToolbarFragmentBinding
+import com.example.homework_2.databinding.SkeletonComponentBinding
 
-class ToolBarFragment : Fragment() {
-    private lateinit var binding: ToolbarFragmentBinding
+class SkeletonFragment: Fragment() {
+
+    private lateinit var binding: SkeletonComponentBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = ToolbarFragmentBinding.inflate(layoutInflater)
+        binding = SkeletonComponentBinding.inflate(layoutInflater)
+
+        binding.shimmerContainer.startShimmer()
+
         return binding.root
     }
 }

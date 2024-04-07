@@ -1,9 +1,11 @@
-package com.example.homework_2.channels
+package com.example.homework_2.channels.child
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
+import com.example.homework_2.channels.StreamItem
+import com.example.homework_2.channels.TopicItem
 import com.example.homework_2.databinding.ExpandableChildBinding
 import com.example.homework_2.databinding.ExpandableParentBinding
 import com.example.homework_2.utils.ColorUtils.setColor
@@ -11,7 +13,7 @@ import com.example.homework_2.utils.ColorUtils.setColor
 class StreamAdapter(
     private val onItemClick: (TopicItem) -> Unit,
 ) : BaseExpandableListAdapter() {
-    private var streams: MutableList<StreamItem> = mutableListOf()
+    private var streams: List<StreamItem> = mutableListOf()
 
     override fun getGroupCount(): Int {
         return streams.size
@@ -88,7 +90,11 @@ class StreamAdapter(
         }
     }
 
-    fun update(list: MutableList<StreamItem>) {
+    fun update(list: List<StreamItem>) {
+        streams = list
+        notifyDataSetChanged()
+    }
+    fun search(list: List<StreamItem>) {
         streams = list
         notifyDataSetChanged()
     }

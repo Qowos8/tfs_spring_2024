@@ -81,8 +81,8 @@ class MessageAdapter(
 
                 flex.removeAllViews()
 
-                message.reactions.forEach { (emoji, count) ->
-                    addEmojiView(emoji, count, flex, message)
+                message.reactions.forEach { (emojiString, reactionCount) ->
+                    addEmojiView(emojiString, reactionCount, flex, message)
                     setAddButton(addButton, flex, message)
                 }
 

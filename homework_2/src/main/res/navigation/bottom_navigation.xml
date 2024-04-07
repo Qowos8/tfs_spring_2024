@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/channels_fragment"
-        android:name="com.example.homework_2.channels.ChannelsFragment"
+        android:name="com.example.homework_2.channels.parent.ChannelsFragment"
         tools:layout="@layout/channels_fragment" />
 
     <fragment
