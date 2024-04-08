@@ -5,48 +5,41 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.homework_2.chat.MessageItem
+import com.example.homework_2.view.emojiSetNCU
 
-class EmojiBottomSheetAdapter(
-    private val emojiList: List<String>,
-    private val messageItem: MessageItem,
-) :
+class EmojiBottomSheetAdapter(private val onItemClick: (String) -> Unit) :
     RecyclerView.Adapter<EmojiBottomSheetAdapter.ViewHolder>() {
 
-    private lateinit var emojiClickListener: BottomSheetClickListener
-
-    fun setEmojiClickListener(listener: BottomSheetClickListener) {
-        emojiClickListener = listener
-    }
+    private val emojiList = emojiSetNCU.take(42).map { it.getCodeString() }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(android.R.layout.simple_list_item_1, parent, false)
 
-        return ViewHolder(view, emojiClickListener)
+        return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val emoji = emojiList[position]
-        holder.bind(emoji, messageItem)
+        holder.bind(emojiList[position])
     }
 
     override fun getItemCount(): Int {
         return emojiList.size
     }
 
-    inner class ViewHolder(itemView: View, private val clickListener: BottomSheetClickListener) :
+    inner class ViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         private val emojiTextView: TextView = itemView.findViewById(android.R.id.text1)
 
-        fun bind(emoji: String, selectedItem: MessageItem) {
+        init {
+            emojiTextView.textSize = 22f
+        }
+
+        fun bind(emoji: String) {
             emojiTextView.apply {
                 text = emoji
-                textSize = 22f
                 setOnClickListener {
-                    selectedItem.let {
-                        clickListener.onEmojiClicked(it, emoji)
-                    }
+                    onItemClick(emoji)
                 }
             }
         }
