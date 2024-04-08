@@ -1,7 +1,15 @@
 package com.example.homework_2.utils
 
-import com.example.homework_2.DataHandler
+import kotlinx.coroutines.flow.MutableSharedFlow
 
 object ObjectHandler {
-    val handler = DataHandler()
+    private val dataFlow: MutableSharedFlow<String> = MutableSharedFlow()
+
+    suspend fun sendFlow(streams: String){
+        dataFlow.emit(streams)
+    }
+
+    fun getFlow(): MutableSharedFlow<String> {
+        return dataFlow
+    }
 }

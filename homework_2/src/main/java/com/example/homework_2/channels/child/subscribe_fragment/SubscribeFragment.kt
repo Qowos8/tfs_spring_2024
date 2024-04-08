@@ -21,7 +21,7 @@ class SubscribeFragment : Fragment() {
 
     private lateinit var binding: ExpandableFragmentBinding
     private val viewModel: SubscribeViewModel by viewModels()
-    private val handler = ObjectHandler.handler
+    private val handler = ObjectHandler
 
     private val adapter: StreamAdapter by lazy {
         StreamAdapter(::openTopic)

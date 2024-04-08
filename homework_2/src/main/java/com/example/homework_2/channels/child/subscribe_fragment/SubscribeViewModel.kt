@@ -35,25 +35,26 @@ class SubscribeViewModel : ViewModel() {
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     private fun searchFlow() {
         currentSearch
-            .filter { it.isNotEmpty() && it.trim().isNotEmpty() }
-            .debounce(500L)
+            .debounce(700L)
             .map { it.trim() }
-            .mapLatest { query ->
-                if (query.isEmpty()) {
-                    _searchState.value = StreamSubState.Success(allItems)
-                }
-                else if(query.length > 5) {
-                    _searchState.value = StreamSubState.Error("Too much symbols")
-                }
-                else
-                 {
-                    _searchState.value = StreamSubState.Loading
-                    delay(500L)
-                    _searchState.value =
-                        StreamSubState.Success(filterItemsByName(allItems, query))
-                }
-            }
+            .mapLatest { query -> emitState(query) }
             .launchIn(viewModelScope)
+    }
+
+    private suspend fun emitState(query: String){
+        if (query.isEmpty()) {
+            _searchState.value = StreamSubState.Success(allItems)
+        }
+        else if(query.length > 5) {
+            _searchState.value = StreamSubState.Error("Too much symbols")
+        }
+        else
+        {
+            _searchState.value = StreamSubState.Loading
+            delay(700L)
+            _searchState.value =
+                StreamSubState.Success(filterItemsByName(allItems, query))
+        }
     }
 
     fun addMockSubscribe() {

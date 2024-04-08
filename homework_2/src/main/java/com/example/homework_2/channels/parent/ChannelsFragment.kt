@@ -19,7 +19,7 @@ class ChannelsFragment : Fragment() {
     private lateinit var binding: ChannelsFragmentBinding
     private val loginArray = arrayOf("Subscribed", "All streams")
 
-    private val handler = ObjectHandler.handler
+    private val handler = ObjectHandler
 
     override fun onCreateView(
         inflater: LayoutInflater,

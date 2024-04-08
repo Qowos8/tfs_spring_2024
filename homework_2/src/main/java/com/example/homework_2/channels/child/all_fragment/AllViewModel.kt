@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.homework_2.channels.StreamItem
 import com.example.homework_2.channels.TopicItem
+import com.example.homework_2.channels.child.subscribe_fragment.StreamSubState
 import com.example.homework_2.utils.FilterByNamesUtils.filterItemsByName
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -35,20 +36,26 @@ class AllViewModel : ViewModel() {
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     private fun searchFlow() {
         currentSearch
-            .filter { it.isNotEmpty() }
-            .debounce(500L)
+            .debounce(700L)
             .map { it.trim() }
-            .mapLatest { query ->
-                if (query.isEmpty()) {
-                    _searchState.value = StreamAllState.Success(allItems)
-                } else {
-                    _searchState.value = StreamAllState.Loading
-                    delay(500L)
-                    _searchState.value =
-                        StreamAllState.Success(filterItemsByName(allItems, query))
-                }
-            }
+            .mapLatest { query -> emitState(query) }
             .launchIn(viewModelScope)
+    }
+
+    private suspend fun emitState(query: String){
+        if (query.isEmpty()) {
+            _searchState.value = StreamAllState.Success(allItems)
+        }
+        else if(query.length > 5) {
+            _searchState.value = StreamAllState.Error("Too much symbols")
+        }
+        else
+        {
+            _searchState.value = StreamAllState.Loading
+            delay(700L)
+            _searchState.value =
+                StreamAllState.Success(filterItemsByName(allItems, query))
+        }
     }
 
     fun addMockAll() {

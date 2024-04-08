@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class AllFragment: Fragment() {
     private lateinit var binding: ExpandableFragmentBinding
     private val viewModel: AllViewModel by viewModels()
-    private val handler = ObjectHandler.handler
+    private val handler = ObjectHandler
     private val adapter: StreamAdapter by lazy {
         StreamAdapter(::openTopic)
     }
