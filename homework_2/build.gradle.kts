@@ -53,4 +53,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.cicerone)
     implementation (libs.shimmer)
+    implementation (libs.androidx.lifecycle.viewmodel.ktx)
+
 }

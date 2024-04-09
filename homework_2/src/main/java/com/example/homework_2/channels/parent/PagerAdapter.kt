@@ -14,9 +14,11 @@ class PagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
 
     override fun createFragment(position: Int): Fragment = fragments[position]
 
-    fun update(fragments: List<Fragment>) {
-        this.fragments.clear()
-        this.fragments.addAll(fragments)
-        this.notifyItemRangeInserted(0, 2)
+    fun update(fragmentsList: List<Fragment>) {
+        fragments.apply {
+            clear()
+            addAll(fragmentsList)
+        }
+        notifyDataSetChanged()
     }
 }

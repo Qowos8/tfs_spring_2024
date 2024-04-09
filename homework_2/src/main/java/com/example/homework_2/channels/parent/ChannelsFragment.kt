@@ -8,19 +8,18 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.homework_2.utils.ObjectHandler
-import com.example.homework_2.channels.child.subscribe_fragment.SubscribeFragment
-import com.example.homework_2.channels.child.all_fragment.AllFragment
+import com.example.homework_2.channels.child.ChildFragment
 import com.example.homework_2.databinding.ChannelsFragmentBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
-
 
 class ChannelsFragment : Fragment() {
     private lateinit var binding: ChannelsFragmentBinding
     private val loginArray = arrayOf("Subscribed", "All streams")
 
     private val handler = ObjectHandler
-
+    private val childFragment1 = ChildFragment.newInstance(true)
+    private val childFragment2 = ChildFragment.newInstance(false)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,7 +49,12 @@ class ChannelsFragment : Fragment() {
         val adapter = PagerAdapter(requireActivity().supportFragmentManager, lifecycle)
         binding.channelsViewPager.adapter = adapter
 
-        adapter.update(listOf(SubscribeFragment(), AllFragment()))
+        adapter.update(listOf(
+//            ChildFragment.newInstance(true),
+//            ChildFragment.newInstance(false)
+            childFragment1,
+            childFragment2
+        ))
 
         TabLayoutMediator(binding.tabLayout, binding.channelsViewPager) { tab, position ->
             tab.text = loginArray[position]

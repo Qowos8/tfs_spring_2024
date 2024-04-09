@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
+import com.example.homework_2.DiffUtilAdapterItemCallback
 import com.example.homework_2.channels.StreamItem
 import com.example.homework_2.channels.TopicItem
 import com.example.homework_2.databinding.ExpandableChildBinding
@@ -90,10 +91,6 @@ class StreamAdapter(
         }
     }
 
-    fun update(list: List<StreamItem>) {
-        streams = list
-        notifyDataSetChanged()
-    }
     fun search(list: List<StreamItem>) {
         streams = list
         notifyDataSetChanged()
