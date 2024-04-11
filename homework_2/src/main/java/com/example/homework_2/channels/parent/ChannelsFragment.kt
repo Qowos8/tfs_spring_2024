@@ -18,8 +18,8 @@ class ChannelsFragment : Fragment() {
     private val loginArray = arrayOf("Subscribed", "All streams")
 
     private val handler = ObjectHandler
-    private val childFragment1 = ChildFragment.newInstance(true)
-    private val childFragment2 = ChildFragment.newInstance(false)
+    private val subFragment = ChildFragment.newInstance(true)
+    private val allFragment = ChildFragment.newInstance(false)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,12 +49,7 @@ class ChannelsFragment : Fragment() {
         val adapter = PagerAdapter(requireActivity().supportFragmentManager, lifecycle)
         binding.channelsViewPager.adapter = adapter
 
-        adapter.update(listOf(
-//            ChildFragment.newInstance(true),
-//            ChildFragment.newInstance(false)
-            childFragment1,
-            childFragment2
-        ))
+        adapter.update(listOf(subFragment, allFragment))
 
         TabLayoutMediator(binding.tabLayout, binding.channelsViewPager) { tab, position ->
             tab.text = loginArray[position]
