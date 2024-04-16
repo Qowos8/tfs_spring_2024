@@ -2,6 +2,7 @@ plugins {
     //alias(libs.plugins.application)
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id ("org.jetbrains.kotlin.plugin.serialization") version "2.0.0-Beta2"
 }
 
 android {
@@ -54,5 +55,17 @@ dependencies {
     implementation(libs.cicerone)
     implementation (libs.shimmer)
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
+
+    implementation (libs.retrofit)
+    implementation (libs.retrofit2.kotlin.coroutines.adapter)
+    implementation (libs.converter.gson)
+    implementation (libs.retrofit2.kotlinx.serialization.converter)
+
+    implementation (libs.okhttp)
+    implementation (libs.logging.interceptor)
+    implementation (libs.glide)
+
+    implementation (libs.kotlinx.serialization.json)
+    implementation (libs.kotlinx.coroutines.android)
 
 }

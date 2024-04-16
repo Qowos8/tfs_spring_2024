@@ -1,6 +1,6 @@
 package com.example.homework_2.channels
 
-interface OnChildClickListener {
+interface OnTopicClickListener {
 
     fun onTopicClicked(topic: TopicItem)
 

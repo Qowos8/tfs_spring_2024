@@ -18,5 +18,12 @@
             android:layout_height="wrap_content"
             android:src="@drawable/profile_image"
             android:background="@color/black"/>
+        <View
+            android:id="@+id/mock_avatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shimmer_shape"
+            android:visibility="gone"
+            />
     </androidx.cardview.widget.CardView>
 </FrameLayout>

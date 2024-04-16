@@ -22,4 +22,5 @@
     <color name="topic_text_color">#CCCCCC</color>
     <color name="offline_color">#DA2727</color>
     <color name="skeleton_color">#A3A3A3</color>
+    <color name="idle_color">#F6A731</color>
 </resources>

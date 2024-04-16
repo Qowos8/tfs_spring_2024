@@ -10,7 +10,7 @@ import com.example.homework_2.people.PeopleItem
 
 class AnotherProfileActivity : AppCompatActivity() {
     private lateinit var binding: ProfileFragmentBinding
-    private lateinit var userItem: PeopleItem
+    private lateinit var userItem: ProfileItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +20,7 @@ class AnotherProfileActivity : AppCompatActivity() {
         binding.apply {
             userName.text = userItem.name
             logoutButton.visibility = View.GONE
-            if (userItem.isOnline) {
+            if (userItem.isActive) {
                 isOnline.text = STATUS
                 isOnline.setTextColor(Color.RED)
             }

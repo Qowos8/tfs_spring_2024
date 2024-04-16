@@ -1,17 +1,21 @@
 package com.example.homework_2
 
 import android.os.Bundle
+import android.provider.ContactsContract.Profile
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.example.homework_2.channels.OnChildClickListener
+import com.example.homework_2.channels.AllStreamItem
+import com.example.homework_2.channels.OnStreamClickListener
+import com.example.homework_2.channels.OnTopicClickListener
 import com.example.homework_2.channels.TopicItem
 import com.example.homework_2.databinding.ActivityMainBinding
 import com.example.homework_2.people.OnUserClickListener
 import com.example.homework_2.people.PeopleItem
+import com.example.homework_2.profile.ProfileItem
 import com.github.terrakok.cicerone.androidx.AppNavigator
 
 
-class MainActivity : AppCompatActivity(), OnChildClickListener,
+class MainActivity : AppCompatActivity(), OnTopicClickListener, OnStreamClickListener,
     OnUserClickListener {
     private lateinit var binding: ActivityMainBinding
     private val applicationInstance: Application
@@ -56,13 +60,17 @@ class MainActivity : AppCompatActivity(), OnChildClickListener,
         DataHolder.topicData = topic
     }
 
-    override fun onUserClicked(user: PeopleItem) {
+    override fun onUserClicked(user: ProfileItem) {
         applicationInstance.router.navigateTo(Screens.AnotherProfile())
         DataHolder.userData = user
     }
 
     object DataHolder {
-        var userData: PeopleItem? = null
+        var userData: ProfileItem? = null
         var topicData: TopicItem? = null
+    }
+
+    override fun onStreamClick(streamItem: AllStreamItem) {
+
     }
 }

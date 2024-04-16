@@ -117,7 +117,7 @@ class ChatActivity : AppCompatActivity(), BottomSheetClickListener {
     }
 
     private fun setToolBar(binding: ToolbarFragmentBinding) {
-        binding.toolbar.title = topicItem.parentName
+        binding.toolbar.title = topicItem.name
         binding.backButton.setOnClickListener { finish() }
     }
 

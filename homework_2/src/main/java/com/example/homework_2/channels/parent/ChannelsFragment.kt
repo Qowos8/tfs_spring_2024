@@ -20,6 +20,7 @@ class ChannelsFragment : Fragment() {
     private val handler = ObjectHandler
     private val subFragment = ChildFragment.newInstance(true)
     private val allFragment = ChildFragment.newInstance(false)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

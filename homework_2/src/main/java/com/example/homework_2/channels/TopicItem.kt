@@ -1,10 +1,12 @@
 package com.example.homework_2.channels
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class TopicItem (
+    @SerialName("name")
     val name : String,
-    val id: Int,
+    @SerialName("max_id")
     val messageCount: Int,
-    var color: Int? = null,
-    var parentId: Long,
-    val parentName: String
 )

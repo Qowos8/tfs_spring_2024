@@ -3,6 +3,8 @@ package com.example.homework_2.delegate
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.homework_2.channels.AllStreamItem
+import com.example.homework_2.channels.child.delegate.ParentAdapter
 
 class MainAdapter : ListAdapter<DelegateItem, RecyclerView.ViewHolder>(DelegateAdapterItemCallback()) {
     private val delegates: MutableList<AdapterDelegate> = mutableListOf()

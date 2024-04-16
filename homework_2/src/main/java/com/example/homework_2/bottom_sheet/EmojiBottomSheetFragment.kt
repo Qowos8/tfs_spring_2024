@@ -1,15 +1,10 @@
 package com.example.homework_2.bottom_sheet
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.homework_2.channels.OnChildClickListener
-import com.example.homework_2.chat.ChatActivity
-import com.example.homework_2.chat.MessageItem
-import com.example.homework_2.view.emojiSetNCU
 import com.example.homework_2.databinding.BottomSheetDialogFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 

@@ -42,6 +42,11 @@
         android:text="someuser@gmail.com"
         android:textColor="@color/email_color"
         android:textSize="16sp"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
         app:layout_constraintStart_toStartOf="@+id/user_name"
         app:layout_constraintTop_toBottomOf="@id/user_name" />
 </androidx.constraintlayout.widget.ConstraintLayout>

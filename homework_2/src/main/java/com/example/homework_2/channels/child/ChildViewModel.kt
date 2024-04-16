@@ -1,10 +1,13 @@
 package com.example.homework_2.channels.child
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.homework_2.channels.StreamItem
-import com.example.homework_2.channels.TopicItem
+import com.example.homework_2.channels.AllStreamItem
+import com.example.homework_2.channels.TopicState
+import com.example.homework_2.network.RetrofitModule
 import com.example.homework_2.utils.FilterByNamesUtils
+import com.example.homework_2.utils.runCatchingNonCancellation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -16,13 +19,17 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.launch
 
 class ChildViewModel: ViewModel() {
     private val _searchState: MutableStateFlow<ChildState> = MutableStateFlow(ChildState.Init)
     val searchState: StateFlow<ChildState> get() = _searchState.asStateFlow()
 
     val currentSearch: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
-    private var allItems: MutableList<StreamItem> = mutableListOf()
+    private var allItems: List<AllStreamItem> = mutableListOf()
+
+    private val _topicState = MutableStateFlow<TopicState>(TopicState.Init)
+    val topicState: StateFlow<TopicState> get() = _topicState
 
     init {
         searchFlow()
@@ -39,73 +46,54 @@ class ChildViewModel: ViewModel() {
 
     private suspend fun emitState(query: String){
         if (query.isEmpty()) {
-            _searchState.value = ChildState.Success(allItems)
+            _searchState.value = (ChildState.Success(allItems))
         }
         else if(query.length > 5) {
-            _searchState.value = ChildState.Error("Too much symbols")
+            _searchState.value = (ChildState.Error("Too much symbols"))
         }
         else {
-            _searchState.value = ChildState.Loading
+            _searchState.value = (ChildState.Loading)
             delay(700L)
-            _searchState.value =
-                ChildState.Success(FilterByNamesUtils.filterItemsByName(allItems, query))
+            _searchState.value = (
+                ChildState.Success(FilterByNamesUtils.filterItemsByName(allItems, query)))
         }
     }
 
-    fun addMockAll() {
-        allItems = mutableListOf(
-            StreamItem(
-                0,
-                "general",
-                true,
-                mutableListOf(
-                    TopicItem("Testing", 1, 1023, parentId = 1, parentName = "general"),
-                    TopicItem("Bruh", 2, 24, parentId = 1, parentName = "general")
-                )
-            ),
-            StreamItem(
-                1,
-                "Development",
-                true,
-                mutableListOf(
-                    TopicItem("Testing", 1, 1023, parentId = 2, parentName = "Development"),
-                    TopicItem("Bruh", 2, 24, parentId = 2, parentName = "Development")
-                )
-            ),
-            StreamItem(
-                3,
-                "Test",
-                true,
-                mutableListOf(
-                    TopicItem("Testing", 1, 1023, parentId = 2, parentName = "Development"),
-                    TopicItem("Bruh", 2, 24, parentId = 2, parentName = "Development")
-                )
-            )
-        )
-        _searchState.value = ChildState.Success(allItems)
+    fun subscribeStreamsResponse(){
+        viewModelScope.launch {
+            runCatchingNonCancellation {
+                val response = RetrofitModule.create.getSubStreams()
+                allItems = response.subscriptions
+                _searchState.emit(ChildState.Success(response.subscriptions))
+            }.onFailure {
+                _searchState.emit(ChildState.Error(it.message.toString()))
+            }
+        }
     }
 
-    fun addMockSubscribe() {
-        allItems = mutableListOf(
-            StreamItem(
-                1,
-                "general",
-                true,
-                mutableListOf(
-                    TopicItem("Testing", 1, 1023, parentId = 1, parentName = "general"),
-                    TopicItem("Bruh", 2, 24, parentId = 1, parentName = "general")
-                )
-            ),
-            StreamItem(
-                2,
-                "Development",
-                true,
-                mutableListOf(
-                    TopicItem("Testing", 1, 1023, parentId = 2, parentName = "Development"),
-                    TopicItem("Bruh", 2, 24, parentId = 2, parentName = "Development")
-                )
-            )
-        )
-        _searchState.value = ChildState.Success(allItems)
+    fun allStreamsResponse(){
+        viewModelScope.launch {
+            runCatchingNonCancellation {
+                val response = RetrofitModule.create.getAllStreams()
+                allItems = response.subscriptions
+                _searchState.emit(ChildState.Success(response.subscriptions))
+            }.onFailure {
+                _searchState.emit(ChildState.Error(it.message.toString()))
+            }
+        }
+    }
+
+    fun getTopics(streamId: Int){
+        viewModelScope.launch {
+            _topicState.emit(TopicState.Loading)
+            runCatchingNonCancellation {
+                val response = RetrofitModule.create.getTopics(streamId)
+                _topicState.emit(TopicState.Success(response.topics))
+                Log.d("response", response.toString())
+            }.onFailure {
+                _topicState.emit(TopicState.Error(it.message.toString()))
+                it.printStackTrace()
+            }
+        }
     }
 }
