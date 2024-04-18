@@ -5,12 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.homework_2.view.EmojiNCU
 import com.example.homework_2.view.emojiSetNCU
 
 class EmojiBottomSheetAdapter(private val onItemClick: (String) -> Unit) :
     RecyclerView.Adapter<EmojiBottomSheetAdapter.ViewHolder>() {
 
-    private val emojiList = emojiSetNCU.take(42).map { it.getCodeString() }
+    private val emojiList = emojiSetNCU.take(42)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -35,11 +36,11 @@ class EmojiBottomSheetAdapter(private val onItemClick: (String) -> Unit) :
             emojiTextView.textSize = 22f
         }
 
-        fun bind(emoji: String) {
+        fun bind(emoji: EmojiNCU) {
             emojiTextView.apply {
-                text = emoji
+                text = emoji.getCodeString()
                 setOnClickListener {
-                    onItemClick(emoji)
+                    onItemClick(emoji.name)
                 }
             }
         }

@@ -9,5 +9,6 @@
     android:padding="8dp"
     app:reactionCount="0"
     app:emojiSize="24sp"
+    app:isSelected="true"
     app:textColor="@color/white"
     android:layout_margin="10dp"/>

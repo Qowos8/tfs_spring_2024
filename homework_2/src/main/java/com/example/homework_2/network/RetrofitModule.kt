@@ -1,10 +1,12 @@
 package com.example.homework_2.network
 
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import java.util.concurrent.TimeUnit
 
 object RetrofitModule {
 
@@ -17,12 +19,14 @@ object RetrofitModule {
 
     private fun init(): Retrofit{
         val client = OkHttpClient.Builder()
+            .readTimeout(60, TimeUnit.SECONDS)
             .addInterceptor(ApiKeyInterceptor())
             .build()
 
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(json.asConverterFactory(JSON_MIME_TYPE.toMediaType()))
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .client(client)
             .build()
     }

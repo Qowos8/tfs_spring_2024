@@ -11,7 +11,7 @@ object MessageMapper{
         messageList.forEach{ message ->
             delegateList.add(
                 MessageDelegateItem(
-                    id = message.messageId,
+                    id = message.id.toInt(),
                     value = message
                 )
             )

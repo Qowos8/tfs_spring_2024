@@ -15,7 +15,7 @@ import com.example.homework_2.profile.ProfileItem
 import com.github.terrakok.cicerone.androidx.AppNavigator
 
 
-class MainActivity : AppCompatActivity(), OnTopicClickListener, OnStreamClickListener,
+class MainActivity : AppCompatActivity(), OnTopicClickListener,
     OnUserClickListener {
     private lateinit var binding: ActivityMainBinding
     private val applicationInstance: Application
@@ -55,22 +55,18 @@ class MainActivity : AppCompatActivity(), OnTopicClickListener, OnStreamClickLis
         }
     }
 
-    override fun onTopicClicked(topic: TopicItem) {
-        applicationInstance.router.navigateTo(Screens.Chat())
+    override fun onTopicClicked(topic: TopicItem, streamName: String) {
+        applicationInstance.router.navigateTo(Screens.Chat(topic.name, streamName))
         DataHolder.topicData = topic
     }
 
-    override fun onUserClicked(user: ProfileItem) {
+    override fun onUserClicked(user: Int) {
         applicationInstance.router.navigateTo(Screens.AnotherProfile())
         DataHolder.userData = user
     }
 
     object DataHolder {
-        var userData: ProfileItem? = null
+        var userData: Int? = null
         var topicData: TopicItem? = null
-    }
-
-    override fun onStreamClick(streamItem: AllStreamItem) {
-
     }
 }

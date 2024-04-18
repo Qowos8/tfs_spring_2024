@@ -15,7 +15,6 @@ import kotlinx.coroutines.launch
 
 class PeopleFragment : Fragment() {
     private lateinit var binding: PeopleFragmentBinding
-    private lateinit var peoples: MutableList<ProfileItem>
     private val viewModel: PeopleViewModel by viewModels()
     private val adapter: PeopleAdapter by lazy {
         PeopleAdapter(::openProfile)
@@ -35,10 +34,11 @@ class PeopleFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.peopleRecycler.adapter = adapter
         trackState()
+        trackTime()
     }
 
     private fun openProfile(item: ProfileItem) {
-        (activity as OnUserClickListener).onUserClicked(item)
+        (activity as OnUserClickListener).onUserClicked(item.id)
     }
 
     private fun trackState(){
@@ -49,16 +49,34 @@ class PeopleFragment : Fragment() {
                         Log.d("peopl", state.error)
                     }
                     PeopleState.Init -> {
-                        Log.d("peopl", "init")
 
                     }
                     PeopleState.Loading -> {
-                        Log.d("peopl", "Loading")
 
                     }
                     is PeopleState.Success -> {
-                        Log.d("peopl", "success")
                         adapter.update(state.users)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun trackTime(){
+        lifecycleScope.launch {
+            viewModel.onlineState.collect{ state ->
+                when(state){
+                    is OnlineState.Error -> {
+
+                    }
+                    OnlineState.Init -> {
+
+                    }
+                    OnlineState.Loading -> {
+
+                    }
+                    is OnlineState.Success -> {
+                        adapter.setStatus(state.list)
                     }
                 }
             }

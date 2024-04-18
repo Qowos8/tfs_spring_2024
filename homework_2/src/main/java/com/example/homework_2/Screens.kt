@@ -17,7 +17,10 @@ object Screens {
     fun AnotherProfile() = ActivityScreen {
         Intent(it, AnotherProfileActivity::class.java)
     }
-    fun Chat() = ActivityScreen {
-        Intent(it, ChatActivity::class.java)
+    fun Chat(topicName: String, streamName: String) = ActivityScreen {
+        Intent(it, ChatActivity::class.java).apply {
+            putExtra("streamName", streamName)
+            putExtra("topicName", topicName)
+        }
     }
 }

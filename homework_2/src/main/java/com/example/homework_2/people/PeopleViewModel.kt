@@ -13,7 +13,8 @@ class PeopleViewModel: ViewModel() {
     private val _peopleState: MutableStateFlow<PeopleState> = MutableStateFlow(PeopleState.Init)
     val peopleState: StateFlow<PeopleState> get() = _peopleState.asStateFlow()
 
-    private val _onlineState:
+    private val _onlineState = MutableStateFlow<OnlineState>(OnlineState.Init)
+    val onlineState: StateFlow<OnlineState> get() = _onlineState.asStateFlow()
 
     fun getUsers(){
         viewModelScope.launch {
@@ -30,7 +31,9 @@ class PeopleViewModel: ViewModel() {
         viewModelScope.launch{
             runCatchingNonCancellation {
                 val response = RetrofitModule.create.getPresence()
-
+                _onlineState.emit(OnlineState.Success(response))
+            }.onFailure {
+                _onlineState.emit(OnlineState.Error(it.message.toString()))
             }
         }
     }

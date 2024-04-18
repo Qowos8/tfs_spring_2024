@@ -75,7 +75,6 @@ class ProfileFragment : Fragment() {
             isOnline.text = profileData.isActive.toString()
             Glide.with(requireContext())
                 .load(profileData.url)
-//                .centerCrop()
                 .override(Target.SIZE_ORIGINAL)
                 .override(LayoutParams.MATCH_PARENT)
                 .into(avatarImage.squareCardImage)

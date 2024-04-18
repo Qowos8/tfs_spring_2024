@@ -21,17 +21,6 @@ class ParentAdapter(private val onItemClick: (AllStreamItem) -> Unit):
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(streams[position])
-        holder.itemView.setOnClickListener{
-//            onItemClick.invoke(streams[position])
-//            notifyDataSetChanged()
-            if (expandedPosition == position) {
-                expandedPosition = RecyclerView.NO_POSITION
-            } else {
-                expandedPosition = position
-                onItemClick.invoke(streams[position])
-            }
-            notifyDataSetChanged()
-        }
     }
 
     override fun getItemCount(): Int = streams.size
@@ -40,7 +29,15 @@ class ParentAdapter(private val onItemClick: (AllStreamItem) -> Unit):
         fun bind(item: AllStreamItem){
             binding.apply {
                 nameStream.text = item.name
-
+                itemView.setOnClickListener{
+                    if (expandedPosition == position) {
+                        expandedPosition = RecyclerView.NO_POSITION
+                    } else {
+                        expandedPosition = position
+                        onItemClick.invoke(streams[position])
+                    }
+                    notifyItemChanged(position)
+                }
                 root.setOnClickListener{
                     onItemClick(item)
                 }

@@ -10,7 +10,6 @@
         android:id="@+id/avatar"
         android:layout_width="37dp"
         android:layout_height="37dp"
-        android:background="@drawable/avatar_shape"
         android:padding="8dp"
         android:src="@drawable/question" />
 
@@ -46,7 +45,8 @@
         android:id="@+id/flex"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/chat_background">
+        android:background="@color/chat_background"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/add_button"
@@ -54,7 +54,7 @@
             android:layout_height="30dp"
             android:background="@drawable/plus_shape"
             android:src="@drawable/add_emoji"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_margin="8dp"/>
 
     </com.example.homework_2.view.FlexBoxLayout>

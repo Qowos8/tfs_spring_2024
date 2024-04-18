@@ -1,6 +1,5 @@
 package com.example.homework_2.channels.child
 
-import ExAdapter
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -28,12 +27,9 @@ class ChildFragment : Fragment() {
     private var isSubscribe: Boolean = true
     private val handler = ObjectHandler
     private var isCreate = false
-    private var currentStream = 0
+    private var currentStream = ""
     private var opened = false
     private var currentColor = 0
-    private val exAdapter: ExAdapter by lazy {
-        ExAdapter(::openStream, ::openTopic)
-    }
 
     private val childAdapter: ChildAdapter by lazy {
         ChildAdapter(::openTopic)
@@ -126,15 +122,6 @@ class ChildFragment : Fragment() {
                             childAdapter.update(state.topics)
                             childAdapter.setColor(currentColor)
                         }
-//                        if (opened == true) {
-//                            binding.childRecycler.isVisible = true
-//                            childAdapter.update(state.topics)
-//                            childAdapter.setColor(currentColor)
-//                        } else {
-//                            childAdapter.update(emptyList())
-//                            binding.childRecycler.isVisible = false
-//                        }
-                        Log.d("ChildFragment", "opened after: $opened")
                     }
 
                     TopicState.Loading -> {
@@ -151,29 +138,28 @@ class ChildFragment : Fragment() {
     }
 
     private fun openTopic(topicItem: TopicItem) {
-        (activity as OnTopicClickListener).onTopicClicked(topicItem)
+        (activity as OnTopicClickListener).onTopicClicked(topicItem, currentStream)
 
     }
 
     private fun openStream(streamItem: AllStreamItem) {
-        //(activity as OnStreamClickListener).onStreamClick(streamItem)
-        if (currentStream != streamItem.id) {
+        if (currentStream != streamItem.name) {
             viewModel.getTopics(streamItem.id)
-            currentStream = streamItem.id
+            currentStream = streamItem.name
             currentColor = streamItem.color?.let { Color.parseColor(it) } ?: Color.GRAY
-            childAdapter.update(emptyList()) // Сначала очищаем список топиков
-            binding.childRecycler.isVisible = true // Затем делаем его видимым
+            childAdapter.update(emptyList())
+            binding.childRecycler.isVisible = true
+            opened = true
             trackTopic()
         } else {
-            // Если уже выбран тот же самый стрим, то инвертируем видимость списка топиков
             binding.childRecycler.isVisible = !binding.childRecycler.isVisible
+            opened = !opened
             if (binding.childRecycler.isVisible) {
                 viewModel.getTopics(streamItem.id)
                 currentColor = streamItem.color?.let { Color.parseColor(it) } ?: Color.GRAY
                 trackTopic()
             }
         }
-
     }
 
     companion object {

@@ -13,7 +13,6 @@ class ChildAdapter(private val onItemClick: (TopicItem) -> Unit) :
         ChildDiffUtil()
     ) {
     private var topics: List<TopicItem> = emptyList()
-    private var expandedPosition = RecyclerView.NO_POSITION
     private var currentColor = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

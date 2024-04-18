@@ -8,6 +8,8 @@ import com.example.homework_2.chat.MessageItem
 import com.example.homework_2.databinding.UserMessageComponentBinding
 import com.example.homework_2.delegate.AdapterDelegate
 import com.example.homework_2.delegate.DelegateItem
+import com.example.homework_2.utils.HtmlToString
+import com.example.homework_2.view.emojiSetNCU
 
 class UserMessageDelegate(
     private val default: DefaultEmojiService,
@@ -30,19 +32,34 @@ class UserMessageDelegate(
         (holder as SentMessageViewHolder).bind(item.content() as MessageItem)
     }
 
-    override fun isOfViewType(item: DelegateItem): Boolean = item is MessageDelegateItem
+    override fun isOfViewType(item: DelegateItem): Boolean {
+        if (item is MessageDelegateItem) {
+            val message = item.value
+            return message.userFullName == USERNAME
+        }
+        return false
+    }
 
     inner class SentMessageViewHolder(
         private val viewBinding: UserMessageComponentBinding,
     ) : RecyclerView.ViewHolder(viewBinding.root) {
         fun bind(message: MessageItem) {
             viewBinding.apply {
-                messageTextView.text = message.message
+                messageTextView.text =
+                    message.content?.let { HtmlToString.convertToString(it).trim() }
 
                 flex.removeAllViews()
-
-                message.reactions.forEach { (emoji, count) ->
-                    default.addEmojiView(context, emoji, count, flex, message)
+                if (message.reactions?.isNotEmpty() == true) {
+                    val reactionCounts = message.reactions
+                        .filterNotNull()
+                        .groupBy { it.emojiName }
+                        .mapValues { it.value.size }
+                    reactionCounts.forEach { (emojiName, count) ->
+                        val emojiItem = emojiSetNCU.find { it.name == emojiName }?.getCodeString()
+                        if (emojiItem != null && emojiName != null) {
+                            default.addEmojiView(context, emojiItem, emojiName, count, flex, message)
+                        }
+                    }
                 }
                 default.setAddButton(addButton, flex, message, onItemClick)
 
@@ -52,5 +69,9 @@ class UserMessageDelegate(
                 }
             }
         }
+    }
+
+    private companion object {
+        private const val USERNAME = "Namsr Nadbitov"
     }
 }

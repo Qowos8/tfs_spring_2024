@@ -10,11 +10,9 @@
         android:id="@+id/circle_avatar"
         android:layout_width="64dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/profile_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:adjustViewBounds="true"
-        android:background="@color/black"/>
+        android:adjustViewBounds="true" />
     <ImageView
         android:id="@+id/user_status_circle"
         android:layout_width="20dp"
@@ -41,7 +39,7 @@
         android:layout_height="wrap_content"
         android:text="someuser@gmail.com"
         android:textColor="@color/email_color"
-        android:textSize="16sp"
+        android:textSize="12sp"
         android:ellipsize="marquee"
         android:focusable="true"
         android:focusableInTouchMode="true"

@@ -8,34 +8,44 @@ import androidx.core.view.isVisible
 import com.example.homework_2.R
 import com.example.homework_2.chat.EmojiService
 import com.example.homework_2.chat.MessageItem
+import com.example.homework_2.chat.OnViewClickListener
 import com.example.homework_2.utils.ViewUtils
 import com.example.homework_2.view.EmojiCustomView
 
-class DefaultEmojiService : EmojiService {
+class DefaultEmojiService(private val onViewClickListener: OnViewClickListener) : EmojiService {
+
+    private var clicked = 0
 
     override fun addEmojiView(
         context: Context,
         emoji: String,
+        emojiName: String,
         count: Int,
         binding: ViewGroup,
         message: MessageItem,
     ) {
         val inflater = LayoutInflater.from(context)
         val emojiView = inflater.inflate(R.layout.emoji_view, binding, false) as EmojiCustomView
+        if((message.userId?.toInt() ?: USERID) == USERID){
+            emojiView.isSelected = true
+        }
+        val messageId = message.id.toInt()
+        val emojiName = emojiName
 
         emojiView.emoji = emoji
         emojiView.reactionCount = count
 
         binding.addView(emojiView)
         binding.isVisible = true
-        changeReaction(binding, emojiView, message)
-        message.reactionsView.add(emojiView)
+        changeReaction(binding, emojiView, message, messageId, emojiName)
     }
 
     override fun changeReaction(
         binding: ViewGroup,
         emojiView: EmojiCustomView,
         messageItem: MessageItem,
+        messageId: Int,
+        emojiName: String,
     ) {
         emojiView.setOnClickListener { view ->
             val currentEmojiView = view as EmojiCustomView
@@ -45,21 +55,27 @@ class DefaultEmojiService : EmojiService {
 
             if (isSelected) {
                 emojiView.reactionCount++
-                messageItem.reactions[emoji] = currentEmojiView.reactionCount
+                clicked = 1
             } else {
                 currentEmojiView.reactionCount--
+                clicked = -1
                 if (currentEmojiView.reactionCount == 0) {
-                    messageItem.reactions.remove(emoji)
                     ViewUtils.removeView(view, binding)
-                    if (messageItem.reactions.isEmpty()) {
+                    if (messageItem.reactions?.isEmpty() == true) {
                         binding.removeAllViews()
                     }
                 } else {
-                    messageItem.reactions[emoji] = currentEmojiView.reactionCount
+                    clicked = 0
                 }
             }
+            val clickListener =
+                OnViewClickListener { messageId, emojiName, count ->
+                    onViewClickListener.onClick(messageId, emojiName, clicked)
+                }
+            clickListener.onClick(messageId, emojiName, clicked)
         }
     }
+
 
     override fun setAddButton(
         view: ImageView,
@@ -67,9 +83,13 @@ class DefaultEmojiService : EmojiService {
         message: MessageItem,
         onItemClick: (MessageItem) -> Unit,
     ) {
+        binding.removeView(view)
         binding.addView(view)
         view.setOnClickListener {
             onItemClick(message)
         }
+    }
+    private companion object{
+        private const val USERID = 709571
     }
 }
