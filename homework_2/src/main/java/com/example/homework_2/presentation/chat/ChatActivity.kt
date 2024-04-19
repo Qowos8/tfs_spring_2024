@@ -19,8 +19,11 @@ import com.example.homework_2.databinding.ChatFragmentBinding
 import com.example.homework_2.databinding.ToolbarFragmentBinding
 import com.example.homework_2.presentation.delegate.MainAdapter
 import com.example.homework_2.data.network.model.ReactionResponse
+import com.example.homework_2.data.network.model.TopicItem
 import com.example.homework_2.utils.MessageMapper.convertToDelegate
 import com.example.homework_2.presentation.view.emojiSetNCU
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -31,7 +34,7 @@ class ChatActivity : AppCompatActivity(), BottomSheetClickListener, OnViewClickL
     private val viewModel: ChatViewModel by viewModels()
     private val messagesList = mutableListOf<MessageItem>()
     private var selectedMessageIndex = 0
-    private lateinit var topicItem: com.example.homework_2.presentation.channels.TopicItem
+    private lateinit var topicItem: TopicItem
     private val mainAdapter: MainAdapter by lazy(LazyThreadSafetyMode.NONE) { MainAdapter() }
     private lateinit var userDelegate: UserMessageDelegate
     private lateinit var companionDelegate: CompanionMessageDelegate
@@ -167,31 +170,31 @@ class ChatActivity : AppCompatActivity(), BottomSheetClickListener, OnViewClickL
     }
 
     private fun trackMessages() {
-        lifecycleScope.launch {
-            viewModel.messagesState.collect { state ->
-                when (state) {
-                    is ChatState.Error -> {
-                        Log.d("chat", state.error)
-                    }
+        viewModel.messagesState.onEach { state ->
+            when (state) {
+                is ChatState.Error -> {
+                    Log.d("chat", state.error)
+                }
 
-                    ChatState.Init -> {}
-                    ChatState.Loading -> {}
+                ChatState.Init -> {}
+                ChatState.Loading -> {}
 
-                    is ChatState.Success -> {
-                        mainAdapter.submitList(convertToDelegate(state.messages))
-                        messagesList.addAll(state.messages)
-                        binding.messageRecycler.scrollToPosition(state.messages.size - 1)
-                    }
+                is ChatState.Success -> {
+                    mainAdapter.submitList(convertToDelegate(state.messages))
+                    messagesList.addAll(state.messages)
+                    binding.messageRecycler.scrollToPosition(state.messages.size - 1)
                 }
             }
-        }
+        }.launchIn(lifecycleScope)
+
     }
 
     override fun onClick(messageId: Int, emojiName: String, count: Int) {
-        when(count){
+        when (count) {
             1 -> {
                 viewModel.sendReaction(emojiName, messageId)
             }
+
             0 -> {
                 viewModel.deleteReaction(emojiName, messageId)
             }

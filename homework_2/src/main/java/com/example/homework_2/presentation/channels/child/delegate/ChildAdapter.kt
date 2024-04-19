@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.homework_2.presentation.channels.TopicItem
+import com.example.homework_2.data.network.model.TopicItem
 import com.example.homework_2.presentation.channels.child.ChildDiffUtil
 import com.example.homework_2.databinding.ExpandableChildBinding
 

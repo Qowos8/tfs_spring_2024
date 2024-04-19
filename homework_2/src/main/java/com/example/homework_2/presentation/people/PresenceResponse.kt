@@ -1,5 +1,6 @@
 package com.example.homework_2.presentation.people
 
+import com.example.homework_2.data.network.model.PresenceItem
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

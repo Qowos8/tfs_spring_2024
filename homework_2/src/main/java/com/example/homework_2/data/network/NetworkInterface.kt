@@ -7,6 +7,9 @@ import com.example.homework_2.presentation.people.PresenceResponse
 import com.example.homework_2.data.network.model.ProfileItem
 import com.example.homework_2.data.network.model.ProfileResponse
 import com.example.homework_2.data.network.model.UserResponse
+import com.example.homework_2.data.network.model.StreamResponseAll
+import com.example.homework_2.data.network.model.StreamResponseSub
+import com.example.homework_2.data.network.model.TopicResponse
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -19,13 +22,13 @@ interface NetworkInterface {
     suspend fun getUserMe(): ProfileItem
 
     @GET("api/v1/users/me/subscriptions")
-    suspend fun getSubStreams(): com.example.homework_2.presentation.channels.StreamResponseSub
+    suspend fun getSubStreams(): StreamResponseSub
 
     @GET("api/v1/streams")
-    suspend fun getAllStreams(): com.example.homework_2.presentation.channels.StreamResponseAll
+    suspend fun getAllStreams(): StreamResponseAll
 
     @GET("api/v1/users/me/{stream_id}/topics")
-    suspend fun getTopics(@Path("stream_id") streamId: Int): com.example.homework_2.presentation.channels.TopicResponse
+    suspend fun getTopics(@Path("stream_id") streamId: Int): TopicResponse
 
     @GET("api/v1/users")
     suspend fun getUsers(): ProfileResponse

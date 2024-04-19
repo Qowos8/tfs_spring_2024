@@ -1,7 +1,7 @@
 package com.example.homework_2.utils
 
-import com.example.homework_2.presentation.channels.AllStreamItem
-import com.example.homework_2.presentation.channels.SubStreamItem
+import com.example.homework_2.data.network.model.AllStreamItem
+import com.example.homework_2.data.network.model.SubStreamItem
 
 object MapperAllToSub{
     fun mapAllToSub(subStreamItem: List<SubStreamItem>): List<AllStreamItem> {

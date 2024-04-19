@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.homework_2.data.network.di.RetrofitModule
+import com.example.homework_2.data.network.model.AllStreamItem
+import com.example.homework_2.data.network.model.TopicState
 import com.example.homework_2.utils.FilterByNamesUtils
 import com.example.homework_2.utils.runCatchingNonCancellation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,11 +26,10 @@ class ChildViewModel: ViewModel() {
     val searchState: StateFlow<ChildState> get() = _searchState.asStateFlow()
 
     val currentSearch: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
-    private var allItems: List<com.example.homework_2.presentation.channels.AllStreamItem> = mutableListOf()
+    private var allItems: List<AllStreamItem> = mutableListOf()
 
-    private val _topicState = MutableStateFlow<com.example.homework_2.presentation.channels.TopicState>(
-        com.example.homework_2.presentation.channels.TopicState.Init)
-    val topicState: StateFlow<com.example.homework_2.presentation.channels.TopicState> get() = _topicState
+    private val _topicState = MutableStateFlow<TopicState>(TopicState.Init)
+    val topicState: StateFlow<TopicState> get() = _topicState
 
     init {
         searchFlow()
@@ -84,13 +85,13 @@ class ChildViewModel: ViewModel() {
 
     fun getTopics(streamId: Int){
         viewModelScope.launch {
-            _topicState.emit(com.example.homework_2.presentation.channels.TopicState.Loading)
+            _topicState.emit(TopicState.Loading)
             runCatchingNonCancellation {
                 val response = RetrofitModule.create.getTopics(streamId)
-                _topicState.emit(com.example.homework_2.presentation.channels.TopicState.Success(response.topics))
+                _topicState.emit(TopicState.Success(response.topics))
                 Log.d("response", response.toString())
             }.onFailure {
-                _topicState.emit(com.example.homework_2.presentation.channels.TopicState.Error(it.message.toString()))
+                _topicState.emit(TopicState.Error(it.message.toString()))
                 it.printStackTrace()
             }
         }

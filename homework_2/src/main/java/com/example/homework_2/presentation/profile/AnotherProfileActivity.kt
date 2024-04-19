@@ -12,6 +12,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import com.example.homework_2.presentation.MainActivity
 import com.example.homework_2.databinding.ProfileFragmentBinding
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class AnotherProfileActivity : AppCompatActivity() {
@@ -34,48 +36,45 @@ class AnotherProfileActivity : AppCompatActivity() {
     }
 
     private fun trackUser() {
-        lifecycleScope.launch {
-            viewModel.userState.collect { state ->
-                when (state) {
-                    is UserState.Error -> {
-                        Log.d("profile", state.error)
-                    }
+        viewModel.userState.onEach { state ->
+            when (state) {
+                is UserState.Error -> {
+                    Log.d("profile", state.error)
+                }
 
-                    UserState.Loading -> {
-                        showShimmer(binding)
-                    }
+                UserState.Loading -> {
+                    showShimmer(binding)
+                }
 
-                    is UserState.Success -> {
-                        binding.apply {
-                            userName.text = state.profileData.name
-                            Glide.with(avatarImage.squareCardImage)
-                                .load(state.profileData.url)
-                                .override(Target.SIZE_ORIGINAL)
-                                .override(ActionBar.LayoutParams.MATCH_PARENT)
-                                .into(avatarImage.squareCardImage)
-                            setStatus(state.profileData.isActive, this)
-                            hideShimmer(this)
-                        }
+                is UserState.Success -> {
+                    binding.apply {
+                        userName.text = state.profileData.name
+                        Glide.with(avatarImage.squareCardImage)
+                            .load(state.profileData.url)
+                            .override(Target.SIZE_ORIGINAL)
+                            .override(ActionBar.LayoutParams.MATCH_PARENT)
+                            .into(avatarImage.squareCardImage)
+                        setStatus(state.profileData.isActive, this)
+                        hideShimmer(this)
                     }
                 }
             }
-        }
+        }.launchIn(lifecycleScope)
     }
 
-    private fun setStatus(status: Boolean, binding: ProfileFragmentBinding){
+    private fun setStatus(status: Boolean, binding: ProfileFragmentBinding) {
         binding.apply {
             if (!status) {
                 isOnline.text = OFFLINE
                 isOnline.setTextColor(Color.RED)
-            }
-            else{
+            } else {
                 isOnline.text = ONLINE
                 isOnline.setTextColor(Color.GREEN)
             }
         }
     }
 
-    private fun hideShimmer(binding: ProfileFragmentBinding){
+    private fun hideShimmer(binding: ProfileFragmentBinding) {
         binding.apply {
             shimmerContainerUnder.isVisible = false
             shimmerContainerUnder.stopShimmer()
@@ -84,7 +83,7 @@ class AnotherProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun showShimmer(binding: ProfileFragmentBinding){
+    private fun showShimmer(binding: ProfileFragmentBinding) {
         binding.apply {
             avatarImage.squareShimmer.isVisible = true
             shimmerContainerUnder.isVisible = true
@@ -92,6 +91,7 @@ class AnotherProfileActivity : AppCompatActivity() {
             avatarImage.shimmerContainer.startShimmer()
         }
     }
+
     private companion object {
         private const val OFFLINE = "Offline"
         private const val ONLINE = "Online"

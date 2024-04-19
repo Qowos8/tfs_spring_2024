@@ -1,7 +1,7 @@
 package com.example.homework_2.presentation.channels.child
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.homework_2.presentation.channels.AllStreamItem
+import com.example.homework_2.data.network.model.AllStreamItem
 
 class ParentDiffUtil : DiffUtil.ItemCallback<AllStreamItem>() {
 

@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class ChannelsFragment : Fragment() {
     private lateinit var binding: ChannelsFragmentBinding
-    private val loginArray = arrayOf("Subscribed", "All streams")
+    private val loginArray = arrayOf(SUBSCRIBED, ALL)
 
     private val handler = ObjectHandler
     private val subFragment = ChildFragment.newInstance(true)
@@ -55,5 +55,10 @@ class ChannelsFragment : Fragment() {
         TabLayoutMediator(binding.tabLayout, binding.channelsViewPager) { tab, position ->
             tab.text = loginArray[position]
         }.attach()
+    }
+
+    private companion object{
+        private const val SUBSCRIBED = "Subscribed"
+        private const val ALL ="All streams"
     }
 }

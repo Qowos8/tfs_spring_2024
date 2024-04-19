@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.homework_2.Application
 import com.example.homework_2.R
 import com.example.homework_2.Screens
+import com.example.homework_2.data.network.model.TopicItem
 import com.example.homework_2.databinding.ActivityMainBinding
 import com.example.homework_2.presentation.people.OnUserClickListener
 import com.github.terrakok.cicerone.androidx.AppNavigator
@@ -52,7 +53,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    override fun onTopicClicked(topic: com.example.homework_2.presentation.channels.TopicItem, streamName: String) {
+    override fun onTopicClicked(topic: TopicItem, streamName: String) {
         applicationInstance.router.navigateTo(Screens.Chat(topic.name, streamName))
         DataHolder.topicData = topic
     }
@@ -64,6 +65,6 @@ class MainActivity : AppCompatActivity(),
 
     object DataHolder {
         var userData: Int? = null
-        var topicData: com.example.homework_2.presentation.channels.TopicItem? = null
+        var topicData: TopicItem? = null
     }
 }

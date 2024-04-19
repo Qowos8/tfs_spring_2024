@@ -1,4 +1,4 @@
-package com.example.homework_2.presentation.channels
+package com.example.homework_2.data.network.model
 
 sealed class TopicState {
     object Init : TopicState()

@@ -1,4 +1,4 @@
-package com.example.homework_2.presentation.channels
+package com.example.homework_2.data.network.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

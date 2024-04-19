@@ -14,6 +14,8 @@ import com.bumptech.glide.request.target.Target
 import com.example.homework_2.data.network.model.ProfileItem
 import com.example.homework_2.databinding.ProfileFragmentBinding
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
@@ -23,11 +25,11 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = ProfileFragmentBinding.inflate(layoutInflater)
-        binding.toolbarProfile.toolbar.visibility = View.GONE
-        binding.toolbarProfile.backButton.visibility= View.GONE
+        binding.toolbarProfile.toolbar.isVisible = false
+        binding.toolbarProfile.backButton.isVisible = false
         viewModel.getUser()
         return binding.root
     }
@@ -37,36 +39,36 @@ class ProfileFragment : Fragment() {
         setProfile()
     }
 
-    private fun setProfile(){
-        lifecycleScope.launch {
-            viewModel.profileState.collect{ state ->
-                when(state){
-                    is ProfileState.Error -> {
-                        Snackbar.make(binding.root, state.error, Snackbar.LENGTH_LONG).show()
+    private fun setProfile() {
+        viewModel.profileState.onEach { state ->
+            when (state) {
+                is ProfileState.Error -> {
+                    Snackbar.make(binding.root, state.error, Snackbar.LENGTH_LONG).show()
+                }
+
+                ProfileState.Loading -> {
+                    binding.apply {
+                        avatarImage.squareShimmer.isVisible = true
+                        shimmerContainerUnder.isVisible = true
+                        shimmerContainerUnder.startShimmer()
+                        avatarImage.shimmerContainer.startShimmer()
                     }
-                    ProfileState.Loading -> {
-                        binding.apply {
-                            avatarImage.squareShimmer.isVisible = true
-                            shimmerContainerUnder.isVisible = true
-                            shimmerContainerUnder.startShimmer()
-                            avatarImage.shimmerContainer.startShimmer()
-                        }
-                    }
-                    is ProfileState.Success -> {
-                        setResources(state.profileData)
-                        binding.apply {
-                            shimmerContainerUnder.isVisible = false
-                            shimmerContainerUnder.stopShimmer()
-                            avatarImage.squareShimmer.isVisible = false
-                            avatarImage.shimmerContainer.stopShimmer()
-                        }
+                }
+
+                is ProfileState.Success -> {
+                    setResources(state.profileData)
+                    binding.apply {
+                        shimmerContainerUnder.isVisible = false
+                        shimmerContainerUnder.stopShimmer()
+                        avatarImage.squareShimmer.isVisible = false
+                        avatarImage.shimmerContainer.stopShimmer()
                     }
                 }
             }
-        }
+        }.launchIn(lifecycleScope)
     }
 
-    private fun setResources(profileData: ProfileItem){
+    private fun setResources(profileData: ProfileItem) {
         binding.apply {
             userName.text = profileData.name
             isOnline.text = profileData.isActive.toString()

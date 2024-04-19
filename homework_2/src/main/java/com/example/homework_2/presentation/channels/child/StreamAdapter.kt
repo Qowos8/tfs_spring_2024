@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
-import com.example.homework_2.presentation.channels.AllStreamItem
-import com.example.homework_2.presentation.channels.TopicItem
+import com.example.homework_2.data.network.model.AllStreamItem
+import com.example.homework_2.data.network.model.TopicItem
 import com.example.homework_2.databinding.ExpandableChildBinding
 import com.example.homework_2.databinding.ExpandableParentBinding
 import com.example.homework_2.databinding.ShimmerExpandableChildBinding

@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.homework_2.presentation.channels.AllStreamItem
+import com.example.homework_2.data.network.model.AllStreamItem
 import com.example.homework_2.databinding.ExpandableParentBinding
 import com.example.homework_2.presentation.channels.child.ParentDiffUtil
 

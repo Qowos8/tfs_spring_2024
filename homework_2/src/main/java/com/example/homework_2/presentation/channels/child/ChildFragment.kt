@@ -10,11 +10,17 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.example.homework_2.data.network.model.AllStreamItem
 import com.example.homework_2.databinding.ExpandableFragmentBinding
+import com.example.homework_2.presentation.channels.OnTopicClickListener
+import com.example.homework_2.data.network.model.TopicItem
+import com.example.homework_2.data.network.model.TopicState
 import com.example.homework_2.presentation.channels.child.delegate.ChildAdapter
 import com.example.homework_2.presentation.channels.child.delegate.ParentAdapter
 import com.example.homework_2.utils.ObjectHandler
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class ChildFragment : Fragment() {
@@ -66,64 +72,58 @@ class ChildFragment : Fragment() {
     }
 
     private fun trackState() {
-        lifecycleScope.launch {
-            viewModel.searchState.collect { state ->
-                when (state) {
-                    is ChildState.Loading -> {
-                        binding.skelet.root.isVisible = true
-                    }
+        viewModel.searchState.onEach { state ->
+            when (state) {
+                is ChildState.Loading -> {
+                    binding.skelet.root.isVisible = true
+                }
 
-                    is ChildState.Error -> {
-                        Snackbar.make(binding.root, state.errorMessage, Snackbar.LENGTH_LONG).show()
-                    }
+                is ChildState.Error -> {
+                    Snackbar.make(binding.root, state.errorMessage, Snackbar.LENGTH_LONG).show()
+                }
 
-                    ChildState.Init -> {}
-                    is ChildState.Success -> {
-                        if (state.result.isNotEmpty()) {
-                            binding.apply {
-                                skelet.root.isVisible = false
-                                parentRecycler.isVisible = true
-                                emptyListPhrase.isVisible = false
-                                parentAdapter.search(state.result)
-                                Log.d("childstate", state.result.toString())
-                            }
-                        } else {
-                            binding.apply {
-                                parentRecycler.isVisible = false
-                                skelet.root.isVisible = false
-                                emptyListPhrase.isVisible = true
-                            }
+                ChildState.Init -> {}
+                is ChildState.Success -> {
+                    if (state.result.isNotEmpty()) {
+                        binding.apply {
+                            skelet.root.isVisible = false
+                            parentRecycler.isVisible = true
+                            emptyListPhrase.isVisible = false
+                            parentAdapter.search(state.result)
+                            Log.d("childstate", state.result.toString())
+                        }
+                    } else {
+                        binding.apply {
+                            parentRecycler.isVisible = false
+                            skelet.root.isVisible = false
+                            emptyListPhrase.isVisible = true
                         }
                     }
                 }
             }
-        }
+        }.launchIn(lifecycleScope)
     }
 
     private fun trackTopic() {
-        lifecycleScope.launch {
-            viewModel.topicState.collect { state ->
-                when (state) {
-                    is com.example.homework_2.presentation.channels.TopicState.Error -> {
-                        Snackbar.make(binding.root, state.error, Snackbar.LENGTH_LONG).show()
-                    }
+        viewModel.topicState.onEach { state ->
+            when (state) {
+                is TopicState.Error -> {
+                    Snackbar.make(binding.root, state.error, Snackbar.LENGTH_LONG).show()
+                }
+                TopicState.Init -> {
 
-                    com.example.homework_2.presentation.channels.TopicState.Init -> {
-
-                    }
-
-                    is com.example.homework_2.presentation.channels.TopicState.Success -> {
-                        if(binding.childRecycler.isVisible){
-                            childAdapter.update(state.topics)
-                            childAdapter.setColor(currentColor)
-                        }
-                    }
-
-                    com.example.homework_2.presentation.channels.TopicState.Loading -> {
+                }
+                is TopicState.Success -> {
+                    if (binding.childRecycler.isVisible) {
+                        childAdapter.update(state.topics)
+                        childAdapter.setColor(currentColor)
                     }
                 }
+
+                TopicState.Loading -> {
+                }
             }
-        }
+        }.launchIn(lifecycleScope)
     }
 
     private fun receiveSearchQuery() {
@@ -132,12 +132,15 @@ class ChildFragment : Fragment() {
         }
     }
 
-    private fun openTopic(topicItem: com.example.homework_2.presentation.channels.TopicItem) {
-        (activity as com.example.homework_2.presentation.channels.OnTopicClickListener).onTopicClicked(topicItem, currentStream)
+    private fun openTopic(topicItem: TopicItem) {
+        (activity as OnTopicClickListener).onTopicClicked(
+            topicItem,
+            currentStream
+        )
 
     }
 
-    private fun openStream(streamItem: com.example.homework_2.presentation.channels.AllStreamItem) {
+    private fun openStream(streamItem: AllStreamItem) {
         if (currentStream != streamItem.name) {
             viewModel.getTopics(streamItem.id)
             currentStream = streamItem.name

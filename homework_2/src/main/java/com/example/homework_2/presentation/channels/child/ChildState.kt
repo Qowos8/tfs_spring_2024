@@ -1,6 +1,6 @@
 package com.example.homework_2.presentation.channels.child
 
-import com.example.homework_2.presentation.channels.AllStreamItem
+import com.example.homework_2.data.network.model.AllStreamItem
 
 sealed class ChildState {
     object Init: ChildState()

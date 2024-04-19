@@ -1,6 +1,6 @@
 package com.example.homework_2.presentation.channels.child.delegate
 
-import com.example.homework_2.presentation.channels.TopicItem
+import com.example.homework_2.data.network.model.TopicItem
 import com.example.homework_2.presentation.chat.delegate.MessageDelegateItem
 import com.example.homework_2.presentation.delegate.DelegateItem
 

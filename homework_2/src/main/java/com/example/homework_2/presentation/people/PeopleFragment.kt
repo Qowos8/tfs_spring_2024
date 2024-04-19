@@ -10,6 +10,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.homework_2.databinding.PeopleFragmentBinding
 import com.example.homework_2.data.network.model.ProfileItem
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class PeopleFragment : Fragment() {
@@ -40,46 +42,42 @@ class PeopleFragment : Fragment() {
         (activity as OnUserClickListener).onUserClicked(item.id)
     }
 
-    private fun trackState(){
-        lifecycleScope.launch {
-            viewModel.peopleState.collect{ state ->
-                when(state){
-                    is PeopleState.Error -> {
-                        Log.d("peopl", state.error)
-                    }
-                    PeopleState.Init -> {
+    private fun trackState() {
+        viewModel.peopleState.onEach { state ->
+            when (state) {
+                is PeopleState.Error -> {
+                    Log.d("peopl", state.error)
+                }
+                PeopleState.Init -> {
 
-                    }
-                    PeopleState.Loading -> {
+                }
+                PeopleState.Loading -> {
 
-                    }
-                    is PeopleState.Success -> {
-                        adapter.update(state.users)
-                    }
+                }
+                is PeopleState.Success -> {
+                    adapter.update(state.users)
                 }
             }
-        }
+        }.launchIn(lifecycleScope)
     }
 
-    private fun trackTime(){
-        lifecycleScope.launch {
-            viewModel.onlineState.collect{ state ->
-                when(state){
-                    is OnlineState.Error -> {
+    private fun trackTime() {
+        viewModel.onlineState.onEach { state ->
+            when (state) {
+                is OnlineState.Error -> {
+                }
 
-                    }
-                    OnlineState.Init -> {
+                OnlineState.Init -> {
+                }
 
-                    }
-                    OnlineState.Loading -> {
+                OnlineState.Loading -> {
 
-                    }
-                    is OnlineState.Success -> {
-                        adapter.setStatus(state.list)
-                    }
+                }
+
+                is OnlineState.Success -> {
+                    adapter.setStatus(state.list)
                 }
             }
-        }
+        }.launchIn(lifecycleScope)
     }
-
 }
