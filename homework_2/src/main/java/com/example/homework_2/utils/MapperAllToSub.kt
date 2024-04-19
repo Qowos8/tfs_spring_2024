@@ -1,7 +1,7 @@
 package com.example.homework_2.utils
 
-import com.example.homework_2.channels.AllStreamItem
-import com.example.homework_2.channels.SubStreamItem
+import com.example.homework_2.presentation.channels.AllStreamItem
+import com.example.homework_2.presentation.channels.SubStreamItem
 
 object MapperAllToSub{
     fun mapAllToSub(subStreamItem: List<SubStreamItem>): List<AllStreamItem> {
@@ -11,15 +11,8 @@ object MapperAllToSub{
                 AllStreamItem(
                     id = subStreamItem[i].streamId,
                     name = subStreamItem[i].name,
-                    color = null, // Предполагаем, что это поле всегда null для объектов типа AllStreamItem
+                    color = null,
                     description = subStreamItem[i].description,
-//                    audibleNotifications = null, // Предполагаем, что это поле всегда null для объектов типа AllStreamItem
-//                    desktopNotifications = null, // Предполагаем, что это поле всегда null для объектов типа AllStreamItem
-//                    inviteOnly = subStreamItem[i].inviteOnly,
-//                    isMuted = false, // Предполагаем, что это поле всегда false для объектов типа AllStreamItem
-//                    pinToTop = false, // Предполагаем, что это поле всегда false для объектов типа AllStreamItem
-//                    pushNotifications = null, // Предполагаем, что это поле всегда null для объектов типа AllStreamItem
-//                    subscribers = emptyList(),
                 )
             )
         }

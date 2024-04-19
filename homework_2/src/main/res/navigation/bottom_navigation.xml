@@ -8,16 +8,16 @@
 
     <fragment
         android:id="@+id/channels_fragment"
-        android:name="com.example.homework_2.channels.parent.ChannelsFragment"
+        android:name="com.example.homework_2.presentation.channels.parent.ChannelsFragment"
         tools:layout="@layout/channels_fragment" />
 
     <fragment
         android:id="@+id/people_fragment"
-        android:name="com.example.homework_2.people.PeopleFragment"
+        android:name="com.example.homework_2.presentation.people.PeopleFragment"
         tools:layout="@layout/people_fragment" />
 
     <fragment
         android:id="@+id/profile_fragment"
-        android:name="com.example.homework_2.profile.ProfileFragment"
+        android:name="com.example.homework_2.presentation.profile.ProfileFragment"
         tools:layout="@layout/profile_fragment" />
 </navigation>

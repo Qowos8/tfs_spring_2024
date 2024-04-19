@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.homework_2.view.MessengerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.homework_2.presentation.view.MessengerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/messenger_layout"
     android:layout_width="match_parent"
@@ -31,7 +31,7 @@
             android:textSize="19sp" />
     </LinearLayout>
 
-    <com.example.homework_2.view.FlexBoxLayout
+    <com.example.homework_2.presentation.view.FlexBoxLayout
         android:id="@+id/flex"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,5 +47,5 @@
             android:visibility="visible"
             android:layout_margin="8dp"
             />
-    </com.example.homework_2.view.FlexBoxLayout>
-</com.example.homework_2.view.MessengerLayout>
+    </com.example.homework_2.presentation.view.FlexBoxLayout>
+</com.example.homework_2.presentation.view.MessengerLayout>

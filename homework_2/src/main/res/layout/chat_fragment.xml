@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/Base.Theme.channels"
-    tools:context="com.example.homework_2.chat.ChatActivity">
+    tools:context="com.example.homework_2.presentation.chat.ChatActivity">
     <include
         android:id="@+id/toolbar"
         android:layout_width="match_parent"

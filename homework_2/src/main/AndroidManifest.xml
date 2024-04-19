@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tfs_spring_2024">
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,8 +18,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".profile.AnotherProfileActivity" />
-        <activity android:name=".chat.ChatActivity" />
+        <activity android:name=".presentation.profile.AnotherProfileActivity" />
+        <activity android:name=".presentation.chat.ChatActivity" />
     </application>
 
 </manifest>
