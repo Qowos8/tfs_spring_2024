@@ -4,9 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.homework_2.data.network.model.TopicItem
+import com.example.homework_2.presentation.channels.child.model.channels.topic.TopicItemApi
 import com.example.homework_2.presentation.channels.child.ChildDiffUtil
 import com.example.homework_2.databinding.ExpandableChildBinding
+import com.example.homework_2.domain.entity.TopicItem
 
 class ChildAdapter(private val onItemClick: (TopicItem) -> Unit) :
     ListAdapter<TopicItem, ChildAdapter.ViewHolder>(

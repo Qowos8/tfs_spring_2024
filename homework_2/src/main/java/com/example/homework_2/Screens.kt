@@ -4,8 +4,8 @@ import android.content.Intent
 import com.example.homework_2.presentation.channels.parent.ChannelsFragment
 import com.example.homework_2.presentation.chat.ChatActivity
 import com.example.homework_2.presentation.people.PeopleFragment
-import com.example.homework_2.presentation.profile.AnotherProfileActivity
-import com.example.homework_2.presentation.profile.ProfileFragment
+import com.example.homework_2.presentation.profile.another.AnotherProfileActivity
+import com.example.homework_2.presentation.profile.me.ProfileFragment
 import com.github.terrakok.cicerone.androidx.ActivityScreen
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 

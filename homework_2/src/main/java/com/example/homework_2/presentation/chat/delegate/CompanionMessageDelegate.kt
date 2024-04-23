@@ -8,8 +8,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.example.homework_2.presentation.chat.MessageItem
+import com.example.homework_2.data.network.model.chat.message.MessageItemApi
 import com.example.homework_2.databinding.CompanionMessageComponentBinding
+import com.example.homework_2.domain.entity.MessageItem
 import com.example.homework_2.presentation.delegate.AdapterDelegate
 import com.example.homework_2.presentation.delegate.DelegateItem
 import com.example.homework_2.utils.HtmlToString

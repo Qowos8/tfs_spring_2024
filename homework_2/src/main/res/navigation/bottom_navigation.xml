@@ -18,6 +18,6 @@
 
     <fragment
         android:id="@+id/profile_fragment"
-        android:name="com.example.homework_2.presentation.profile.ProfileFragment"
+        android:name="com.example.homework_2.presentation.profile.me.ProfileFragment"
         tools:layout="@layout/profile_fragment" />
 </navigation>

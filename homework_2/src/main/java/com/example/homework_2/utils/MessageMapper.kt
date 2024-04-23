@@ -1,6 +1,6 @@
 package com.example.homework_2.utils
 
-import com.example.homework_2.presentation.chat.MessageItem
+import com.example.homework_2.domain.entity.MessageItem
 import com.example.homework_2.presentation.chat.delegate.MessageDelegateItem
 import com.example.homework_2.presentation.delegate.DelegateItem
 

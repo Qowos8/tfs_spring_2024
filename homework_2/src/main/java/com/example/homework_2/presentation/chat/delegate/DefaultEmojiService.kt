@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.example.homework_2.R
+import com.example.homework_2.data.network.model.chat.message.MessageItemApi
+import com.example.homework_2.domain.entity.MessageItem
 import com.example.homework_2.presentation.chat.EmojiService
-import com.example.homework_2.presentation.chat.MessageItem
 import com.example.homework_2.presentation.chat.OnViewClickListener
 import com.example.homework_2.utils.ViewUtils
 import com.example.homework_2.presentation.view.EmojiCustomView

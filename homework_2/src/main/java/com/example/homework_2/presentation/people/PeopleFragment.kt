@@ -5,18 +5,35 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import com.example.homework_2.R
 import com.example.homework_2.databinding.PeopleFragmentBinding
-import com.example.homework_2.data.network.model.ProfileItem
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
+import com.example.homework_2.domain.entity.ProfileItem
+import com.example.homework_2.presentation.base.ElmBaseFragment
+import com.example.homework_2.presentation.people.mvi.PeopleActor
+import com.example.homework_2.presentation.people.mvi.PeopleEffect
+import com.example.homework_2.presentation.people.mvi.PeopleEvent
+import com.example.homework_2.presentation.people.mvi.PeopleState
+import com.example.homework_2.presentation.people.mvi.PeopleStoreFactory
+import com.google.android.material.snackbar.Snackbar
+import vivid.money.elmslie.android.renderer.elmStoreWithRenderer
+import vivid.money.elmslie.core.store.Store
 
-class PeopleFragment : Fragment() {
+class PeopleFragment : ElmBaseFragment<
+        PeopleEvent,
+        PeopleEffect,
+        PeopleState>(R.layout.people_fragment) {
+
     private lateinit var binding: PeopleFragmentBinding
-    private val viewModel: PeopleViewModel by viewModels()
+
+    override val store: Store<PeopleEvent, PeopleEffect, PeopleState>
+        by elmStoreWithRenderer(elmRenderer = this){
+            PeopleStoreFactory(PeopleActor()).provide()
+        }
+
+    override fun render(state: PeopleState) {
+        trackState(state)
+    }
+
     private val adapter: PeopleAdapter by lazy {
         PeopleAdapter(::openProfile)
     }
@@ -27,57 +44,36 @@ class PeopleFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         binding = PeopleFragmentBinding.inflate(layoutInflater)
-        viewModel.getUsers()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.peopleRecycler.adapter = adapter
-        trackState()
-        trackTime()
+        store.accept(PeopleEvent.Ui.Init)
     }
 
     private fun openProfile(item: ProfileItem) {
         (activity as OnUserClickListener).onUserClicked(item.id)
     }
 
-    private fun trackState() {
-        viewModel.peopleState.onEach { state ->
-            when (state) {
-                is PeopleState.Error -> {
-                    Log.d("peopl", state.error)
-                }
-                PeopleState.Init -> {
-
-                }
-                PeopleState.Loading -> {
-
-                }
-                is PeopleState.Success -> {
-                    adapter.update(state.users)
-                }
+    private fun trackState(state: PeopleState) {
+        when (state) {
+            is PeopleState.Error -> {
+                Snackbar.make(binding.root, state.error, Snackbar.LENGTH_LONG).show()
             }
-        }.launchIn(lifecycleScope)
-    }
 
-    private fun trackTime() {
-        viewModel.onlineState.onEach { state ->
-            when (state) {
-                is OnlineState.Error -> {
-                }
+            PeopleState.Init -> {
 
-                OnlineState.Init -> {
-                }
-
-                OnlineState.Loading -> {
-
-                }
-
-                is OnlineState.Success -> {
-                    adapter.setStatus(state.list)
-                }
             }
-        }.launchIn(lifecycleScope)
+
+            PeopleState.Loading -> {
+
+            }
+
+            is PeopleState.Success -> {
+                adapter.update(state.users)
+            }
+        }
     }
 }

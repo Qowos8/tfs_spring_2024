@@ -3,6 +3,7 @@ package com.example.homework_2.presentation.chat
 import android.content.Context
 import android.view.ViewGroup
 import android.widget.ImageView
+import com.example.homework_2.domain.entity.MessageItem
 import com.example.homework_2.presentation.view.EmojiCustomView
 
 interface EmojiService {

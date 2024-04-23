@@ -1,12 +1,12 @@
 package com.example.homework_2.presentation.channels.child.delegate
 
-import com.example.homework_2.data.network.model.TopicItem
+import com.example.homework_2.presentation.channels.child.model.channels.topic.TopicItemApi
 import com.example.homework_2.presentation.chat.delegate.MessageDelegateItem
 import com.example.homework_2.presentation.delegate.DelegateItem
 
 class TopicDelegateItem(
     val id: Int,
-    private val value: TopicItem,
+    private val value: TopicItemApi,
 ) : DelegateItem {
     override fun content(): Any = value
 

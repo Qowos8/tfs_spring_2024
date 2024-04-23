@@ -9,8 +9,10 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import com.example.homework_2.R
+import com.example.homework_2.data.network.model.event.PresenceResponse
 import com.example.homework_2.databinding.PeopleComponentRecyclerBinding
-import com.example.homework_2.data.network.model.ProfileItem
+import com.example.homework_2.data.network.model.profile.ProfileItemApi
+import com.example.homework_2.domain.entity.ProfileItem
 
 class PeopleAdapter(
     private val onItemClick: (ProfileItem) -> Unit,

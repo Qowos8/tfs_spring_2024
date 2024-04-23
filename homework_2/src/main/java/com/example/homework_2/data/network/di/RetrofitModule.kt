@@ -1,7 +1,7 @@
 package com.example.homework_2.data.network.di
 
 import com.example.homework_2.data.network.ApiKeyInterceptor
-import com.example.homework_2.data.network.NetworkInterface
+import com.example.homework_2.data.network.api.profile.ProfileApi
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -19,13 +19,14 @@ object RetrofitModule {
         Json {ignoreUnknownKeys = true}
     }
 
-    private fun init(): Retrofit{
-        val client = OkHttpClient.Builder()
-            .readTimeout(60, TimeUnit.SECONDS)
-            .addInterceptor(ApiKeyInterceptor())
-            .build()
+    private val client = OkHttpClient.Builder()
+        .readTimeout(10, TimeUnit.MINUTES)
+        .writeTimeout(10, TimeUnit.MINUTES)
+        .addInterceptor(ApiKeyInterceptor())
+        .build()
 
-        return Retrofit.Builder()
+    private val retrofit: Retrofit by lazy{
+        Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(json.asConverterFactory(JSON_MIME_TYPE.toMediaType()))
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
@@ -33,6 +34,7 @@ object RetrofitModule {
             .build()
     }
 
-    val create: NetworkInterface = init().create(NetworkInterface::class.java)
-
+    fun <T> create(apiService: Class<T>): T {
+        return retrofit.create(apiService)
+    }
 }

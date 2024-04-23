@@ -1,6 +1,6 @@
 package com.example.homework_2.presentation.chat.delegate
 
-import com.example.homework_2.presentation.chat.MessageItem
+import com.example.homework_2.domain.entity.MessageItem
 import com.example.homework_2.presentation.delegate.DelegateItem
 
 class MessageDelegateItem(

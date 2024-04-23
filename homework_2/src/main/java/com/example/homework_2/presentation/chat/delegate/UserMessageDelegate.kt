@@ -4,8 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.homework_2.presentation.chat.MessageItem
+import com.example.homework_2.data.network.model.chat.message.MessageItemApi
 import com.example.homework_2.databinding.UserMessageComponentBinding
+import com.example.homework_2.domain.entity.MessageItem
 import com.example.homework_2.presentation.delegate.AdapterDelegate
 import com.example.homework_2.presentation.delegate.DelegateItem
 import com.example.homework_2.utils.HtmlToString

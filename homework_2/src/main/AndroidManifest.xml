@@ -18,7 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".presentation.profile.AnotherProfileActivity" />
+        <activity android:name=".presentation.profile.another.AnotherProfileActivity" />
         <activity android:name=".presentation.chat.ChatActivity" />
     </application>
 

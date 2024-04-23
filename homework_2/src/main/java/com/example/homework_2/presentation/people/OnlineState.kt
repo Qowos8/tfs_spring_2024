@@ -1,5 +1,7 @@
 package com.example.homework_2.presentation.people
 
+import com.example.homework_2.data.network.model.event.PresenceResponse
+
 sealed class OnlineState {
     object Init : OnlineState()
     object Loading: OnlineState()

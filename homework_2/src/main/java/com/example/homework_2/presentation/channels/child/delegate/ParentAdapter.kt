@@ -4,13 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.homework_2.data.network.model.AllStreamItem
+import com.example.homework_2.data.network.model.channels.stream.StreamItemApi
 import com.example.homework_2.databinding.ExpandableParentBinding
-import com.example.homework_2.presentation.channels.child.ParentDiffUtil
+import com.example.homework_2.domain.entity.StreamItem
+import com.example.homework_2.presentation.channels.parent.ParentDiffUtil
 
-class ParentAdapter(private val onItemClick: (AllStreamItem) -> Unit):
-    ListAdapter<AllStreamItem, ParentAdapter.ViewHolder>(ParentDiffUtil()){
-    private var streams: List<AllStreamItem> = emptyList()
+class ParentAdapter(private val onItemClick: (StreamItem) -> Unit):
+    ListAdapter<StreamItem, ParentAdapter.ViewHolder>(ParentDiffUtil()){
+    private var streams: List<StreamItem> = emptyList()
     private var expandedPosition = RecyclerView.NO_POSITION
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -26,7 +27,7 @@ class ParentAdapter(private val onItemClick: (AllStreamItem) -> Unit):
     override fun getItemCount(): Int = streams.size
 
     inner class ViewHolder(private val binding: ExpandableParentBinding): RecyclerView.ViewHolder(binding.root){
-        fun bind(item: AllStreamItem){
+        fun bind(item: StreamItem){
             binding.apply {
                 nameStream.text = item.name
                 itemView.setOnClickListener{
@@ -45,7 +46,7 @@ class ParentAdapter(private val onItemClick: (AllStreamItem) -> Unit):
         }
     }
 
-    fun search(list: List<AllStreamItem>) {
+    fun search(list: List<StreamItem>) {
         streams = list
         notifyDataSetChanged()
     }

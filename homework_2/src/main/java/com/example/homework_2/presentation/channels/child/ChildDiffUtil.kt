@@ -1,7 +1,7 @@
 package com.example.homework_2.presentation.channels.child
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.homework_2.data.network.model.TopicItem
+import com.example.homework_2.domain.entity.TopicItem
 
 class ChildDiffUtil : DiffUtil.ItemCallback<TopicItem>() {
 

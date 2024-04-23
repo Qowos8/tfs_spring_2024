@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.homework_2.Application
 import com.example.homework_2.R
 import com.example.homework_2.Screens
-import com.example.homework_2.data.network.model.TopicItem
 import com.example.homework_2.databinding.ActivityMainBinding
+import com.example.homework_2.domain.entity.TopicItem
 import com.example.homework_2.presentation.people.OnUserClickListener
 import com.github.terrakok.cicerone.androidx.AppNavigator
 

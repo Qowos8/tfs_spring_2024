@@ -1,9 +1,9 @@
 package com.example.homework_2.presentation.channels
 
-import com.example.homework_2.data.network.model.AllStreamItem
+import com.example.homework_2.data.network.model.channels.stream.StreamItemApi
 
 interface OnStreamClickListener {
 
-    fun onStreamClick(streamItem: AllStreamItem)
+    fun onStreamClick(streamItem: StreamItemApi)
 
 }
