@@ -1,26 +1,27 @@
 package com.example.homework_2.presentation.profile.me.mvi
 
-import com.example.homework_2.data.network.api.profile.ProfileApi
-import com.example.homework_2.data.network.di.RetrofitModule
-import com.example.homework_2.data.network.mapper.toDomain
-import com.example.homework_2.utils.runCatchingNonCancellation
+import com.example.homework_2.domain.use_case.profile.ProfileUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import vivid.money.elmslie.core.store.Actor
+import javax.inject.Inject
 
-class ProfileActor : Actor<ProfileCommand, ProfileEvent>() {
+class ProfileActor @Inject constructor(
+    private val profileUseCase: ProfileUseCase
+) : Actor<ProfileCommand, ProfileEvent>() {
 
     override fun execute(command: ProfileCommand): Flow<ProfileEvent> {
         return when (command) {
             is ProfileCommand.LoadUser -> flow {
-                runCatchingNonCancellation {
-                    RetrofitModule.create(ProfileApi::class.java).getUserMe()
-                }.onSuccess {
-                    emit(ProfileEvent.Domain.Success(it.toDomain()))
-                }.onFailure {
-                    emit(ProfileEvent.Domain.Error(it.message.toString()))
+                emit(profileUseCase.invoke())
+            }.mapEvents(
+                eventMapper = {
+                    ProfileEvent.Domain.Success(it)
+                },
+                errorMapper = {
+                    ProfileEvent.Domain.Error(it.message.toString())
                 }
-            }
+            )
         }
     }
 }

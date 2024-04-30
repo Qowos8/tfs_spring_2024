@@ -9,7 +9,6 @@ sealed class ChatEvent {
         class AddReaction(val messageId: Int, val emojiName: String): Ui()
         class DeleteReaction(val messageId: Int, val emojiName: String): Ui()
         object RegisterEvent : Ui()
-        object MessagesLoaded: Ui()
     }
 
     sealed class Domain : ChatEvent() {

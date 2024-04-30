@@ -1,19 +1,21 @@
 package com.example.homework_2.presentation.profile.me.mvi
 
 import vivid.money.elmslie.core.store.ElmStore
-import vivid.money.elmslie.core.store.Store
+import javax.inject.Inject
 
-class ProfileStoreFactory(private val actor: ProfileActor) {
+class ProfileStoreFactory @Inject constructor(
+    private val reducer: ProfileReducer,
+    private val actor: ProfileActor,
+) {
 
     private val store by lazy {
         ElmStore(
             initialState = ProfileState.Init,
-            reducer = ProfileReducer(),
-            actor = actor
+            reducer = reducer,
+            actor = actor,
         )
     }
 
     fun provide() = store
-
 }
 

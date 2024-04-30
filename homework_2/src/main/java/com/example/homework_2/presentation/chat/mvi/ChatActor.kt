@@ -1,10 +1,14 @@
 package com.example.homework_2.presentation.chat.mvi
 
-import com.example.homework_2.data.network.api.chat.ChatApi
-import com.example.homework_2.data.network.di.RetrofitModule
 import com.example.homework_2.data.network.mapper.toDomain
 import com.example.homework_2.data.network.model.event.NarrowItem
 import com.example.homework_2.domain.entity.MessageItem
+import com.example.homework_2.domain.use_case.chat.DeleteReactionUseCase
+import com.example.homework_2.domain.use_case.chat.GetMessagesUseCase
+import com.example.homework_2.domain.use_case.chat.RegisterEventUseCase
+import com.example.homework_2.domain.use_case.chat.SendMessageUseCase
+import com.example.homework_2.domain.use_case.chat.SendReactionUseCase
+import com.example.homework_2.domain.use_case.chat.TrackEventUseCase
 import com.example.homework_2.utils.runCatchingNonCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -12,114 +16,114 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import vivid.money.elmslie.core.store.Actor
+import javax.inject.Inject
 
-class ChatActor : Actor<ChatCommand, ChatEvent>() {
+class ChatActor @Inject constructor(
+    private val sendMessageUseCase: SendMessageUseCase,
+    private val sendReactionUseCase: SendReactionUseCase,
+    private val deleteReactionUseCase: DeleteReactionUseCase,
+    private val registerEventUseCase: RegisterEventUseCase,
+    private val trackEventUseCase: TrackEventUseCase,
+    private val getMessagesUseCase: GetMessagesUseCase,
+) : Actor<ChatCommand, ChatEvent>() {
 
-    private val retrofit = RetrofitModule.create(ChatApi::class.java)
     private var currentId = ""
-    private var lastEventId = 0
 
     private var allMessages: MutableList<MessageItem> = mutableListOf()
-    private var previousResponse: List<MessageItem>? = null
+    private var previousResponse: MutableList<MessageItem>? = null
 
     override fun execute(command: ChatCommand): Flow<ChatEvent> {
         return when (command) {
-            is ChatCommand.RegisterEvent -> flow {
-                registerEvent(this)
-            }
+            is ChatCommand.RegisterEvent -> flow { registerEvent(this) }
 
-            is ChatCommand.DeleteReaction -> flow {
-                deleteReaction(this, command.emojiName, command.messageId)
-            }
+            is ChatCommand.DeleteReaction -> deleteReaction(command.emojiName, command.messageId)
 
-            is ChatCommand.AddReaction -> flow {
-                sendReaction(this, command.emojiName, command.messageId)
-            }
+            is ChatCommand.AddReaction -> sendReaction(command.emojiName, command.messageId)
 
-            is ChatCommand.SendMessage -> flow {
-                sendMessage(this, command.streamName, command.topicName, command.content)
-            }
+            is ChatCommand.SendMessage -> sendMessage(
+                command.streamName,
+                command.topicName,
+                command.content
+            )
 
-            is ChatCommand.GetMessages -> flow {
-                getMessages(this, command.streamName, command.topicName)
-            }
+            is ChatCommand.GetMessages -> getMessages(command.streamName, command.topicName)
         }
     }
 
-    private suspend fun getMessages(
-        flowCollector: FlowCollector<ChatEvent>,
+    private fun getMessages(
         topicName: String,
         streamName: String,
-    ) {
-        runCatchingNonCancellation {
-            val narrow = listOf(NarrowItem(topicName, STREAM), NarrowItem(streamName, TOPIC))
-            retrofit.getTopicMessages(narrow = Json.encodeToString(narrow))
-        }.onSuccess { response ->
-            allMessages = response.messages.map { it.toDomain() }.toMutableList()
-            if (response.messages != previousResponse) {
-                if (response.messages != previousResponse) {
-                    flowCollector.emit(ChatEvent.Domain.Success(response.messages.map { it.toDomain() }))
-                }
+    ): Flow<ChatEvent> {
+        return flow {
+            val narrow = Json.encodeToString(
+                listOf(
+                    NarrowItem(topicName, STREAM),
+                    NarrowItem(streamName, TOPIC)
+                )
+            )
+            emit(getMessagesUseCase(narrow = narrow))
+        }.mapEvents(
+            eventMapper = { messages ->
+                allMessages = messages.toMutableList()
+                previousResponse = messages.toMutableList()
+                ChatEvent.Domain.Success(messages)
+            },
+            errorMapper = {
+                ChatEvent.Domain.Error(it.message.toString())
             }
-            previousResponse = response.messages.map { it.toDomain() }
-        }.onFailure {
-            flowCollector.emit(ChatEvent.Domain.Error(it.message.toString() + "getMessages"))
-        }
-
+        )
     }
 
-    private suspend fun sendMessage(
-        flowCollector: FlowCollector<ChatEvent>,
+    private fun sendMessage(
         streamName: String,
         topicName: String,
         content: String,
-    ) {
-        runCatchingNonCancellation {
-            retrofit.sendMessage(
-                stream = streamName,
-                topic = topicName,
-                message = content
-            )
-        }.onFailure {
-            flowCollector.emit(ChatEvent.Domain.Error(it.message.toString() + "sendMessage"))
-        }
+    ): Flow<ChatEvent> {
+        return flow {
+            emit(sendMessageUseCase(streamName, topicName, content))
+        }.mapEvents(
+            errorMapper = {
+                ChatEvent.Domain.Error(it.message.toString())
+            }
+        )
     }
 
-    private suspend fun sendReaction(
-        flowCollector: FlowCollector<ChatEvent>,
+    private fun sendReaction(
         emojiName: String,
         messageId: Int,
-    ) {
-        runCatchingNonCancellation {
-            retrofit.addEmoji(messageId, emojiName)
-        }.onFailure {
-            flowCollector.emit(ChatEvent.Domain.Error(it.message.toString() + "sendReaction"))
-        }
+    ): Flow<ChatEvent> {
+        return flow {
+            emit(sendReactionUseCase(emojiName, messageId))
+        }.mapEvents(
+            errorMapper = {
+                ChatEvent.Domain.Error(it.message.toString())
+            }
+        )
     }
 
-    private suspend fun deleteReaction(
-        flowCollector: FlowCollector<ChatEvent>,
+    private fun deleteReaction(
         emojiName: String,
         messageId: Int,
-    ) {
-        runCatchingNonCancellation {
-            RetrofitModule.create(ChatApi::class.java).deleteEmoji(messageId, emojiName)
-        }.onFailure {
-            flowCollector.emit(ChatEvent.Domain.Error(it.message.toString() + "deleteReaction"))
-        }
+    ): Flow<ChatEvent> {
+        return flow {
+            emit(deleteReactionUseCase(emojiName, messageId))
+        }.mapEvents(
+            errorMapper = {
+                ChatEvent.Domain.Error(it.message.toString())
+            }
+        )
     }
 
     private suspend fun registerEvent(
         flowCollector: FlowCollector<ChatEvent>,
     ) {
         runCatchingNonCancellation {
-            retrofit.registerEvent(
+            registerEventUseCase(
                 fetchEventTypes = Json.encodeToString(TYPES),
                 eventTypes = Json.encodeToString(TYPES)
             )
         }.onSuccess {
             currentId = it.id
-            lastEventId = it.lastEventId
             trackEvent(flowCollector)
         }.onFailure {
             flowCollector.emit(ChatEvent.Domain.Error(it.message.toString() + "registerEvent"))
@@ -128,26 +132,19 @@ class ChatActor : Actor<ChatCommand, ChatEvent>() {
 
     private suspend fun trackEvent(flowCollector: FlowCollector<ChatEvent>) {
         runCatchingNonCancellation {
-            retrofit.trackEvent(currentId, lastEventId, TIMEOUT)
+            trackEventUseCase(currentId, TIMEOUT)
         }.onSuccess { eventResponse ->
-            val newEvents = eventResponse.events.filter { it.type == MESSAGE || it.type == EMOJI }
-            if (newEvents.isNotEmpty()) {
-                for (event in newEvents) {
-                    if (previousResponse?.any { it.id == event.message?.id } == false) {
-                        allMessages.add(event.message!!.toDomain())
-                        flowCollector.emit(ChatEvent.Domain.Success(allMessages))
-                    }
-                }
-                previousResponse = allMessages
+            for (event in eventResponse.events) {
+                allMessages.add(event.message!!.toDomain())
+                flowCollector.emit(ChatEvent.Domain.Success(allMessages))
             }
+            previousResponse = allMessages
             registerEvent(flowCollector)
         }.onFailure { error ->
             registerEvent(flowCollector)
             flowCollector.emit(ChatEvent.Domain.Error(error.message.toString() + "trackEvent"))
-            error.printStackTrace()
         }
     }
-
 
     private companion object {
         private const val STREAM = "stream"

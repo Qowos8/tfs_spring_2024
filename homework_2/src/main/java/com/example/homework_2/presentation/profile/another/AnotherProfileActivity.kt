@@ -15,8 +15,10 @@ import com.example.homework_2.presentation.profile.another.mvi.AnotherProfileEff
 import com.example.homework_2.presentation.profile.another.mvi.AnotherProfileEvent
 import com.example.homework_2.presentation.profile.another.mvi.AnotherProfileState
 import com.example.homework_2.presentation.profile.another.mvi.AnotherProfileStoreFactory
+import com.example.homework_2.presentation.profile.di.ProfileComponent
 import vivid.money.elmslie.android.renderer.elmStoreWithRenderer
 import vivid.money.elmslie.core.store.Store
+import javax.inject.Inject
 
 class AnotherProfileActivity : ElmBaseActivity<
         AnotherProfileEvent,
@@ -25,9 +27,12 @@ class AnotherProfileActivity : ElmBaseActivity<
     private lateinit var binding: ProfileFragmentBinding
     private var userItem: Int = 0
 
+    @Inject
+    lateinit var factory: AnotherProfileStoreFactory
+
     override val store: Store<AnotherProfileEvent, AnotherProfileEffect, AnotherProfileState>
         by elmStoreWithRenderer(elmRenderer = this){
-            AnotherProfileStoreFactory(AnotherProfileActor()).provide()
+            factory.provide()
         }
 
     override fun render(state: AnotherProfileState) {
@@ -36,8 +41,11 @@ class AnotherProfileActivity : ElmBaseActivity<
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ProfileComponent().inject(this)
+
         binding = ProfileFragmentBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         userItem = MainActivity.DataHolder.userData!!
         binding.toolbarProfile.backButton.setOnClickListener {
             finish()

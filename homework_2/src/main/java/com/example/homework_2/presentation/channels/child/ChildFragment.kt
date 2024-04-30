@@ -1,5 +1,6 @@
 package com.example.homework_2.presentation.channels.child
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -24,16 +25,20 @@ import com.example.homework_2.presentation.channels.child.mvi.ChildState
 import com.example.homework_2.presentation.channels.child.mvi.ChildStoreFactory
 import com.example.homework_2.presentation.channels.child.search.ChildViewModel
 import com.example.homework_2.presentation.channels.child.search.SearchState
+import com.example.homework_2.presentation.channels.di.ChannelsComponent
 import com.example.homework_2.utils.ObjectHandler
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import vivid.money.elmslie.android.renderer.elmStoreWithRenderer
 import vivid.money.elmslie.core.store.Store
+import javax.inject.Inject
 
 class ChildFragment : ElmBaseFragment<
         ChildEvent,
         ChildEffect,
         ChildState>(R.layout.expandable_fragment) {
+    @Inject
+    lateinit var factory: ChildStoreFactory
 
     private lateinit var binding: ExpandableFragmentBinding
     private var isSubscribe: Boolean = true
@@ -54,11 +59,17 @@ class ChildFragment : ElmBaseFragment<
 
     override val store: Store<ChildEvent, ChildEffect, ChildState>
             by elmStoreWithRenderer(elmRenderer = this) {
-                ChildStoreFactory(ChildActor()).provide()
+                //ChildStoreFactory(ChildActor()).provide()
+                factory.provide()
             }
 
     override fun render(state: ChildState) {
         trackState(state)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        ChannelsComponent().inject(this)
     }
 
     override fun onCreateView(

@@ -13,12 +13,12 @@ import retrofit2.http.Query
 interface ChatApi {
 
     @POST("api/v1/register")
-    suspend fun registerEvent(@Query("fetch_event_types") fetchEventTypes:String? = null,
+    suspend fun registerEvent(@Query("fetch_event_types") fetchEventTypes: String? = null,
                               @Query("event_types") eventTypes: String? = null): RegisterResponse
 
     @GET("api/v1/events")
     suspend fun trackEvent(@Query("queue_id") queueId: String,
-                           @Query("last_event_id") lastEventId: Int,
+                           @Query("last_event_id") lastEventId: Int = -1,
                            @Query("event_queue_longpoll_timeout_seconds")timeout: Int
     ): Events
 

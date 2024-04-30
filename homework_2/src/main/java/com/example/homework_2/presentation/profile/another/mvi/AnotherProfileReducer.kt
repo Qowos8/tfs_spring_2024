@@ -1,8 +1,9 @@
 package com.example.homework_2.presentation.profile.another.mvi
 
 import vivid.money.elmslie.core.store.dsl.ScreenDslReducer
+import javax.inject.Inject
 
-class AnotherProfileReducer : ScreenDslReducer<
+class AnotherProfileReducer @Inject constructor() : ScreenDslReducer<
         AnotherProfileEvent, AnotherProfileEvent.Ui,
         AnotherProfileEvent.Domain, AnotherProfileState,
         AnotherProfileEffect,

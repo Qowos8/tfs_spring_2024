@@ -1,8 +1,9 @@
 package com.example.homework_2.presentation.channels.child.mvi
 
 import vivid.money.elmslie.core.store.dsl.ScreenDslReducer
+import javax.inject.Inject
 
-class ChildReducer : ScreenDslReducer<
+class ChildReducer @Inject constructor() : ScreenDslReducer<
         ChildEvent, ChildEvent.Ui,
         ChildEvent.Domain, ChildState,
         ChildEffect,

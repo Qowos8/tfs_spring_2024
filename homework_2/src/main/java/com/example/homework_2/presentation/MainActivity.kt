@@ -3,49 +3,58 @@ package com.example.homework_2.presentation
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.example.homework_2.Application
 import com.example.homework_2.R
 import com.example.homework_2.Screens
 import com.example.homework_2.databinding.ActivityMainBinding
+import com.example.homework_2.di.app.AppComponentHolder
 import com.example.homework_2.domain.entity.TopicItem
+import com.example.homework_2.presentation.channels.OnTopicClickListener
 import com.example.homework_2.presentation.people.OnUserClickListener
+import com.github.terrakok.cicerone.NavigatorHolder
+import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.AppNavigator
+import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity(),
-    com.example.homework_2.presentation.channels.OnTopicClickListener,
+    OnTopicClickListener,
     OnUserClickListener {
     private lateinit var binding: ActivityMainBinding
-    private val applicationInstance: Application
-        get() = application as Application
     private val navigator = AppNavigator(this, R.id.nav_host_fragment)
+
+    @Inject
+    lateinit var navigatorHolder: NavigatorHolder
+
+    @Inject
+    lateinit var router: Router
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppComponentHolder.appComponent.injectMainActivity(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        applicationInstance.navigatorHolder.setNavigator(navigator)
+        navigatorHolder.setNavigator(navigator)
         binding.bottomNavView.visibility = View.VISIBLE
 
         if (savedInstanceState == null) {
-            applicationInstance.router.navigateTo(Screens.Channels())
+            router.navigateTo(Screens.Channels())
         }
 
         binding.bottomNavView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.people -> {
-                    applicationInstance.router.navigateTo(Screens.People())
+                    router.navigateTo(Screens.People())
                     binding.bottomNavView.visibility = View.VISIBLE
                 }
 
                 R.id.profile -> {
-                    applicationInstance.router.navigateTo(Screens.Profile())
+                    router.navigateTo(Screens.Profile())
                     binding.bottomNavView.visibility = View.VISIBLE
                 }
 
                 R.id.channels -> {
-                    applicationInstance.router.navigateTo(Screens.Channels())
+                    router.navigateTo(Screens.Channels())
                     binding.bottomNavView.visibility = View.VISIBLE
                 }
             }
@@ -54,12 +63,12 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onTopicClicked(topic: TopicItem, streamName: String) {
-        applicationInstance.router.navigateTo(Screens.Chat(topic.name, streamName))
+        router.navigateTo(Screens.Chat(topic.name, streamName))
         DataHolder.topicData = topic
     }
 
     override fun onUserClicked(user: Int) {
-        applicationInstance.router.navigateTo(Screens.AnotherProfile())
+        router.navigateTo(Screens.AnotherProfile())
         DataHolder.userData = user
     }
 

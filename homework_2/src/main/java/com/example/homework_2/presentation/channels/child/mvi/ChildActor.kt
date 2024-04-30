@@ -1,84 +1,97 @@
 package com.example.homework_2.presentation.channels.child.mvi
 
-import com.example.homework_2.data.network.api.channels.ChannelsApi
-import com.example.homework_2.data.network.di.RetrofitModule
-import com.example.homework_2.data.network.mapper.toDomain
 import com.example.homework_2.domain.entity.StreamItem
-import com.example.homework_2.utils.FilterByNamesUtils
-import com.example.homework_2.utils.runCatchingNonCancellation
-import kotlinx.coroutines.delay
+import com.example.homework_2.domain.use_case.channels.GetAllStreamsUseCase
+import com.example.homework_2.domain.use_case.channels.GetStreamTopicUseCase
+import com.example.homework_2.domain.use_case.channels.GetSubStreamsUseCase
+import com.example.homework_2.domain.use_case.channels.StreamSearchUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onStart
 import vivid.money.elmslie.core.store.Actor
+import javax.inject.Inject
 
-class ChildActor : Actor<ChildCommand, ChildEvent>() {
+class ChildActor @Inject constructor(
+    private val getAllStreamsUseCase: GetAllStreamsUseCase,
+    private val getSubStreamsUseCase: GetSubStreamsUseCase,
+    private val searchUseCase: StreamSearchUseCase,
+    private val getStreamTopicsUseCase: GetStreamTopicUseCase,
+) : Actor<ChildCommand, ChildEvent>() {
 
-    private val retrofit = RetrofitModule.create(ChannelsApi::class.java)
-    private var allItems: List<StreamItem> = mutableListOf()
+    @Volatile
+    private var allItems: List<StreamItem> = listOf()
 
     override fun execute(command: ChildCommand): Flow<ChildEvent> {
         return when (command) {
-            is ChildCommand.LoadAllStream -> emitAll()
-
+            is ChildCommand.LoadAllStream -> onLoadAllStream()
             is ChildCommand.LoadSubStream -> emitSub()
-
-            is ChildCommand.LoadTopic -> emitTopic(command.streamId)
-
-            is ChildCommand.SearchStream -> { emitState(command.query) }
+            is ChildCommand.LoadTopic -> onGetTopics(command.streamId)
+            is ChildCommand.SearchStream -> onSearch(command.query)
         }
     }
 
-    private fun emitAll(): Flow<ChildEvent> {
+    private fun onLoadAllStream(): Flow<ChildEvent> {
         return flow {
-            runCatchingNonCancellation {
-                retrofit.getAllStreams().subscriptions
-            }.onSuccess { stream ->
-                emit(ChildEvent.Domain.All.Success(stream.map { it.toDomain() }))
-                allItems = stream.map { it.toDomain() }
-            }.onFailure {
-                emit(ChildEvent.Domain.All.Error(it.message.toString()))
+            emit(getAllStreamsUseCase())
+        }.mapEvents(
+            eventMapper = { streams ->
+                allItems = streams
+                ChildEvent.Domain.All.Success(allItems)
+            },
+            errorMapper = {
+                ChildEvent.Domain.All.Error(it.message.toString())
             }
-        }
+        )
     }
 
     private fun emitSub(): Flow<ChildEvent> {
         return flow {
-            runCatchingNonCancellation {
-                retrofit.getSubStreams().subscriptions
-            }.onSuccess { stream ->
-                emit(ChildEvent.Domain.Sub.Success(stream.map { it.toDomain() }))
-                allItems = stream.map { it.toDomain() }
-            }.onFailure {
-                emit(ChildEvent.Domain.Sub.Error(it.message.toString()))
+            emit(getSubStreamsUseCase())
+        }.mapEvents(
+            eventMapper = { streams ->
+                allItems = streams
+                ChildEvent.Domain.Sub.Success(streams)
+            },
+            errorMapper = {
+                ChildEvent.Domain.Sub.Error(it.message.toString())
             }
-        }
+        )
     }
 
-    private fun emitTopic(streamId: Int): Flow<ChildEvent> {
+    private fun onGetTopics(streamId: Int): Flow<ChildEvent> {
         return flow {
-            runCatchingNonCancellation {
-                retrofit.getTopics(streamId).topics
-            }.onSuccess { topics ->
-                emit(ChildEvent.Domain.Topic.Success(topics.map { it.toDomain() }))
-            }.onFailure {
-                emit(ChildEvent.Domain.Topic.Error(it.message.toString()))
+            emit(getStreamTopicsUseCase(streamId))
+        }.mapEvents(
+            eventMapper = { topics ->
+                ChildEvent.Domain.Topic.Success(topics)
+            },
+            errorMapper = {
+                ChildEvent.Domain.Topic.Error(it.message.toString())
             }
-        }
+        )
     }
 
-    private fun emitState(query: String): Flow<ChildEvent> {
+    private fun onSearch(query: String): Flow<ChildEvent> {
         return flow {
-            runCatchingNonCancellation {
-                if (query.isEmpty()) {
-                    emit(ChildEvent.Domain.All.Success(allItems))
-                } else if (query.length > 5) {
-                    emit(ChildEvent.Domain.All.Error("Too much symbols"))
-                } else {
-                    emit(ChildEvent.Domain.All.Loading)
-                    delay(700L)
-                    emit(ChildEvent.Domain.All.Success(FilterByNamesUtils.filterItemsByName(allItems, query)))
-                }
+            when (query.length) {
+                0 -> emit(allItems)
+                in 1..SEARCH_QUERY_LENGTH_LIMIT -> emit(searchUseCase(query, allItems))
+                else -> throw IllegalArgumentException("too many symbols")
             }
-        }
+        }.mapEvents(
+            eventMapper = {
+                ChildEvent.Domain.All.Success(it)
+            },
+            errorMapper = {
+                (ChildEvent.Domain.All.Error("Too much symbols"))
+            }
+        )
+            .onStart {
+                emit(ChildEvent.Domain.All.Loading)
+            }
+    }
+
+    private companion object {
+        const val SEARCH_QUERY_LENGTH_LIMIT = 8
     }
 }

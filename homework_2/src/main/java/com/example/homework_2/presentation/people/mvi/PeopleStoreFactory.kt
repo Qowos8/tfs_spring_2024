@@ -1,13 +1,17 @@
 package com.example.homework_2.presentation.people.mvi
 
 import vivid.money.elmslie.core.store.ElmStore
+import javax.inject.Inject
 
-class PeopleStoreFactory(private val actor: PeopleActor) {
+class PeopleStoreFactory @Inject constructor(
+    private val reducer: PeopleReducer,
+    private val actor: PeopleActor,
+) {
 
     private val store by lazy {
         ElmStore(
             initialState = PeopleState.Init,
-            reducer = PeopleReducer(),
+            reducer = reducer,
             actor = actor
         )
     }

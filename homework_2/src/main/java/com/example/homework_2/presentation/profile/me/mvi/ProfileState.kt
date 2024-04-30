@@ -4,7 +4,10 @@ import com.example.homework_2.domain.entity.ProfileItem
 
 sealed class ProfileState {
     object Init : ProfileState()
+
     object Loading : ProfileState()
+
     data class Success(val profileData: ProfileItem) : ProfileState()
+
     data class Error(val error: String) : ProfileState()
 }

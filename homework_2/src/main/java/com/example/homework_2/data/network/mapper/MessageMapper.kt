@@ -5,8 +5,8 @@ import com.example.homework_2.domain.entity.MessageItem
 
 fun MessageItemApi.toDomain(): MessageItem {
     return MessageItem(
-        id = id,
-        userId = userId,
+        id = id.toInt(),
+        userId = userId?.toInt(),
         userFullName = userFullName,
         topicName = topicName,
         avatarUrl = avatarUrl,
