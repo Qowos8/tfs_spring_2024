@@ -48,6 +48,14 @@
         android:layout_marginStart="60dp"
         android:visibility="gone"
         />
+            <ExpandableListView
+                android:id="@+id/expandable_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                android:pointerIcon="arrow"
+                android:indicatorEnd="750dp"
+                />
     <include layout="@layout/skeleton_fragment"
         android:id="@+id/skelet"
         android:layout_height="match_parent"

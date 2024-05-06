@@ -9,7 +9,8 @@ import dagger.Component
     ],
     modules = [
         ChatRepositoryModule::class,
-        ChatNetworkModule::class
+        ChatNetworkModule::class,
+        ChatDBModule::class
     ]
 )
 interface ChatComponent {

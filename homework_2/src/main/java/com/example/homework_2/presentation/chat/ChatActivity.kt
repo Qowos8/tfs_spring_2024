@@ -6,7 +6,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import com.example.homework_2.R
-import com.example.homework_2.data.network.model.chat.reaction.ReactionResponse
+import com.example.homework_2.data.network.model.chat.reaction.ReactionItemApi
 import com.example.homework_2.databinding.ChatFragmentBinding
 import com.example.homework_2.databinding.ToolbarFragmentBinding
 import com.example.homework_2.domain.entity.MessageItem
@@ -17,7 +17,6 @@ import com.example.homework_2.presentation.chat.delegate.CompanionMessageDelegat
 import com.example.homework_2.presentation.chat.delegate.DefaultEmojiService
 import com.example.homework_2.presentation.chat.delegate.UserMessageDelegate
 import com.example.homework_2.presentation.chat.di.ChatComponent
-import com.example.homework_2.presentation.chat.mvi.ChatActor
 import com.example.homework_2.presentation.chat.mvi.ChatEffect
 import com.example.homework_2.presentation.chat.mvi.ChatEvent
 import com.example.homework_2.presentation.chat.mvi.ChatState
@@ -43,13 +42,16 @@ class ChatActivity : ElmBaseActivity<
 
     private lateinit var binding: ChatFragmentBinding
     private val messagesList = mutableListOf<MessageItem>()
-    private var selectedMessageIndex = 0
     private val mainAdapter: MainAdapter by lazy(LazyThreadSafetyMode.NONE) { MainAdapter() }
+
     private lateinit var userDelegate: UserMessageDelegate
     private lateinit var companionDelegate: CompanionMessageDelegate
 
     private lateinit var streamNameString: String
     private lateinit var topicNameString: String
+    private var streamId = 0
+    private var selectedMessageIndex = 0
+    private var currentListCount = 0
 
     override val store: Store<ChatEvent, ChatEffect, ChatState>
             by elmStoreWithRenderer(elmRenderer = this) {
@@ -61,9 +63,9 @@ class ChatActivity : ElmBaseActivity<
         ChatComponent().inject(this)
         binding = ChatFragmentBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         getNames()
-        store.accept(ChatEvent.Ui.LoadMessages(topicNameString, streamNameString))
+
+        store.accept(ChatEvent.Ui.LoadMessages(topicNameString, streamId))
         store.accept(ChatEvent.Ui.RegisterEvent)
         setAdapter()
         binding.apply {
@@ -102,10 +104,25 @@ class ChatActivity : ElmBaseActivity<
             is ChatState.Success -> {
                 mainAdapter.submitList(convertToDelegate(state.messages))
                 messagesList.addAll(state.messages)
+                currentListCount = state.messages.size
                 binding.messageRecycler.postDelayed({
                     binding.messageRecycler.scrollToPosition((mainAdapter.currentList.size) - 1)
                 }, 200)
             }
+
+            is ChatState.CacheSuccess -> {
+                mainAdapter.submitList(convertToDelegate(state.messages))
+                currentListCount = state.messages.size
+                Log.d("chat", state.messages.toString())
+                //if(currentListCount < 50) store.accept(ChatEvent.Ui.UpdateMessages(topicNameString, streamNameString, streamId))
+            }
+
+            ChatState.CacheEmpty -> {
+                store.accept(ChatEvent.Ui.UpdateMessages(topicNameString, streamNameString, streamId))
+                Log.d("chat", topicNameString + streamNameString + streamId)
+            }
+
+            ChatState.CacheLoaded -> {  store.accept(ChatEvent.Ui.LoadMessages(topicNameString, streamId)) }
         }
     }
 
@@ -141,7 +158,7 @@ class ChatActivity : ElmBaseActivity<
         val message = messagesList.find { it.id == selectedMessageIndex }
 
         if (message?.reactions != null) {
-            val newReaction = ReactionResponse(
+            val newReaction = ReactionItemApi(
                 emojiName = emoji,
                 emojiCode = emojiSetNCU.find { it.name == emoji }?.getCodeString(),
                 reactionType = REACTION_TYPE,
@@ -207,6 +224,7 @@ class ChatActivity : ElmBaseActivity<
     private fun getNames() {
         streamNameString = intent.getStringExtra(STREAM_NAME).toString()
         topicNameString = intent.getStringExtra(TOPIC_NAME).toString()
+        streamId = intent.getIntExtra(STREAM_ID, 0)
     }
 
     private fun getDateString(): String {
@@ -229,6 +247,8 @@ class ChatActivity : ElmBaseActivity<
     companion object{
         private const val STREAM_NAME = "streamName"
         private const val TOPIC_NAME = "topicName"
+        private const val STREAM_ID = "streamId"
+        private const val TOPIC_ID = "topicId"
         private const val REACTION_TYPE = "reaction"
     }
 }

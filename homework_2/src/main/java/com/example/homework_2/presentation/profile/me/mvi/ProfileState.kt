@@ -9,5 +9,7 @@ sealed class ProfileState {
 
     data class Success(val profileData: ProfileItem) : ProfileState()
 
+    data class CacheSuccess(val profileData: ProfileItem) : ProfileState()
+
     data class Error(val error: String) : ProfileState()
 }

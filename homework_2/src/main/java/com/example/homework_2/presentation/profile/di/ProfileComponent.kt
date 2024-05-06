@@ -11,6 +11,7 @@ import dagger.Component
     modules = [
         ProfileRepositoryModule::class,
         ProfileNetworkModule::class,
+        ProfileDBModule::class,
     ]
 )
 interface ProfileComponent {

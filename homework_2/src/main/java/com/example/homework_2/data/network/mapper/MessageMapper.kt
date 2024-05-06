@@ -11,7 +11,7 @@ fun MessageItemApi.toDomain(): MessageItem {
         topicName = topicName,
         avatarUrl = avatarUrl,
         content = content,
-        reactions = reactions,
+        reactions = reactions?.toMutableList(),
         timestamp = timestamp
     )
 }

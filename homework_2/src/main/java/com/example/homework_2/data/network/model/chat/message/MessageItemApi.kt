@@ -1,6 +1,6 @@
 package com.example.homework_2.data.network.model.chat.message
 
-import com.example.homework_2.data.network.model.chat.reaction.ReactionResponse
+import com.example.homework_2.data.network.model.chat.reaction.ReactionItemApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -13,13 +13,13 @@ data class MessageItemApi(
     @SerialName("sender_full_name")
     val userFullName: String? = null,
     @SerialName("subject")
-    val topicName: String? = null,
+    val topicName: String,
     @SerialName("avatar_url")
     val avatarUrl: String? = null,
     @SerialName("content")
     val content: String? = null,
     @SerialName("reactions")
-    val reactions: MutableList<ReactionResponse?>? = mutableListOf(),
+    val reactions: List<ReactionItemApi?>? = mutableListOf(),
     @SerialName("timestamp")
     val timestamp: Long? = null,
 )

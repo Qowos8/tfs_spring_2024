@@ -5,20 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
-import com.example.homework_2.data.network.model.channels.stream.StreamItemApi
-import com.example.homework_2.presentation.channels.child.model.channels.topic.TopicItemApi
 import com.example.homework_2.databinding.ExpandableChildBinding
 import com.example.homework_2.databinding.ExpandableParentBinding
 import com.example.homework_2.databinding.ShimmerExpandableChildBinding
+import com.example.homework_2.domain.entity.StreamItem
+import com.example.homework_2.domain.entity.TopicItem
 import java.util.Random
 
 class StreamAdapter(
-    private val onItemClick: (TopicItemApi) -> Unit,
-    private val onStreamClick: (StreamItemApi) -> Unit
+    private val onItemClick: (TopicItem) -> Unit,
+    private val onStreamClick: (StreamItem) -> Unit
 ) : BaseExpandableListAdapter() {
 
-    private var streams: List<StreamItemApi> = mutableListOf()
-    private var topics: List<TopicItemApi> = emptyList()
+    private var streams: List<StreamItem> = mutableListOf()
+    private var topics: List<TopicItem> = emptyList()
     private val expandedGroups = mutableListOf<Int>()
     private var isLoading: Boolean = false
     private var lastExpandedGroupPosition: Int? = null
@@ -73,7 +73,7 @@ class StreamAdapter(
         convertView: View?,
         parent: ViewGroup?,
     ): View {
-        val parentItem = getGroup(groupPosition) as StreamItemApi
+        val parentItem = getGroup(groupPosition) as StreamItem
         val inflater = LayoutInflater.from(parent?.context)
         val binding = ExpandableParentBinding.inflate(inflater)
         binding.apply {
@@ -109,7 +109,7 @@ class StreamAdapter(
         if (isLoading) {
             return ShimmerExpandableChildBinding.inflate(inflater).root
         } else {
-            val childItem = getChild(groupPosition, childPosition) as TopicItemApi
+            val childItem = getChild(groupPosition, childPosition) as TopicItem
             val binding = ExpandableChildBinding.inflate(inflater)
 
             binding.apply {
@@ -134,12 +134,12 @@ class StreamAdapter(
         binding.expandableChild.setBackgroundColor(color)
     }
 
-    fun search(list: List<StreamItemApi>) {
+    fun search(list: List<StreamItem>) {
         streams = list
         notifyDataSetChanged()
     }
 
-    fun updateTopic(topicList: List<TopicItemApi>){
+    fun updateTopic(topicList: List<TopicItem>){
         topics = topicList
         if (topicList.isNotEmpty()) {
             notifyDataSetChanged()

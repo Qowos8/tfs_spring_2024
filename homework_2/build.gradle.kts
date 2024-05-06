@@ -5,7 +5,6 @@ plugins {
     id ("org.jetbrains.kotlin.plugin.serialization") version "2.0.0-Beta2"
     id ("kotlin-kapt")
 }
-
 android {
     namespace = "com.example.homework_2"
     compileSdk = 34
@@ -78,5 +77,10 @@ dependencies {
     implementation (libs.dagger)
     kapt(libs.dagger.compiler)
 
+    implementation (libs.androidx.room.runtime)
+    kapt (libs.androidx.room.compiler)
+    implementation (libs.androidx.room.ktx)
+
+    implementation (libs.androidx.paging.runtime.ktx)
 
 }

@@ -5,4 +5,8 @@ sealed class ChildCommand {
     object LoadSubStream : ChildCommand()
     class LoadTopic(val streamId: Int) : ChildCommand()
     class SearchStream(val query: String): ChildCommand()
+
+    object LoadDBAllStream: ChildCommand()
+    object LoadDBSubStream: ChildCommand()
+    class LoadDBTopics(val streamId: Int): ChildCommand()
 }

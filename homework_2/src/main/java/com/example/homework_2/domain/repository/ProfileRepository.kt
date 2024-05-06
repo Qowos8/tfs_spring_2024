@@ -4,5 +4,7 @@ import com.example.homework_2.domain.entity.ProfileItem
 import kotlinx.coroutines.flow.Flow
 
 interface ProfileRepository {
-    suspend fun getProfile(): ProfileItem
+    fun getProfile(): Flow<ProfileItem>
+
+    suspend fun updateProfile()
 }

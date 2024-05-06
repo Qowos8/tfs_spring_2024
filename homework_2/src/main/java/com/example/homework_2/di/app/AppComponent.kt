@@ -1,6 +1,7 @@
 package com.example.homework_2.di.app
 
 import android.content.Context
+import com.example.homework_2.data.db.DataBase
 import com.example.homework_2.presentation.MainActivity
 import com.github.terrakok.cicerone.Cicerone
 import com.github.terrakok.cicerone.NavigatorHolder
@@ -16,6 +17,7 @@ import javax.inject.Singleton
     modules = [
         AppModule::class,
         NetworkModule::class,
+        DataBaseModule::class
     ]
 )
 @Singleton
@@ -26,6 +28,7 @@ interface AppComponent {
     fun navigatorHolder(): NavigatorHolder
     fun context(): Context
     fun retrofit(): Retrofit
+    fun dataBase(): DataBase
 
     fun injectMainActivity(main: MainActivity)
 

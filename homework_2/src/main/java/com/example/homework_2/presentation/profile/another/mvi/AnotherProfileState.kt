@@ -6,5 +6,6 @@ sealed class AnotherProfileState {
     object Init: AnotherProfileState()
     object Loading: AnotherProfileState()
     class Success(val profileData: ProfileItem): AnotherProfileState()
+    class CacheSuccess(val profileData: ProfileItem): AnotherProfileState()
     class Error(val error: String): AnotherProfileState()
 }

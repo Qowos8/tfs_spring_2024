@@ -61,35 +61,32 @@ class ProfileFragment : ElmBaseFragment<
 
     override fun render(state: ProfileState) {
         setProfile(state)
-        Log.d("state", state.toString())
     }
 
     private fun setProfile(state: ProfileState) {
         when (state) {
             is ProfileState.Error -> {
                 Snackbar.make(binding.root, state.error, Snackbar.LENGTH_LONG).show()
+                Log.d("profile", state.error)
             }
 
             ProfileState.Loading -> {
-                binding.apply {
-                    avatarImage.squareShimmer.isVisible = true
-                    shimmerContainerUnder.isVisible = true
-                    shimmerContainerUnder.startShimmer()
-                    avatarImage.shimmerContainer.startShimmer()
-                }
+                showShimmer()
+                store.accept(ProfileEvent.Ui.LoadUser)
             }
 
             is ProfileState.Success -> {
                 setResources(state.profileData)
-                binding.apply {
-                    shimmerContainerUnder.isVisible = false
-                    shimmerContainerUnder.stopShimmer()
-                    avatarImage.squareShimmer.isVisible = false
-                    avatarImage.shimmerContainer.stopShimmer()
-                }
+                hideShimmer()
             }
 
             ProfileState.Init -> {}
+
+            is ProfileState.CacheSuccess -> {
+                setResources(state.profileData)
+                hideShimmer()
+                store.accept(ProfileEvent.Ui.LoadUser)
+            }
         }
     }
 
@@ -102,6 +99,24 @@ class ProfileFragment : ElmBaseFragment<
                 .load(profileData.url)
                 .override(LayoutParams.MATCH_PARENT)
                 .into(avatarImage.squareCardImage)
+        }
+    }
+
+    private fun showShimmer(){
+        binding.apply {
+            avatarImage.squareShimmer.isVisible = true
+            shimmerContainerUnder.isVisible = true
+            shimmerContainerUnder.startShimmer()
+            avatarImage.shimmerContainer.startShimmer()
+        }
+    }
+
+    private fun hideShimmer(){
+        binding.apply {
+            shimmerContainerUnder.isVisible = false
+            shimmerContainerUnder.stopShimmer()
+            avatarImage.squareShimmer.isVisible = false
+            avatarImage.shimmerContainer.stopShimmer()
         }
     }
 }

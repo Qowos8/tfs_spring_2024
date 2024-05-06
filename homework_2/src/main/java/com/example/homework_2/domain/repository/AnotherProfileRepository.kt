@@ -1,7 +1,10 @@
 package com.example.homework_2.domain.repository
 
 import com.example.homework_2.domain.entity.ProfileItem
+import kotlinx.coroutines.flow.Flow
 
 interface AnotherProfileRepository {
-    suspend fun getProfile(userId: Int): ProfileItem
+    fun getProfile(userId: Int): Flow<ProfileItem>
+
+    suspend fun updateProfile(userId: Int)
 }

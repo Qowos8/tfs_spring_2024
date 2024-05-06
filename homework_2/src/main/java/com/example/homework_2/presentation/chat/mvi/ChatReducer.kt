@@ -17,15 +17,23 @@ class ChatReducer @Inject constructor() : ScreenDslReducer<
 
             is ChatEvent.Domain.Error -> state { ChatState.Error(event.error) }
 
-            is ChatEvent.Domain.Success -> state { ChatState.Success(event.value) }
+            is ChatEvent.Domain.CacheSuccess -> state { ChatState.CacheSuccess(event.value) }
+
+            is ChatEvent.Domain.UpdateSuccess -> state {
+                //ChatState.Success(event.value)
+                ChatState.CacheSuccess(event.value)
+            }
+            is ChatEvent.Domain.CacheEmpty -> state { ChatState.CacheEmpty }
+            is ChatEvent.Domain.CacheLoaded -> state {ChatState.CacheLoaded}
         }
     }
 
     override fun Result.ui(event: ChatEvent.Ui) = when (event) {
-        is ChatEvent.Ui.LoadMessages -> commands { +ChatCommand.GetMessages(event.topicName, event.streamName)}
+        is ChatEvent.Ui.LoadMessages -> commands { +ChatCommand.GetDBMessages(event.topicName, event.streamId)}
         is ChatEvent.Ui.AddReaction -> commands{ +ChatCommand.AddReaction(event.messageId, event.emojiName)}
         is ChatEvent.Ui.DeleteReaction -> commands{ +ChatCommand.DeleteReaction(event.messageId, event.emojiName)}
         is ChatEvent.Ui.RegisterEvent -> commands{ +ChatCommand.RegisterEvent }
         is ChatEvent.Ui.SendMessage -> commands{ +ChatCommand.SendMessage(event.streamName, event.topicName, event.content)}
+        is ChatEvent.Ui.UpdateMessages -> commands { +ChatCommand.UpdateMessages(event.topicName, event.streamName, event.streamId) }
     }
 }

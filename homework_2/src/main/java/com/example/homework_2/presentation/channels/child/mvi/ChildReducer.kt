@@ -14,17 +14,22 @@ class ChildReducer @Inject constructor() : ScreenDslReducer<
     override fun Result.internal(event: ChildEvent.Domain) {
         when (event) {
 
-            ChildEvent.Domain.All.Loading -> state{ ChildState.StreamState.Loading }
+            ChildEvent.Domain.All.CacheEmpty -> state{ ChildState.StreamState.EmptyCache }
+            ChildEvent.Domain.All.Loading -> state {ChildState.StreamState.Loading}
             is ChildEvent.Domain.All.Error -> state{ ChildState.StreamState.Error(event.error)}
-            is ChildEvent.Domain.All.Success -> state{ ChildState.StreamState.Success(event.value)}
+            is ChildEvent.Domain.All.Success -> state{ ChildState.StreamState.Success}
+            is ChildEvent.Domain.All.CacheSuccess -> state{ ChildState.StreamState.CacheSuccess(event.value) }
 
-            ChildEvent.Domain.Sub.Loading -> state{ ChildState.StreamState.Loading}
+            ChildEvent.Domain.Sub.CacheEmpty -> state{ ChildState.StreamState.EmptyCache}
+            ChildEvent.Domain.Sub.Loading -> state {ChildState.StreamState.Loading}
             is ChildEvent.Domain.Sub.Error -> state{ ChildState.StreamState.Error(event.error)}
-            is ChildEvent.Domain.Sub.Success -> state{ ChildState.StreamState.Success(event.value)}
+            is ChildEvent.Domain.Sub.Success -> state{ ChildState.StreamState.Success}
+            is ChildEvent.Domain.Sub.CacheSuccess -> state{ ChildState.StreamState.CacheSuccess(event.value)}
 
-            ChildEvent.Domain.Topic.Loading -> state{ ChildState.TopicState.Loading}
+            ChildEvent.Domain.Topic.CacheEmpty -> state{ ChildState.TopicState.EmptyCache}
             is ChildEvent.Domain.Topic.Error -> state{ ChildState.TopicState.Error(event.error)}
             is ChildEvent.Domain.Topic.Success -> state{ ChildState.TopicState.Success(event.value)}
+            is ChildEvent.Domain.Topic.CacheSuccess -> state{ ChildState.TopicState.CacheSuccess(event.value)}
         }
     }
 
@@ -33,5 +38,8 @@ class ChildReducer @Inject constructor() : ScreenDslReducer<
         ChildEvent.Ui.LoadStreamSub -> commands { +ChildCommand.LoadSubStream }
         is ChildEvent.Ui.LoadTopic -> commands { +ChildCommand.LoadTopic(event.streamId) }
         is ChildEvent.Ui.SearchStream -> commands { +ChildCommand.SearchStream(event.query) }
+        ChildEvent.Ui.InitAll -> commands { +ChildCommand.LoadDBAllStream }
+        ChildEvent.Ui.InitSub -> commands { +ChildCommand.LoadDBSubStream }
+        is ChildEvent.Ui.InitTopic -> commands { +ChildCommand.LoadDBTopics(event.streamId) }
     }
 }

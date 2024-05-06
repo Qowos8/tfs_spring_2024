@@ -26,10 +26,14 @@ class ChildAdapter(private val onItemClick: (TopicItem) -> Unit) :
         holder: ViewHolder,
         position: Int,
     ) {
-        holder.bind(topics[position])
+        holder.bind(getItem(position))
     }
 
-    override fun getItemCount(): Int = topics.size
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getItemCount(): Int = currentList.size
 
     inner class ViewHolder(private val binding: ExpandableChildBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -49,8 +53,8 @@ class ChildAdapter(private val onItemClick: (TopicItem) -> Unit) :
         currentColor = color
     }
 
-    fun update(items: List<TopicItem>) {
-        topics = items
-        notifyDataSetChanged()
-    }
+//    fun update(items: List<TopicItem>) {
+//        topics = items
+//        notifyDataSetChanged()
+//    }
 }

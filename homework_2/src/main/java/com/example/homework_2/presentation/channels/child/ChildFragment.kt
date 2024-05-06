@@ -18,7 +18,6 @@ import com.example.homework_2.presentation.base.ElmBaseFragment
 import com.example.homework_2.presentation.channels.OnTopicClickListener
 import com.example.homework_2.presentation.channels.child.delegate.ChildAdapter
 import com.example.homework_2.presentation.channels.child.delegate.ParentAdapter
-import com.example.homework_2.presentation.channels.child.mvi.ChildActor
 import com.example.homework_2.presentation.channels.child.mvi.ChildEffect
 import com.example.homework_2.presentation.channels.child.mvi.ChildEvent
 import com.example.homework_2.presentation.channels.child.mvi.ChildState
@@ -41,14 +40,23 @@ class ChildFragment : ElmBaseFragment<
     lateinit var factory: ChildStoreFactory
 
     private lateinit var binding: ExpandableFragmentBinding
-    private var isSubscribe: Boolean = true
     private val handler = ObjectHandler
+
+    private var isSubscribe = true
+    private var isErrorShowed = false
     private var isCreate = false
-    private var currentStream = ""
     private var opened = false
+
+    private var currentStream = ""
     private var currentColor = 0
+    private var currentStreamId = 0
+    private var currentTopicId = 0
 
     private val viewModel: ChildViewModel by viewModels()
+
+//    private val streamAdapter: StreamAdapter by lazy {
+//        StreamAdapter(::openTopic, ::openStream)
+//    }
 
     private val childAdapter: ChildAdapter by lazy {
         ChildAdapter(::openTopic)
@@ -59,7 +67,6 @@ class ChildFragment : ElmBaseFragment<
 
     override val store: Store<ChildEvent, ChildEffect, ChildState>
             by elmStoreWithRenderer(elmRenderer = this) {
-                //ChildStoreFactory(ChildActor()).provide()
                 factory.provide()
             }
 
@@ -94,65 +101,84 @@ class ChildFragment : ElmBaseFragment<
     override fun onResume() {
         super.onResume()
         if (!isCreate) {
-            if (isSubscribe) store.accept(ChildEvent.Ui.LoadStreamSub)
-            else store.accept(ChildEvent.Ui.LoadStreamAll)
-            isCreate = true
+            if (isSubscribe) store.accept(ChildEvent.Ui.InitSub)
+            else store.accept(ChildEvent.Ui.InitAll)
         }
     }
 
     private fun trackState(state: ChildState) {
         when (state) {
-            ChildState.Init -> {}
+            ChildState.Init -> {
+
+            }
 
             ChildState.StreamState.Init -> {
                 binding.skelet.root.isVisible = true
             }
 
-            ChildState.StreamState.Loading -> {
+            ChildState.StreamState.EmptyCache -> {
                 binding.skelet.root.isVisible = true
+                if(isSubscribe) store.accept(ChildEvent.Ui.LoadStreamSub)
+                else store.accept(ChildEvent.Ui.LoadStreamAll)
             }
 
             is ChildState.StreamState.Error -> {
-                Snackbar.make(binding.root, state.errorMessage, Snackbar.LENGTH_LONG).show()
+                if (!isErrorShowed){
+                    Snackbar.make(binding.root, state.errorMessage, Snackbar.LENGTH_LONG).show()
+                    isErrorShowed = true
+                }
+                Log.d("shos", state.errorMessage)
             }
 
             is ChildState.StreamState.Success -> {
-                renderStream(state)
+                //parentAdapter.search(state.result)
+                //renderStream(state.result)
             }
 
             ChildState.TopicState.Init -> {}
-            ChildState.TopicState.Loading -> {}
+            ChildState.TopicState.EmptyCache -> {}
 
             is ChildState.TopicState.Error -> {
                 Snackbar.make(binding.root, state.error, Snackbar.LENGTH_LONG).show()
             }
 
             is ChildState.TopicState.Success -> {
-                renderTopic(state)
+                binding.renderTopic(state.topics)
             }
+
+            is ChildState.StreamState.CacheSuccess -> {
+                renderStream(state.result)
+                if(!isCreate){
+                    if (isSubscribe) store.accept(ChildEvent.Ui.LoadStreamSub)
+                    else store.accept(ChildEvent.Ui.LoadStreamAll)
+                    isCreate = true
+                }
+
+            }
+
+            is ChildState.TopicState.CacheSuccess -> {
+                binding.renderTopic(state.topics)
+                binding.skelet.root.isVisible = false
+            }
+
+            ChildState.StreamState.Loading -> {}
         }
     }
 
-    private fun renderStream(state: ChildState.StreamState.Success) {
-        if (state.result.isNotEmpty()) {
-            binding.apply {
-                skelet.root.isVisible = false
-                parentRecycler.isVisible = true
-                emptyListPhrase.isVisible = false
-                parentAdapter.search(state.result)
-            }
-        } else {
-            binding.apply {
-                parentRecycler.isVisible = false
-                skelet.root.isVisible = false
-                emptyListPhrase.isVisible = true
-            }
+    private fun renderStream(streams: List<StreamItem>) {
+        //if (state.result.isNotEmpty()) {
+        binding.apply {
+            skelet.root.isVisible = false
+            parentRecycler.isVisible = true
+            emptyListPhrase.isVisible = false
+            parentAdapter.search(streams)
         }
     }
 
-    private fun renderTopic(state: ChildState.TopicState.Success) {
-        if (binding.childRecycler.isVisible) {
-            childAdapter.update(state.topics)
+    private fun ExpandableFragmentBinding.renderTopic(topics: List<TopicItem>) {
+        if (childRecycler.isVisible) {
+            childAdapter.submitList(topics)
+            Log.d("shish", topics.toString())
             childAdapter.setColor(currentColor)
         }
     }
@@ -163,11 +189,16 @@ class ChildFragment : ElmBaseFragment<
         }
     }
 
-    private fun sendQuery(){
+    private fun sendQuery() {
         lifecycleScope.launch {
-            viewModel.queryState.collect{ state ->
-                when(state){
-                    is SearchState.Error -> Snackbar.make(binding.root, state.error, Snackbar.LENGTH_LONG).show()
+            viewModel.queryState.collect { state ->
+                when (state) {
+                    is SearchState.Error -> Snackbar.make(
+                        binding.root,
+                        state.error,
+                        Snackbar.LENGTH_LONG
+                    ).show()
+
                     SearchState.Init -> {}
                     is SearchState.Result -> store.accept(ChildEvent.Ui.SearchStream(state.query))
                 }
@@ -176,15 +207,17 @@ class ChildFragment : ElmBaseFragment<
     }
 
     private fun openTopic(topicItem: TopicItem) {
-        (activity as OnTopicClickListener).onTopicClicked(topicItem, currentStream)
+        (activity as OnTopicClickListener).onTopicClicked(topicItem, currentStream, currentStreamId, topicItem.name)
     }
 
     private fun openStream(streamItem: StreamItem) {
         if (currentStream != streamItem.name) {
+            store.accept(ChildEvent.Ui.InitTopic(streamItem.id))
             store.accept(ChildEvent.Ui.LoadTopic(streamItem.id))
             currentStream = streamItem.name
+            currentStreamId = streamItem.id
             currentColor = streamItem.color?.let { Color.parseColor(it) } ?: Color.GRAY
-            childAdapter.update(emptyList())
+            childAdapter.submitList(emptyList())
             binding.childRecycler.isVisible = true
             opened = true
         } else {
@@ -195,6 +228,18 @@ class ChildFragment : ElmBaseFragment<
                 currentColor = streamItem.color?.let { Color.parseColor(it) } ?: Color.GRAY
             }
         }
+    }
+
+    private fun ExpandableFragmentBinding.hideShimmer() {
+        parentRecycler.isVisible = false
+        skelet.root.isVisible = false
+        emptyListPhrase.isVisible = true
+    }
+
+    private fun ExpandableFragmentBinding.showShimmer() {
+        skelet.root.isVisible = false
+        parentRecycler.isVisible = true
+        emptyListPhrase.isVisible = false
     }
 
     companion object {

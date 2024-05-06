@@ -1,14 +1,17 @@
 package com.example.homework_2.presentation.chat.mvi
 
+import android.util.Log
 import com.example.homework_2.data.network.mapper.toDomain
 import com.example.homework_2.data.network.model.event.NarrowItem
 import com.example.homework_2.domain.entity.MessageItem
 import com.example.homework_2.domain.use_case.chat.DeleteReactionUseCase
 import com.example.homework_2.domain.use_case.chat.GetMessagesUseCase
+import com.example.homework_2.domain.use_case.chat.GetNextMessages
 import com.example.homework_2.domain.use_case.chat.RegisterEventUseCase
 import com.example.homework_2.domain.use_case.chat.SendMessageUseCase
 import com.example.homework_2.domain.use_case.chat.SendReactionUseCase
 import com.example.homework_2.domain.use_case.chat.TrackEventUseCase
+import com.example.homework_2.domain.use_case.chat.UpdateMessagesUseCase
 import com.example.homework_2.utils.runCatchingNonCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -25,9 +28,13 @@ class ChatActor @Inject constructor(
     private val registerEventUseCase: RegisterEventUseCase,
     private val trackEventUseCase: TrackEventUseCase,
     private val getMessagesUseCase: GetMessagesUseCase,
+    private val updateMessagesUseCase: UpdateMessagesUseCase,
+    private val getNextMessages: GetNextMessages,
 ) : Actor<ChatCommand, ChatEvent>() {
 
     private var currentId = ""
+    private var streamId: Int = 0
+    private var topicName: String = ""
 
     private var allMessages: MutableList<MessageItem> = mutableListOf()
     private var previousResponse: MutableList<MessageItem>? = null
@@ -46,30 +53,90 @@ class ChatActor @Inject constructor(
                 command.content
             )
 
-            is ChatCommand.GetMessages -> getMessages(command.streamName, command.topicName)
+            is ChatCommand.GetDBMessages -> getMessages(command.streamId, command.topicName)
+            is ChatCommand.UpdateMessages -> updateMessages(
+                streamName = command.streamName,
+                topicName = command.streamName,
+                streamId = command.streamId)
         }
     }
 
-    private fun getMessages(
+//    private fun getNextMessages(
+//        topicName: String,
+//        streamName: String,
+//        streamId: Int,
+//        topicId: Int,
+//    ): Flow<ChatEvent> {
+//        return flow {
+//            val narrow = Json.encodeToString(
+//                listOf(
+//                    NarrowItem(topicName, STREAM),
+//                    NarrowItem(streamName, TOPIC)
+//                )
+//            )
+//            emit(getMessagesUseCase(streamId, topicId))
+//        }.mapEvents(
+//            eventMapper = { messages ->
+//                allMessages = messages.toMutableList()
+//                previousResponse = messages.toMutableList()
+//                ChatEvent.Domain.Success(messages)
+//            },
+//            errorMapper = {
+//                ChatEvent.Domain.Error(it.message.toString())
+//            }
+//        )
+//    }
+
+    private fun getMessages(streamId: Int, topicName: String): Flow<ChatEvent> {
+        return getMessagesUseCase(streamId, topicName)
+            .mapEvents(
+                eventMapper = {
+                    this.streamId = streamId
+                    this.topicName = topicName
+                    if (it.isNotEmpty()){
+                        ChatEvent.Domain.CacheSuccess(it)
+                    }
+                    else{
+                        ChatEvent.Domain.CacheEmpty
+                    }
+                },
+                errorMapper = {
+                    ChatEvent.Domain.Error(it.message.toString())
+                }
+            )
+    }
+
+    private fun updateMessages(
         topicName: String,
         streamName: String,
+        streamId: Int,
     ): Flow<ChatEvent> {
         return flow {
             val narrow = Json.encodeToString(
                 listOf(
-                    NarrowItem(topicName, STREAM),
-                    NarrowItem(streamName, TOPIC)
+                    NarrowItem(streamName, STREAM),
+                    NarrowItem(topicName, TOPIC)
                 )
             )
-            emit(getMessagesUseCase(narrow = narrow))
-        }.mapEvents(
-            eventMapper = { messages ->
-                allMessages = messages.toMutableList()
-                previousResponse = messages.toMutableList()
-                ChatEvent.Domain.Success(messages)
+            runCatchingNonCancellation {
+                updateMessagesUseCase.invoke(narrow, streamId, topicName)
+            }.onSuccess {
+                emit(it)
+            }.onFailure {
+                throw Exception(it.printStackTrace().toString())
+            }
+        }.mapEvents (
+            eventMapper = { oldMessages ->
+                //if (oldMessages.isNotEmpty()) {
+                    ChatEvent.Domain.UpdateSuccess(oldMessages)
+               // }
+//                else{
+//                    ChatEvent.Domain.CacheLoaded
+//                }
+
             },
             errorMapper = {
-                ChatEvent.Domain.Error(it.message.toString())
+                ChatEvent.Domain.Error(it.message.toString() + "updateMessages")
             }
         )
     }
@@ -135,8 +202,9 @@ class ChatActor @Inject constructor(
             trackEventUseCase(currentId, TIMEOUT)
         }.onSuccess { eventResponse ->
             for (event in eventResponse.events) {
-                allMessages.add(event.message!!.toDomain())
-                flowCollector.emit(ChatEvent.Domain.Success(allMessages))
+                getNextMessages.invoke(streamId, topicName, event.message!!.toDomain())
+                //allMessages.add(event.message!!.toDomain())
+                flowCollector.emit(ChatEvent.Domain.CacheSuccess(allMessages))
             }
             previousResponse = allMessages
             registerEvent(flowCollector)

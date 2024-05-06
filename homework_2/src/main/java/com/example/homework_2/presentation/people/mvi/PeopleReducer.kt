@@ -15,13 +15,15 @@ class PeopleReducer @Inject constructor() : ScreenDslReducer<
 ) {
     override fun Result.internal(event: PeopleEvent.Domain) {
         when (event) {
-            PeopleEvent.Domain.Loading -> state { PeopleState.Loading }
             is PeopleEvent.Domain.Error -> state { PeopleState.Error(event.error) }
             is PeopleEvent.Domain.Success -> state { PeopleState.Success(event.value) }
+            PeopleEvent.Domain.CacheEmpty -> state { PeopleState.Loading }
+            is PeopleEvent.Domain.CacheSuccess -> state { PeopleState.CacheSuccess(event.value) }
         }
     }
 
     override fun Result.ui(event: PeopleEvent.Ui) = when (event) {
-        PeopleEvent.Ui.Init -> commands { +PeopleCommand.LoadPeople }
+        PeopleEvent.Ui.Init -> commands { +PeopleCommand.Init }
+        PeopleEvent.Ui.LoadUsers -> commands { +PeopleCommand.LoadPeople }
     }
 }

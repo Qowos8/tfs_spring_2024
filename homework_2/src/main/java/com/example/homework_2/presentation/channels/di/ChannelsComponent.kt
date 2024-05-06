@@ -10,6 +10,7 @@ import dagger.Component
     modules = [
         ChannelsRepositoryModule::class,
         ChannelsNetworkModule::class,
+        ChannelsDBModule::class
     ]
 )
 interface ChannelsComponent {

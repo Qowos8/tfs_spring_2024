@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import com.example.homework_2.databinding.ProfileFragmentBinding
+import com.example.homework_2.domain.entity.ProfileItem
 import com.example.homework_2.presentation.MainActivity
 import com.example.homework_2.presentation.base.ElmBaseActivity
 import com.example.homework_2.presentation.profile.another.mvi.AnotherProfileActor
@@ -31,9 +32,9 @@ class AnotherProfileActivity : ElmBaseActivity<
     lateinit var factory: AnotherProfileStoreFactory
 
     override val store: Store<AnotherProfileEvent, AnotherProfileEffect, AnotherProfileState>
-        by elmStoreWithRenderer(elmRenderer = this){
-            factory.provide()
-        }
+            by elmStoreWithRenderer(elmRenderer = this) {
+                factory.provide()
+            }
 
     override fun render(state: AnotherProfileState) {
         trackUser(state)
@@ -50,7 +51,7 @@ class AnotherProfileActivity : ElmBaseActivity<
         binding.toolbarProfile.backButton.setOnClickListener {
             finish()
         }
-        store.accept(AnotherProfileEvent.Ui.LoadUser(userItem))
+        store.accept(AnotherProfileEvent.Ui.Init(userItem))
     }
 
     private fun trackUser(state: AnotherProfileState) {
@@ -60,23 +61,32 @@ class AnotherProfileActivity : ElmBaseActivity<
             }
 
             AnotherProfileState.Loading -> {
-                showShimmer(binding)
+                binding.showShimmer()
             }
 
             is AnotherProfileState.Success -> {
-                binding.apply {
-                    userName.text = state.profileData.name
-                    Glide.with(avatarImage.squareCardImage)
-                        .load(state.profileData.url)
-                        .override(Target.SIZE_ORIGINAL)
-                        .override(ActionBar.LayoutParams.MATCH_PARENT)
-                        .into(avatarImage.squareCardImage)
-                    setStatus(state.profileData.isActive, this)
-                    hideShimmer(this)
-                }
+                setResources(state.profileData)
+                binding.hideShimmer()
             }
 
             AnotherProfileState.Init -> {}
+            is AnotherProfileState.CacheSuccess -> {
+                setResources(state.profileData)
+                store.accept(AnotherProfileEvent.Ui.LoadUser(userItem))
+                binding.hideShimmer()
+            }
+        }
+    }
+
+    private fun setResources(profileData: ProfileItem) {
+        binding.apply {
+            userName.text = profileData.name
+            Glide.with(avatarImage.squareCardImage)
+                .load(profileData.url)
+                .override(Target.SIZE_ORIGINAL)
+                .override(ActionBar.LayoutParams.MATCH_PARENT)
+                .into(avatarImage.squareCardImage)
+            setStatus(profileData.isActive, this)
         }
     }
 
@@ -92,22 +102,18 @@ class AnotherProfileActivity : ElmBaseActivity<
         }
     }
 
-    private fun hideShimmer(binding: ProfileFragmentBinding) {
-        binding.apply {
-            shimmerContainerUnder.isVisible = false
-            shimmerContainerUnder.stopShimmer()
-            avatarImage.squareShimmer.isVisible = false
-            avatarImage.shimmerContainer.stopShimmer()
-        }
+    private fun ProfileFragmentBinding.hideShimmer() {
+        shimmerContainerUnder.isVisible = false
+        shimmerContainerUnder.stopShimmer()
+        avatarImage.squareShimmer.isVisible = false
+        avatarImage.shimmerContainer.stopShimmer()
     }
 
-    private fun showShimmer(binding: ProfileFragmentBinding) {
-        binding.apply {
-            avatarImage.squareShimmer.isVisible = true
-            shimmerContainerUnder.isVisible = true
-            shimmerContainerUnder.startShimmer()
-            avatarImage.shimmerContainer.startShimmer()
-        }
+    private fun ProfileFragmentBinding.showShimmer() {
+        avatarImage.squareShimmer.isVisible = true
+        shimmerContainerUnder.isVisible = true
+        shimmerContainerUnder.startShimmer()
+        avatarImage.shimmerContainer.startShimmer()
     }
 
     private companion object {

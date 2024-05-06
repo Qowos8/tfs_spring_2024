@@ -4,6 +4,7 @@ import android.app.ActionBar
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
@@ -16,7 +17,7 @@ import com.example.homework_2.domain.entity.ProfileItem
 
 class PeopleAdapter(
     private val onItemClick: (ProfileItem) -> Unit,
-) : RecyclerView.Adapter<PeopleAdapter.PeopleViewHolder>() {
+) : ListAdapter<ProfileItem, PeopleAdapter.PeopleViewHolder>(PeopleDiffUtil()) {
 
     private var usersList: List<ProfileItem> = mutableListOf()
     private var statusList: PresenceResponse? = null
@@ -28,11 +29,14 @@ class PeopleAdapter(
     }
 
     override fun onBindViewHolder(holder: PeopleViewHolder, position: Int) {
-        val user = usersList[position]
-        holder.bind(user)
+        holder.bind(getItem(position))
     }
 
-    override fun getItemCount(): Int = usersList.size
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getItemCount(): Int = currentList.size
 
     inner class PeopleViewHolder(
         private val binding: PeopleComponentRecyclerBinding,
@@ -84,10 +88,10 @@ class PeopleAdapter(
         }
     }
 
-    fun update(newList: List<ProfileItem>) {
-        usersList = newList
-        notifyDataSetChanged()
-    }
+//    fun update(newList: List<ProfileItem>) {
+//        usersList = newList
+//        notifyDataSetChanged()
+//    }
 
     fun setStatus(status: PresenceResponse){
         statusList = status

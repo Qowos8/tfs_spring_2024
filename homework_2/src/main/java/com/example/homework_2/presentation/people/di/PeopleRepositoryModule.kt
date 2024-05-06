@@ -1,9 +1,11 @@
 package com.example.homework_2.presentation.people.di
 
-import com.example.homework_2.data.impl.PeopleRepositoryImpl
+import com.example.homework_2.data.repository_impl.PeopleRepositoryImpl
 import com.example.homework_2.domain.repository.PeopleRepository
-import com.example.homework_2.domain.use_case.people.PeopleUseCase
-import com.example.homework_2.domain.use_case.people.impl.PeopleUseCaseImpl
+import com.example.homework_2.domain.use_case.people.GetPeopleUseCase
+import com.example.homework_2.domain.use_case.people.UpdatePeopleUseCase
+import com.example.homework_2.domain.use_case.people.impl.GetPeopleUseCaseImpl
+import com.example.homework_2.domain.use_case.people.impl.UpdatePeopleUseCaseImpl
 import dagger.Binds
 import dagger.Module
 
@@ -14,5 +16,8 @@ interface PeopleRepositoryModule {
     fun providePeopleRepository(peopleRepositoryImpl: PeopleRepositoryImpl): PeopleRepository
 
     @Binds
-    fun providePeopleUseCase(peopleUseCaseImpl: PeopleUseCaseImpl): PeopleUseCase
+    fun provideGetNetworkPeopleUseCase(peopleUseCaseImpl: GetPeopleUseCaseImpl): GetPeopleUseCase
+
+    @Binds
+    fun provideInsertDBPeople(insertPeopleDBUseCaseImpl: UpdatePeopleUseCaseImpl): UpdatePeopleUseCase
 }

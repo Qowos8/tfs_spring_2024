@@ -5,6 +5,9 @@ import com.example.homework_2.domain.entity.TopicItem
 
 sealed class ChildEvent {
     sealed class Ui : ChildEvent() {
+        object InitAll: Ui()
+        object InitSub: Ui()
+        class InitTopic(val streamId: Int): Ui()
         object LoadStreamAll : Ui()
         object LoadStreamSub : Ui()
         class LoadTopic(val streamId: Int) : Ui()
@@ -14,21 +17,26 @@ sealed class ChildEvent {
     sealed class Domain : ChildEvent() {
 
         sealed class Sub : Domain() {
-            data class Success(val value: List<StreamItem>) : Sub()
+            object Success : Sub()
+            class CacheSuccess(val value: List<StreamItem>): Sub()
+            object CacheEmpty : Sub()
             object Loading : Sub()
-            data class Error(val error: String) : Sub()
+            class Error(val error: String) : Sub()
         }
 
         sealed class All : Domain() {
-            data class Success(val value: List<StreamItem>) : All()
+            class Success(val value: List<StreamItem>) : All()
+            class CacheSuccess(val value: List<StreamItem>): All()
+            object CacheEmpty : All()
             object Loading : All()
-            data class Error(val error: String) : All()
+            class Error(val error: String) : All()
         }
 
         sealed class Topic : Domain() {
-            data class Success(val value: List<TopicItem>) : Topic()
-            object Loading : Topic()
-            data class Error(val error: String) : Topic()
+            class Success(val value: List<TopicItem>) : Topic()
+            class CacheSuccess(val value: List<TopicItem>): Topic()
+            object CacheEmpty : Topic()
+            class Error(val error: String) : Topic()
         }
     }
 }

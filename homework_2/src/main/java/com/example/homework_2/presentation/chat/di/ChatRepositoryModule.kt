@@ -1,19 +1,23 @@
 package com.example.homework_2.presentation.chat.di
 
-import com.example.homework_2.data.impl.ChatRepositoryImpl
+import com.example.homework_2.data.repository_impl.ChatRepositoryImpl
 import com.example.homework_2.domain.repository.ChatRepository
 import com.example.homework_2.domain.use_case.chat.DeleteReactionUseCase
 import com.example.homework_2.domain.use_case.chat.GetMessagesUseCase
+import com.example.homework_2.domain.use_case.chat.GetNextMessages
 import com.example.homework_2.domain.use_case.chat.RegisterEventUseCase
 import com.example.homework_2.domain.use_case.chat.SendMessageUseCase
 import com.example.homework_2.domain.use_case.chat.SendReactionUseCase
 import com.example.homework_2.domain.use_case.chat.TrackEventUseCase
+import com.example.homework_2.domain.use_case.chat.UpdateMessagesUseCase
 import com.example.homework_2.domain.use_case.chat.impl.DeleteReactionUseCaseImpl
 import com.example.homework_2.domain.use_case.chat.impl.GetMessagesUseCaseImpl
+import com.example.homework_2.domain.use_case.chat.impl.GetNextMessagesUseCaseImpl
 import com.example.homework_2.domain.use_case.chat.impl.RegisterEventUseCaseImpl
 import com.example.homework_2.domain.use_case.chat.impl.SendMessageUseCaseImpl
 import com.example.homework_2.domain.use_case.chat.impl.SendReactionUseCaseImpl
 import com.example.homework_2.domain.use_case.chat.impl.TrackEventUseCaseImpl
+import com.example.homework_2.domain.use_case.chat.impl.UpdateMessagesUseCaseImpl
 import dagger.Binds
 import dagger.Module
 
@@ -40,4 +44,10 @@ interface ChatRepositoryModule {
 
     @Binds
     fun provideTrackEventUseCase(trackEventUseCaseImpl: TrackEventUseCaseImpl): TrackEventUseCase
+
+    @Binds
+    fun provideGetNextMessageUseCase(getNextMessagesUseCaseImpl: GetNextMessagesUseCaseImpl): GetNextMessages
+
+    @Binds
+    fun provideUpdateMessageUseCase(updateMessagesUseCaseImpl: UpdateMessagesUseCaseImpl): UpdateMessagesUseCase
 }

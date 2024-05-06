@@ -1,6 +1,7 @@
 package com.example.homework_2.presentation.people.di
 
 import com.example.homework_2.presentation.people.PeopleFragment
+import com.example.homework_2.presentation.profile.di.ProfileDBModule
 import com.example.homework_2.presentation.profile.di.ProfileNetworkModule
 import dagger.Component
 
@@ -10,7 +11,8 @@ import dagger.Component
     ],
     modules = [
         PeopleRepositoryModule::class,
-        ProfileNetworkModule::class
+        ProfileNetworkModule::class,
+        ProfileDBModule::class
     ]
 )
 interface PeopleComponent {

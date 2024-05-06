@@ -31,6 +31,10 @@ class PeopleFragment : ElmBaseFragment<
 
     private lateinit var binding: PeopleFragmentBinding
 
+    private var isCreate = false
+    private var isErrorShowed = false
+    private var isFirstLoad = true
+
     override val store: Store<PeopleEvent, PeopleEffect, PeopleState>
         by elmStoreWithRenderer(elmRenderer = this){
             factory.provide()
@@ -61,7 +65,8 @@ class PeopleFragment : ElmBaseFragment<
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.peopleRecycler.adapter = adapter
-        store.accept(PeopleEvent.Ui.Init)
+        binding.peopleRecycler.itemAnimator = null
+        if (!isCreate) store.accept(PeopleEvent.Ui.Init)
     }
 
     private fun openProfile(item: ProfileItem) {
@@ -71,7 +76,10 @@ class PeopleFragment : ElmBaseFragment<
     private fun trackState(state: PeopleState) {
         when (state) {
             is PeopleState.Error -> {
-                Snackbar.make(binding.root, state.error, Snackbar.LENGTH_LONG).show()
+                if (!isErrorShowed){
+                    Snackbar.make(binding.root, state.error, Snackbar.LENGTH_SHORT).show()
+                    isErrorShowed = true
+                }
             }
 
             PeopleState.Init -> {
@@ -83,8 +91,27 @@ class PeopleFragment : ElmBaseFragment<
             }
 
             is PeopleState.Success -> {
-                adapter.update(state.users)
+                adapter.submitList(state.users){
+                    if (isFirstLoad) {
+                        binding.peopleRecycler.scrollToPosition(0)
+                        isFirstLoad = false
+                    }
+                }
+            }
+
+            is PeopleState.CacheSuccess -> {
+                adapter.submitList(state.users){
+                    binding.peopleRecycler.scrollToPosition(0)
+                }
+                if(!isCreate) {
+                    store.accept(PeopleEvent.Ui.LoadUsers)
+                    isCreate = true
+                }
             }
         }
+    }
+
+    private companion object{
+        private const val CREATE_KEY = "created"
     }
 }

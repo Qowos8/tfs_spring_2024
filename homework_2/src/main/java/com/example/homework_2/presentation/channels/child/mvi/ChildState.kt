@@ -6,17 +6,20 @@ import com.example.homework_2.domain.entity.TopicItem
 sealed class ChildState {
     object Init : StreamState()
 
-    sealed class StreamState: ChildState() {
+    sealed class StreamState : ChildState() {
         object Init : StreamState()
         object Loading : StreamState()
-        class Success(val result: List<StreamItem>) : StreamState()
+        object EmptyCache : StreamState()
+        object Success : StreamState()
+        class CacheSuccess(val result: List<StreamItem>) : StreamState()
         class Error(val errorMessage: String) : StreamState()
     }
 
-    sealed class TopicState: ChildState() {
+    sealed class TopicState : ChildState() {
         object Init : TopicState()
-        object Loading: TopicState()
-        class Success(val topics: List<TopicItem>): TopicState()
-        class Error(val error: String): TopicState()
+        object EmptyCache : TopicState()
+        class Success(val topics: List<TopicItem>) : TopicState()
+        class CacheSuccess(val topics: List<TopicItem>) : TopicState()
+        class Error(val error: String) : TopicState()
     }
 }

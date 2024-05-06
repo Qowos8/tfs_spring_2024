@@ -4,6 +4,6 @@ import com.example.homework_2.domain.entity.TopicItem
 
 interface OnTopicClickListener {
 
-    fun onTopicClicked(topic: TopicItem, streamName: String)
+    fun onTopicClicked(topic: TopicItem, streamName: String, streamId: Int, topicName: String)
 
 }

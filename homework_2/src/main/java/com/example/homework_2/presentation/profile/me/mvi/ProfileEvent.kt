@@ -5,12 +5,15 @@ import com.example.homework_2.domain.entity.ProfileItem
 sealed interface ProfileEvent {
     sealed class Ui : ProfileEvent {
         object Init : Ui()
+        object LoadUser : Ui()
     }
 
     sealed interface Domain : ProfileEvent {
-        class Success(val value: ProfileItem) : Domain
+        class CacheSuccess(val value: ProfileItem): Domain
 
-        object Loading : Domain
+        object CacheEmpty : Domain
+
+        class Success(val value: ProfileItem) : Domain
 
         class Error(val error: String) : Domain
     }
