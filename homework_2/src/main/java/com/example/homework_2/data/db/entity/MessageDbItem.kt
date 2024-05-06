@@ -8,7 +8,7 @@ import androidx.room.Relation
 
 @Entity(tableName = "message")
 class MessageDbItem (
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     val id: Int,
     @ColumnInfo("stream_id")
     val streamId: Int,

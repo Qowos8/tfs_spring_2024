@@ -8,7 +8,7 @@ import javax.inject.Inject
 class UpdateMessagesUseCaseImpl @Inject constructor(
     private val repository: ChatRepository
 ): UpdateMessagesUseCase {
-    override suspend fun invoke(narrow: String, streamId: Int, topicName: String): List<MessageItem> {
-        return repository.updateMessages(narrow, streamId, topicName)
+    override suspend fun invoke(narrow: String, streamId: Int, topicName: String, nextCount: Int): List<MessageItem> {
+        return repository.updateMessages(narrow, streamId, topicName, nextCount)
     }
 }

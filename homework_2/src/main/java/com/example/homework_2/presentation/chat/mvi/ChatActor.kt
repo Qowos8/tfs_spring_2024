@@ -56,36 +56,11 @@ class ChatActor @Inject constructor(
             is ChatCommand.GetDBMessages -> getMessages(command.streamId, command.topicName)
             is ChatCommand.UpdateMessages -> updateMessages(
                 streamName = command.streamName,
-                topicName = command.streamName,
-                streamId = command.streamId)
+                topicName = command.topicName,
+                streamId = command.streamId,
+                nextCount = command.nextCount)
         }
     }
-
-//    private fun getNextMessages(
-//        topicName: String,
-//        streamName: String,
-//        streamId: Int,
-//        topicId: Int,
-//    ): Flow<ChatEvent> {
-//        return flow {
-//            val narrow = Json.encodeToString(
-//                listOf(
-//                    NarrowItem(topicName, STREAM),
-//                    NarrowItem(streamName, TOPIC)
-//                )
-//            )
-//            emit(getMessagesUseCase(streamId, topicId))
-//        }.mapEvents(
-//            eventMapper = { messages ->
-//                allMessages = messages.toMutableList()
-//                previousResponse = messages.toMutableList()
-//                ChatEvent.Domain.Success(messages)
-//            },
-//            errorMapper = {
-//                ChatEvent.Domain.Error(it.message.toString())
-//            }
-//        )
-//    }
 
     private fun getMessages(streamId: Int, topicName: String): Flow<ChatEvent> {
         return getMessagesUseCase(streamId, topicName)
@@ -110,6 +85,7 @@ class ChatActor @Inject constructor(
         topicName: String,
         streamName: String,
         streamId: Int,
+        nextCount: Int
     ): Flow<ChatEvent> {
         return flow {
             val narrow = Json.encodeToString(
@@ -119,7 +95,7 @@ class ChatActor @Inject constructor(
                 )
             )
             runCatchingNonCancellation {
-                updateMessagesUseCase.invoke(narrow, streamId, topicName)
+                updateMessagesUseCase.invoke(narrow, streamId, topicName, nextCount)
             }.onSuccess {
                 emit(it)
             }.onFailure {
@@ -127,13 +103,12 @@ class ChatActor @Inject constructor(
             }
         }.mapEvents (
             eventMapper = { oldMessages ->
-                //if (oldMessages.isNotEmpty()) {
+                if (oldMessages.isNotEmpty()) {
                     ChatEvent.Domain.UpdateSuccess(oldMessages)
-               // }
-//                else{
-//                    ChatEvent.Domain.CacheLoaded
-//                }
-
+                }
+                else{
+                    ChatEvent.Domain.CacheLoaded
+                }
             },
             errorMapper = {
                 ChatEvent.Domain.Error(it.message.toString() + "updateMessages")
@@ -203,7 +178,6 @@ class ChatActor @Inject constructor(
         }.onSuccess { eventResponse ->
             for (event in eventResponse.events) {
                 getNextMessages.invoke(streamId, topicName, event.message!!.toDomain())
-                //allMessages.add(event.message!!.toDomain())
                 flowCollector.emit(ChatEvent.Domain.CacheSuccess(allMessages))
             }
             previousResponse = allMessages

@@ -5,6 +5,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.homework_2.R
 import com.example.homework_2.data.network.model.chat.reaction.ReactionItemApi
 import com.example.homework_2.databinding.ChatFragmentBinding
@@ -36,7 +38,6 @@ class ChatActivity : ElmBaseActivity<
         ChatEvent,
         ChatEffect,
         ChatState>(), BottomSheetClickListener, OnViewClickListener {
-
     @Inject
     lateinit var factory: ChatStoreFactory
 
@@ -52,6 +53,8 @@ class ChatActivity : ElmBaseActivity<
     private var streamId = 0
     private var selectedMessageIndex = 0
     private var currentListCount = 0
+    private var isLoading = false
+    private var isFirstScroll = false
 
     override val store: Store<ChatEvent, ChatEffect, ChatState>
             by elmStoreWithRenderer(elmRenderer = this) {
@@ -72,7 +75,7 @@ class ChatActivity : ElmBaseActivity<
             addTextChangedListener()
             sendMessage()
             toolbar.apply { setToolBar(this) }
-            topicName.text = "Topic: #$topicNameString"
+            topicName.text = TOPIC_UP_NAME + topicNameString
             messageRecycler.adapter = mainAdapter
             messageRecycler.apply {
                 itemAnimator = null
@@ -85,6 +88,7 @@ class ChatActivity : ElmBaseActivity<
                 )
             }
         }
+        addScrollListener()
     }
 
     override fun render(state: ChatState) {
@@ -101,24 +105,28 @@ class ChatActivity : ElmBaseActivity<
             ChatState.Init -> {}
             ChatState.Loading -> {}
 
-            is ChatState.Success -> {
+            is ChatState.NetworkSuccess -> {
                 mainAdapter.submitList(convertToDelegate(state.messages))
-                messagesList.addAll(state.messages)
+                if(messagesList != state.messages){
+                    messagesList.addAll(state.messages)
+                }
+                if(state.messages.size == 1){
+                    scrollToEndList()
+                }
                 currentListCount = state.messages.size
-                binding.messageRecycler.postDelayed({
-                    binding.messageRecycler.scrollToPosition((mainAdapter.currentList.size) - 1)
-                }, 200)
+                isLoading = false
             }
 
             is ChatState.CacheSuccess -> {
                 mainAdapter.submitList(convertToDelegate(state.messages))
                 currentListCount = state.messages.size
+                scrollToEndList()
+                isLoading = false
                 Log.d("chat", state.messages.toString())
-                //if(currentListCount < 50) store.accept(ChatEvent.Ui.UpdateMessages(topicNameString, streamNameString, streamId))
             }
 
             ChatState.CacheEmpty -> {
-                store.accept(ChatEvent.Ui.UpdateMessages(topicNameString, streamNameString, streamId))
+                store.accept(ChatEvent.Ui.UpdateMessages(topicNameString, streamNameString, streamId, FIRST_LIMIT))
                 Log.d("chat", topicNameString + streamNameString + streamId)
             }
 
@@ -216,7 +224,6 @@ class ChatActivity : ElmBaseActivity<
                     resourceButton.visibility = View.VISIBLE
                 }
             }
-
             override fun afterTextChanged(s: Editable?) {}
         })
     }
@@ -244,11 +251,41 @@ class ChatActivity : ElmBaseActivity<
         bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
     }
 
+    private fun scrollToEndList(){
+        if (!isFirstScroll){
+            binding.messageRecycler.postDelayed({
+                binding.messageRecycler.scrollToPosition((mainAdapter.currentList.size) - 1)
+            }, 300)
+            isFirstScroll = true
+        }
+    }
+
+    private fun addScrollListener(){
+        binding.messageRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val lastVisibleElement = layoutManager.findFirstVisibleItemPosition()
+                if(lastVisibleElement == 5 && currentListCount!=0 && !isLoading){
+                    isLoading = true
+                    store.accept(ChatEvent.Ui.UpdateMessages(
+                        nextCount = currentListCount + 20,
+                        streamName = streamNameString,
+                        topicName = topicNameString,
+                        streamId = streamId)
+                    )
+                    Log.d("count", (currentListCount + 20).toString())
+                }
+            }
+        })
+    }
+
     companion object{
         private const val STREAM_NAME = "streamName"
         private const val TOPIC_NAME = "topicName"
         private const val STREAM_ID = "streamId"
-        private const val TOPIC_ID = "topicId"
         private const val REACTION_TYPE = "reaction"
+        private const val TOPIC_UP_NAME = "Topic: #"
+        private const val FIRST_LIMIT = 20
     }
 }

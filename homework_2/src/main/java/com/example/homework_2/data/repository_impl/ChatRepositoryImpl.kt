@@ -62,25 +62,31 @@ class ChatRepositoryImpl @Inject constructor(
         narrow: String,
         streamId: Int,
         topicName: String,
+        nextCount: Int,
     ): List<MessageItem> {
         val count = dao.getTopicsMessageCount(streamId, topicName)
-//        var oldMessages: List<MessageItem> = emptyList()
-//        if (count < 50) {
-//            val chatApi = if (count < DB_LIMIT) {
-//                api.getTopicMessages(narrow = narrow).messages.map { it.toDB(streamId) }
-//                    .takeLast(DB_LIMIT)
-//            } else {
-//                api.getTopicMessages(narrow = narrow).messages.map { it.toDB(streamId) }
-//                    .takeLast(DB_LIMIT - count)
-//            }
-//            if (chatApi.isNotEmpty()) {
-//                dao.insertMessagesWithLimit(chatApi)
-//            }
-//
-//        } else {
-            return api.getTopicMessages(narrow = narrow).messages.map { it.toDomain() }
-        //}
-        //return oldMessages
+        var oldMessages: List<MessageItem> = emptyList()
+        if (count < 50) {
+            if (count <= DB_LIMIT || count + DB_LIMIT < 50) {
+                dao.insertMessagesWithLimit(
+                    api.getTopicMessages(narrow = narrow, numBefore = nextCount).messages
+                        .map { it.toDB(streamId) }
+                        .take(DB_LIMIT)
+                )
+            } else if (count + DB_LIMIT > 50) {
+                dao.insertMessagesWithLimit(
+                    api.getTopicMessages(narrow = narrow, numBefore = nextCount).messages
+                        .map { it.toDB(streamId) }
+                        .take(count + DB_LIMIT - 50)
+                )
+            }
+        } else {
+            oldMessages = api.getTopicMessages(
+                narrow = narrow,
+                numBefore = nextCount
+            ).messages.map { it.toDomain() }
+        }
+        return oldMessages
     }
 
     override fun getMessages(streamId: Int, topicName: String): Flow<List<MessageItem>> {

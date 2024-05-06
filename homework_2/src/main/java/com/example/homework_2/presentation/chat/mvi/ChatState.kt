@@ -6,7 +6,7 @@ sealed class ChatState {
     object Loading : ChatState()
     object Init: ChatState()
     object CacheLoaded: ChatState()
-    class Success(val messages: List<MessageItem>): ChatState()
+    class NetworkSuccess(val messages: List<MessageItem>): ChatState()
     class CacheSuccess(val messages: List<MessageItem>): ChatState()
     object CacheEmpty: ChatState()
     class Error(val error: String): ChatState()

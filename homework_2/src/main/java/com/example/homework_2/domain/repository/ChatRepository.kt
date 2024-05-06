@@ -16,7 +16,7 @@ interface ChatRepository {
 
     suspend fun trackEvent(currentId: String, timeOut: Int): Events
 
-    suspend fun updateMessages(narrow: String, streamId: Int, topicName: String): List<MessageItem>
+    suspend fun updateMessages(narrow: String, streamId: Int, topicName: String, nextCount: Int): List<MessageItem>
 
     fun getMessages(streamId: Int, topicName: String): Flow<List<MessageItem>>
 

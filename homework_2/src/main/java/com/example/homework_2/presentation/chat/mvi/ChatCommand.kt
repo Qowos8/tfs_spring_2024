@@ -6,6 +6,7 @@ sealed class ChatCommand {
         val topicName: String,
         val streamName: String,
         val streamId: Int,
+        val nextCount: Int
     ): ChatCommand()
 
     class SendMessage(val streamName: String, val topicName: String, val content: String) :

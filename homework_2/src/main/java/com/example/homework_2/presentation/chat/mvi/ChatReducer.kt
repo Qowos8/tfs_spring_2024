@@ -19,11 +19,10 @@ class ChatReducer @Inject constructor() : ScreenDslReducer<
 
             is ChatEvent.Domain.CacheSuccess -> state { ChatState.CacheSuccess(event.value) }
 
-            is ChatEvent.Domain.UpdateSuccess -> state {
-                //ChatState.Success(event.value)
-                ChatState.CacheSuccess(event.value)
-            }
+            is ChatEvent.Domain.UpdateSuccess -> state { ChatState.NetworkSuccess(event.value) }
+
             is ChatEvent.Domain.CacheEmpty -> state { ChatState.CacheEmpty }
+
             is ChatEvent.Domain.CacheLoaded -> state {ChatState.CacheLoaded}
         }
     }
@@ -34,6 +33,6 @@ class ChatReducer @Inject constructor() : ScreenDslReducer<
         is ChatEvent.Ui.DeleteReaction -> commands{ +ChatCommand.DeleteReaction(event.messageId, event.emojiName)}
         is ChatEvent.Ui.RegisterEvent -> commands{ +ChatCommand.RegisterEvent }
         is ChatEvent.Ui.SendMessage -> commands{ +ChatCommand.SendMessage(event.streamName, event.topicName, event.content)}
-        is ChatEvent.Ui.UpdateMessages -> commands { +ChatCommand.UpdateMessages(event.topicName, event.streamName, event.streamId) }
+        is ChatEvent.Ui.UpdateMessages -> commands { +ChatCommand.UpdateMessages(event.topicName, event.streamName, event.streamId, event.nextCount) }
     }
 }

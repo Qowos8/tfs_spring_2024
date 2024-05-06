@@ -25,8 +25,8 @@ interface ChatApi {
     @GET("api/v1/messages")
     suspend fun getTopicMessages(
         @Query("anchor") anchor: String = "newest",
-        @Query("num_before") numBefore: Int = 100,
-        @Query("num_after") numAfter: Int = 10,
+        @Query("num_before") numBefore: Int = 20,
+        @Query("num_after") numAfter: Int = 0,
         @Query("narrow") narrow: String? = null,
     ): MessageResponse
 
