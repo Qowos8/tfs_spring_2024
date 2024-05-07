@@ -67,17 +67,14 @@ class ChatActivity : ElmBaseActivity<
         binding = ChatFragmentBinding.inflate(layoutInflater)
         setContentView(binding.root)
         getNames()
-
-        store.accept(ChatEvent.Ui.LoadMessages(topicNameString, streamId))
-        store.accept(ChatEvent.Ui.RegisterEvent)
+        initMessages()
         setAdapter()
         binding.apply {
             addTextChangedListener()
             sendMessage()
-            toolbar.apply { setToolBar(this) }
-            topicName.text = TOPIC_UP_NAME + topicNameString
-            messageRecycler.adapter = mainAdapter
+            setToolbarsNames()
             messageRecycler.apply {
+                adapter = mainAdapter
                 itemAnimator = null
                 addItemDecoration(
                     ItemDecoration(
@@ -98,7 +95,7 @@ class ChatActivity : ElmBaseActivity<
     private fun trackMessages(state: ChatState) {
         when (state) {
             is ChatState.Error -> {
-                Snackbar.make(binding.root, state.error, Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.root, state.error, Snackbar.LENGTH_SHORT).show()
                 Log.d("sij", state.error)
             }
 
@@ -122,15 +119,15 @@ class ChatActivity : ElmBaseActivity<
                 currentListCount = state.messages.size
                 scrollToEndList()
                 isLoading = false
-                Log.d("chat", state.messages.toString())
             }
 
             ChatState.CacheEmpty -> {
                 store.accept(ChatEvent.Ui.UpdateMessages(topicNameString, streamNameString, streamId, FIRST_LIMIT))
-                Log.d("chat", topicNameString + streamNameString + streamId)
             }
 
-            ChatState.CacheLoaded -> {  store.accept(ChatEvent.Ui.LoadMessages(topicNameString, streamId)) }
+            ChatState.CacheLoaded -> {
+                store.accept(ChatEvent.Ui.LoadMessages(topicNameString, streamId))
+            }
         }
     }
 
@@ -151,13 +148,9 @@ class ChatActivity : ElmBaseActivity<
 
     override fun onClick(messageId: Int, emojiName: String, count: Int) {
         when (count) {
-            1 -> {
-                store.accept(ChatEvent.Ui.AddReaction(messageId, emojiName))
-            }
+            1 -> store.accept(ChatEvent.Ui.AddReaction(messageId, emojiName))
 
-            0 -> {
-                store.accept(ChatEvent.Ui.DeleteReaction(messageId, emojiName))
-            }
+            0 -> store.accept(ChatEvent.Ui.DeleteReaction(messageId, emojiName))
         }
     }
 
@@ -191,7 +184,7 @@ class ChatActivity : ElmBaseActivity<
                 openBottomSheet()
                 selectedMessageIndex = messageItem.id
             },
-            this
+            context = this
         )
         companionDelegate = CompanionMessageDelegate(
             defaultEmojiService,
@@ -203,7 +196,7 @@ class ChatActivity : ElmBaseActivity<
                 openBottomSheet()
                 selectedMessageIndex = messageItem.id
             },
-            this
+            context = this
         )
         mainAdapter.addDelegate(userDelegate)
         mainAdapter.addDelegate(companionDelegate)
@@ -234,11 +227,21 @@ class ChatActivity : ElmBaseActivity<
         streamId = intent.getIntExtra(STREAM_ID, 0)
     }
 
+    private fun initMessages(){
+        store.accept(ChatEvent.Ui.LoadMessages(topicNameString, streamId))
+        store.accept(ChatEvent.Ui.RegisterEvent)
+    }
+
     private fun getDateString(): String {
         val simpleData = SimpleDateFormat("dd MMM", Locale.ENGLISH)
         val currentDate = Date()
         return simpleData.format(currentDate)
 
+    }
+
+    private fun ChatFragmentBinding.setToolbarsNames(){
+        toolbar.apply { setToolBar(this) }
+        topicName.text = TOPIC_UP_NAME + topicNameString
     }
 
     private fun setToolBar(binding: ToolbarFragmentBinding) {
@@ -266,7 +269,7 @@ class ChatActivity : ElmBaseActivity<
                 super.onScrolled(recyclerView, dx, dy)
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                 val lastVisibleElement = layoutManager.findFirstVisibleItemPosition()
-                if(lastVisibleElement == 5 && currentListCount!=0 && !isLoading){
+                if(lastVisibleElement == LAST_VISIBLE && currentListCount!=0 && !isLoading){
                     isLoading = true
                     store.accept(ChatEvent.Ui.UpdateMessages(
                         nextCount = currentListCount + 20,
@@ -287,5 +290,6 @@ class ChatActivity : ElmBaseActivity<
         private const val REACTION_TYPE = "reaction"
         private const val TOPIC_UP_NAME = "Topic: #"
         private const val FIRST_LIMIT = 20
+        private const val LAST_VISIBLE = 5
     }
 }
