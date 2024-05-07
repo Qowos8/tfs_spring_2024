@@ -44,8 +44,12 @@ class ProfileActor @Inject constructor(
             updateProfileUseCase
         }.mapEvents(
             errorMapper = {
-                ProfileEvent.Domain.Error(it.message.toString())
+                ProfileEvent.Domain.Error(NETWORK_ERROR)
             }
         )
+    }
+
+    private companion object{
+        private const val NETWORK_ERROR = "Network error"
     }
 }

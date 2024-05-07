@@ -1,9 +1,7 @@
 package com.example.homework_2.data.db.mapper.db
 
-import com.example.homework_2.data.db.entity.ProfileDbItem
 import com.example.homework_2.data.db.entity.StreamDbItem
 import com.example.homework_2.data.network.model.channels.stream.StreamItemApi
-import com.example.homework_2.data.network.model.profile.ProfileItemApi
 import com.example.homework_2.domain.entity.StreamItem
 
 fun StreamItem.toDB(isSub: Int): StreamDbItem {

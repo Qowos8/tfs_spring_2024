@@ -124,7 +124,7 @@ class ChildFragment : ElmBaseFragment<
 
             is ChildState.StreamState.Error -> {
                 if (!isErrorShowed){
-                    Snackbar.make(binding.root, state.errorMessage, Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, state.errorMessage, Snackbar.LENGTH_SHORT).show()
                     isErrorShowed = true
                 }
                 Log.d("shos", state.errorMessage)

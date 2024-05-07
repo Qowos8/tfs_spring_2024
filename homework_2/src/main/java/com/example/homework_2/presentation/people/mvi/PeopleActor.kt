@@ -24,7 +24,7 @@ class PeopleActor @Inject constructor(
             updatePeopleUseCase()
         }.mapEvents(
             errorMapper = {
-                PeopleEvent.Domain.Error("Network connection is out")
+                PeopleEvent.Domain.Error(NETWORK_ERROR)
             }
         )
     }
@@ -38,5 +38,9 @@ class PeopleActor @Inject constructor(
                 PeopleEvent.Domain.Error(it.message.toString())
             }
         )
+    }
+
+    private companion object{
+        private const val NETWORK_ERROR = "Network error"
     }
 }

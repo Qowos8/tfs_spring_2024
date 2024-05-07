@@ -66,7 +66,7 @@ class ProfileFragment : ElmBaseFragment<
     private fun setProfile(state: ProfileState) {
         when (state) {
             is ProfileState.Error -> {
-                Snackbar.make(binding.root, state.error, Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.root, state.error, Snackbar.LENGTH_SHORT).show()
                 Log.d("profile", state.error)
             }
 

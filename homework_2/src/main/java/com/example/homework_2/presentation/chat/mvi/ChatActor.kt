@@ -98,8 +98,6 @@ class ChatActor @Inject constructor(
                 updateMessagesUseCase.invoke(narrow, streamId, topicName, nextCount)
             }.onSuccess {
                 emit(it)
-            }.onFailure {
-                throw Exception(it.printStackTrace().toString())
             }
         }.mapEvents (
             eventMapper = { oldMessages ->
@@ -111,7 +109,7 @@ class ChatActor @Inject constructor(
                 }
             },
             errorMapper = {
-                ChatEvent.Domain.Error(it.message.toString() + "updateMessages")
+                ChatEvent.Domain.Error(NETWORK_ERROR + "updateMessages")
             }
         )
     }
@@ -168,7 +166,7 @@ class ChatActor @Inject constructor(
             currentId = it.id
             trackEvent(flowCollector)
         }.onFailure {
-            flowCollector.emit(ChatEvent.Domain.Error(it.message.toString() + "registerEvent"))
+            flowCollector.emit(ChatEvent.Domain.Error(NETWORK_ERROR + "registerEvent"))
         }
     }
 
@@ -184,11 +182,12 @@ class ChatActor @Inject constructor(
             registerEvent(flowCollector)
         }.onFailure { error ->
             registerEvent(flowCollector)
-            flowCollector.emit(ChatEvent.Domain.Error(error.message.toString() + "trackEvent"))
+            flowCollector.emit(ChatEvent.Domain.Error(NETWORK_ERROR + "trackEvent"))
         }
     }
 
     private companion object {
+        private const val NETWORK_ERROR = "Network error"
         private const val STREAM = "stream"
         private const val TOPIC = "topic"
         private const val MESSAGE = "message"

@@ -24,7 +24,7 @@ class AnotherProfileActor @Inject constructor(
             updateAnotherProfileUseCase.invoke(userId)
         }.mapEvents(
             errorMapper = {
-                AnotherProfileEvent.Domain.Error(it.message.toString())
+                AnotherProfileEvent.Domain.Error(NETWORK_ERROR)
             }
         )
     }
@@ -38,5 +38,9 @@ class AnotherProfileActor @Inject constructor(
                 AnotherProfileEvent.Domain.CacheEmpty
             }
         )
+    }
+
+    private companion object{
+        private const val NETWORK_ERROR = "Network error"
     }
 }

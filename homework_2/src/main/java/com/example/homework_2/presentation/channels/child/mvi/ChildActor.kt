@@ -48,7 +48,7 @@ class ChildActor @Inject constructor(
             updateAllStreamUseCase()
         }.mapEvents(
             errorMapper = {
-                ChildEvent.Domain.All.Error(it.message.toString())
+                ChildEvent.Domain.All.Error(ERROR_NETWORK)
             }
         )
     }
@@ -58,7 +58,7 @@ class ChildActor @Inject constructor(
             updateSubStreamUseCase()
         }.mapEvents(
             errorMapper = {
-                ChildEvent.Domain.Sub.Error(it.message.toString())
+                ChildEvent.Domain.Sub.Error(ERROR_NETWORK)
             }
         )
     }
@@ -68,7 +68,7 @@ class ChildActor @Inject constructor(
             updateTopicUseCase(streamId)
         }.mapEvents(
             errorMapper = {
-                ChildEvent.Domain.Topic.Error(it.message.toString())
+                ChildEvent.Domain.Topic.Error(ERROR_NETWORK)
             }
         )
     }
@@ -78,14 +78,14 @@ class ChildActor @Inject constructor(
                 when (query.length) {
                     0 -> emit(allItems)
                     in 1..SEARCH_QUERY_LENGTH_LIMIT -> emit(searchUseCase(query, allItems))
-                    else -> throw IllegalArgumentException("too many symbols")
+                    else -> throw IllegalArgumentException(SEARCH_ERROR)
                 }
             }.mapEvents(
                 eventMapper = {
                     ChildEvent.Domain.All.CacheSuccess(it)
                 },
                 errorMapper = {
-                    (ChildEvent.Domain.All.Error("Too much symbols"))
+                    (ChildEvent.Domain.All.Error(SEARCH_ERROR))
                 }
             )
                 .onStart {
@@ -108,7 +108,7 @@ class ChildActor @Inject constructor(
                     }
                 },
                 errorMapper = {
-                    ChildEvent.Domain.All.Error(it.message.toString())
+                    ChildEvent.Domain.All.Error(ERROR_NETWORK)
                 }
             )
     }
@@ -126,7 +126,7 @@ class ChildActor @Inject constructor(
                     }
                 },
                 errorMapper = {
-                    ChildEvent.Domain.Sub.Error(it.message.toString())
+                    ChildEvent.Domain.Sub.Error(ERROR_NETWORK)
                 }
             )
     }
@@ -142,12 +142,14 @@ class ChildActor @Inject constructor(
                     }
                 },
                 errorMapper = {
-                    ChildEvent.Domain.Topic.Error(it.message.toString())
+                    ChildEvent.Domain.Topic.Error(ERROR_NETWORK)
                 }
             )
     }
 
     private companion object {
         const val SEARCH_QUERY_LENGTH_LIMIT = 8
+        private const val ERROR_NETWORK = "Network error"
+        private const val SEARCH_ERROR = "Too much symbols"
     }
 }
