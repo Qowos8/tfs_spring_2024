@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/homework_1" />
             <option value="$PROJECT_DIR$/homework_2" />
+            <option value="$PROJECT_DIR$/homework_2/androidTest" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />
@@ -23,6 +24,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/homework_1" />
             <option value="$PROJECT_DIR$/homework_2" />
+            <option value="$PROJECT_DIR$/homework_2/androidTest" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

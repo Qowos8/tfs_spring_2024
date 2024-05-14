@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.homework_2.R
 import com.example.homework_2.data.network.model.chat.reaction.ReactionItemApi
-import com.example.homework_2.databinding.ChatFragmentBinding
+import com.example.homework_2.databinding.ChatActivityBinding
 import com.example.homework_2.databinding.ToolbarFragmentBinding
 import com.example.homework_2.domain.entity.MessageItem
 import com.example.homework_2.presentation.base.ElmBaseActivity
@@ -41,7 +41,7 @@ class ChatActivity : ElmBaseActivity<
     @Inject
     lateinit var factory: ChatStoreFactory
 
-    private lateinit var binding: ChatFragmentBinding
+    private lateinit var binding: ChatActivityBinding
     private val messagesList = mutableListOf<MessageItem>()
     private val mainAdapter: MainAdapter by lazy(LazyThreadSafetyMode.NONE) { MainAdapter() }
 
@@ -64,7 +64,7 @@ class ChatActivity : ElmBaseActivity<
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ChatComponent().inject(this)
-        binding = ChatFragmentBinding.inflate(layoutInflater)
+        binding = ChatActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         getNames()
         initMessages()
@@ -131,7 +131,7 @@ class ChatActivity : ElmBaseActivity<
         }
     }
 
-    private fun ChatFragmentBinding.sendMessage() {
+    private fun ChatActivityBinding.sendMessage() {
         if (messageButton.isEnabled) {
             messageButton.setOnClickListener {
                 store.accept(
@@ -203,7 +203,7 @@ class ChatActivity : ElmBaseActivity<
 
     }
 
-    private fun ChatFragmentBinding.addTextChangedListener() {
+    private fun ChatActivityBinding.addTextChangedListener() {
         messageInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -239,7 +239,7 @@ class ChatActivity : ElmBaseActivity<
 
     }
 
-    private fun ChatFragmentBinding.setToolbarsNames(){
+    private fun ChatActivityBinding.setToolbarsNames(){
         toolbar.apply { setToolBar(this) }
         topicName.text = TOPIC_UP_NAME + topicNameString
     }

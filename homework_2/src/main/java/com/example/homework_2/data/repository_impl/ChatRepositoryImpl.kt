@@ -65,28 +65,27 @@ class ChatRepositoryImpl @Inject constructor(
         nextCount: Int,
     ): List<MessageItem> {
         val count = dao.getTopicsMessageCount(streamId, topicName)
-        var oldMessages: List<MessageItem> = emptyList()
-        if (count < 50) {
-            if (count <= DB_LIMIT || count + DB_LIMIT < 50) {
-                dao.insertMessagesWithLimit(
-                    api.getTopicMessages(narrow = narrow, numBefore = nextCount).messages
-                        .map { it.toDB(streamId) }
-                        .take(DB_LIMIT)
-                )
-            } else if (count + DB_LIMIT > 50) {
-                dao.insertMessagesWithLimit(
-                    api.getTopicMessages(narrow = narrow, numBefore = nextCount).messages
-                        .map { it.toDB(streamId) }
-                        .take(count + DB_LIMIT - 50)
-                )
+
+        return if (count < NETWORK_LIMIT) {
+            if (count + DB_LIMIT < NETWORK_LIMIT) {
+                api.getTopicMessages(narrow = narrow, numBefore = nextCount).messages
+                    .take(DB_LIMIT)
+                    .map { it.toDB(streamId) }
+                    .also { dao.insertMessagesWithLimit(it)}
+            } else {
+                api.getTopicMessages(narrow = narrow, numBefore = nextCount).messages
+                    .take(count + DB_LIMIT - NETWORK_LIMIT)
+                    .map { it.toDB(streamId) }
+                    .also { dao.insertMessagesWithLimit(it)}
             }
+
+            emptyList()
         } else {
-            oldMessages = api.getTopicMessages(
+            api.getTopicMessages(
                 narrow = narrow,
                 numBefore = nextCount
             ).messages.map { it.toDomain() }
         }
-        return oldMessages
     }
 
     override fun getMessages(streamId: Int, topicName: String): Flow<List<MessageItem>> {
@@ -104,6 +103,7 @@ class ChatRepositoryImpl @Inject constructor(
     }
 
     private companion object {
-        private const val DB_LIMIT = 20
+        const val DB_LIMIT = 20
+        const val NETWORK_LIMIT = 50
     }
 }

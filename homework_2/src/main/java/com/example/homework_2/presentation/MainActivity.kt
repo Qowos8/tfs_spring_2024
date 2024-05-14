@@ -66,7 +66,8 @@ class MainActivity : AppCompatActivity(),
         topic: TopicItem,
         streamName: String,
         streamId: Int,
-        topicName: String) {
+        topicName: String
+    ) {
         router.navigateTo(Screens.Chat(topic, streamName, streamId))
         DataHolder.topicData = topic
     }

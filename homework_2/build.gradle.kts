@@ -31,13 +31,19 @@ android {
     viewBinding {
         enable = true
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
+
+//    testOptions {
+//        unitTests.all { it.useJUnitPlatform() }
+//        animationsDisabled = true
+//    }
 }
 
 dependencies {
@@ -47,11 +53,28 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.constraintlayout)
+
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.fragment.testing)
+    //test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
+
     androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation (libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.kaspresso)
+    androidTestImplementation(libs.androidx.espresso.intents)
+    implementation(libs.androidx.rules)
+    androidTestImplementation(libs.hamcrest)
+
+    //wireMock
+    debugImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.httpclient.android)
+    androidTestImplementation(libs.wiremock) {
+        exclude(group = "org.apache.httpcomponents", module = "httpclient")
+    }
+
     implementation(libs.cicerone)
     implementation (libs.shimmer)
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
@@ -67,20 +90,18 @@ dependencies {
 
     implementation (libs.kotlinx.serialization.json)
     implementation (libs.kotlinx.coroutines.android)
-
+    //elm
     implementation (libs.elmslie.core)
     implementation (libs.elmslie.android)
 
     implementation (libs.kotlinx.coroutines.core)
     implementation (libs.kotlinx.coroutines.android.v171)
-
+    //dagger
     implementation (libs.dagger)
     kapt(libs.dagger.compiler)
-
+    //room
     implementation (libs.androidx.room.runtime)
     kapt (libs.androidx.room.compiler)
     implementation (libs.androidx.room.ktx)
-
-    implementation (libs.androidx.paging.runtime.ktx)
 
 }

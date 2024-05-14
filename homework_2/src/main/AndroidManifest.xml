@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".presentation.profile.another.AnotherProfileActivity" />
-        <activity android:name=".presentation.chat.ChatActivity" />
+        <activity android:name=".presentation.chat.ChatActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>

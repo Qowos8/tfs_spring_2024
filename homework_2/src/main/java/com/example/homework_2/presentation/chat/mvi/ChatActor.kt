@@ -58,7 +58,8 @@ class ChatActor @Inject constructor(
                 streamName = command.streamName,
                 topicName = command.topicName,
                 streamId = command.streamId,
-                nextCount = command.nextCount)
+                nextCount = command.nextCount
+            )
         }
     }
 
@@ -68,10 +69,9 @@ class ChatActor @Inject constructor(
                 eventMapper = {
                     this.streamId = streamId
                     this.topicName = topicName
-                    if (it.isNotEmpty()){
+                    if (it.isNotEmpty()) {
                         ChatEvent.Domain.CacheSuccess(it)
-                    }
-                    else{
+                    } else {
                         ChatEvent.Domain.CacheEmpty
                     }
                 },
@@ -85,7 +85,7 @@ class ChatActor @Inject constructor(
         topicName: String,
         streamName: String,
         streamId: Int,
-        nextCount: Int
+        nextCount: Int,
     ): Flow<ChatEvent> {
         return flow {
             val narrow = Json.encodeToString(
@@ -99,12 +99,11 @@ class ChatActor @Inject constructor(
             }.onSuccess {
                 emit(it)
             }
-        }.mapEvents (
+        }.mapEvents(
             eventMapper = { oldMessages ->
                 if (oldMessages.isNotEmpty()) {
                     ChatEvent.Domain.UpdateSuccess(oldMessages)
-                }
-                else{
+                } else {
                     ChatEvent.Domain.CacheLoaded
                 }
             },
