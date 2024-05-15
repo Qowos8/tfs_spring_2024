@@ -10,6 +10,7 @@ import io.github.kakaocup.kakao.recycler.KRecyclerItem
 import io.github.kakaocup.kakao.recycler.KRecyclerView
 import io.github.kakaocup.kakao.text.KButton
 import io.github.kakaocup.kakao.text.KTextView
+import io.github.kakaocup.kakao.toolbar.KToolbar
 import org.hamcrest.Matcher
 
 object ChatActivityScreen: KScreen<ChatActivityScreen>() {
@@ -18,6 +19,8 @@ object ChatActivityScreen: KScreen<ChatActivityScreen>() {
 
     val sendButton = KButton {withId(R.id.message_button)}
 
+    val topicName = KTextView {withId(R.id.topic_name)}
+    val streamName = KToolbar{withId(R.id.toolbar)}
     val recycler = KRecyclerView(
         builder = { withId(R.id.message_recycler)},
         itemTypeBuilder = {
@@ -37,7 +40,7 @@ object ChatActivityScreen: KScreen<ChatActivityScreen>() {
         val messageRoot = KView { withId(R.id.messenger_layout) }
         val avatarImageView = KImageView { withId(R.id.avatar) }
         val userNameTextView = KTextView { withId(R.id.userNameTextView) }
-        val messageTextView = KTextView { withId(R.id.messageTextView) }
+        val messageTextView = KTextView { withId(R.id.companion_messageTextView) }
         val addButtonImageView = KImageView { withId(R.id.add_button) }
     }
 

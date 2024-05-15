@@ -1,8 +1,7 @@
 package com.example.homework_2.di
 
-import com.example.homework_2.di.app.AppDependencies
+import com.example.homework_2.presentation.chat.di.ChatDependencies
 import retrofit2.Retrofit
 
-interface TestChatDependencies : AppDependencies {
-    fun wireMockRetrofit(): Retrofit
+class TestChatDependencies(override val retrofit: Retrofit) : ChatDependencies{
 }

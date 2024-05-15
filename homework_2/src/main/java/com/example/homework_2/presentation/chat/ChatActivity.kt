@@ -240,7 +240,7 @@ class ChatActivity : ElmBaseActivity<
     }
 
     private fun ChatActivityBinding.setToolbarsNames(){
-        toolbar.apply { setToolBar(this) }
+        toolbarChat.apply { setToolBar(this) }
         topicName.text = TOPIC_UP_NAME + topicNameString
     }
 

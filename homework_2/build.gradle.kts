@@ -31,6 +31,9 @@ android {
     viewBinding {
         enable = true
     }
+    testOptions {
+        animationsDisabled = true
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -39,11 +42,6 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-
-//    testOptions {
-//        unitTests.all { it.useJUnitPlatform() }
-//        animationsDisabled = true
-//    }
 }
 
 dependencies {
@@ -99,6 +97,7 @@ dependencies {
     //dagger
     implementation (libs.dagger)
     kapt(libs.dagger.compiler)
+    kaptAndroidTest(libs.dagger)
     //room
     implementation (libs.androidx.room.runtime)
     kapt (libs.androidx.room.compiler)

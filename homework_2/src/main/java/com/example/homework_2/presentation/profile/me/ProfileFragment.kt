@@ -49,7 +49,7 @@ class ProfileFragment : ElmBaseFragment<
         savedInstanceState: Bundle?,
     ): View {
         binding = ProfileFragmentBinding.inflate(layoutInflater)
-        binding.toolbarProfile.toolbar.isVisible = false
+        binding.toolbarProfile.toolbarProfile.isVisible = false
         binding.toolbarProfile.backButton.isVisible = false
         return binding.root
     }

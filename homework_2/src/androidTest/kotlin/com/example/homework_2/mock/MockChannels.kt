@@ -6,12 +6,12 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.ok
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching
 
-class MockMessages(private val wireMockServer: WireMockServer) {
+class MockChannels(private val wireMockServer: WireMockServer) {
 
     private val matcher = WireMock.get(urlPattern)
 
-    fun withSingleMessages() {
-        wireMockServer.stubFor(matcher.willReturn(ok(fromAssets("messages/singleMessages.json"))))
+    fun withSingleChannels() {
+        wireMockServer.stubFor(matcher.willReturn(ok(fromAssets("channels/singleStream.json"))))
     }
 
     fun withEmptyList() {
@@ -20,10 +20,10 @@ class MockMessages(private val wireMockServer: WireMockServer) {
 
     companion object {
 
-        val urlPattern = urlPathMatching("api/v1/messages")
+        val urlPattern = urlPathMatching("api/v1/users/me/subscriptions")
 
-        fun WireMockServer.message(block: MockMessages.() -> Unit) {
-            MockMessages(this).apply(block)
+        fun WireMockServer.message(block: MockChannels.() -> Unit) {
+            MockChannels(this).apply(block)
         }
     }
 }

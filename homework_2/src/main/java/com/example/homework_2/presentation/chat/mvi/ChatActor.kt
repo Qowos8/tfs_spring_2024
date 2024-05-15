@@ -13,6 +13,7 @@ import com.example.homework_2.domain.use_case.chat.SendReactionUseCase
 import com.example.homework_2.domain.use_case.chat.TrackEventUseCase
 import com.example.homework_2.domain.use_case.chat.UpdateMessagesUseCase
 import com.example.homework_2.utils.runCatchingNonCancellation
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
@@ -165,7 +166,9 @@ class ChatActor @Inject constructor(
             currentId = it.id
             trackEvent(flowCollector)
         }.onFailure {
-            flowCollector.emit(ChatEvent.Domain.Error(NETWORK_ERROR + "registerEvent"))
+//            flowCollector.emit(ChatEvent.Domain.Error(NETWORK_ERROR + "registerEvent"))
+            delay(2000)
+            registerEvent(flowCollector)
         }
     }
 

@@ -9,7 +9,7 @@
     <string name="profile_name">Profile</string>
     <string name="search_hint">Search ...</string>
     <string name="users_hint">Users...</string>
-    <string name="exp_parent_sample"># general</string>
+    <string name="exp_parent_sample">general</string>
     <string name="name_profile_fragment">Profile</string>
     <string name="empty_list">No results for this search</string>
 

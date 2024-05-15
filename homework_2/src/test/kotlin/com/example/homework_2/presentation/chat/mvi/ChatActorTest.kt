@@ -1,7 +1,6 @@
 package com.example.homework_2.presentation.chat.mvi
 
 import com.example.homework_2.data.network.model.event.Events
-import com.example.homework_2.data.network.model.event.NarrowItem
 import com.example.homework_2.data.network.model.event.RegisterResponse
 import com.example.homework_2.domain.entity.MessageItem
 import kotlinx.coroutines.flow.first
@@ -59,11 +58,4 @@ class ChatActorTest {
             )
         )
     }
-
-//    @Test
-//    fun `execute WHEN command is UpdateMessages AND request is not Empty THEN return UpdateSuccess event`(){
-//        val narrow = listOf(
-//            NarrowItem("general", "stream"),
-//            NarrowItem("testing", "topic"))
-//    }
 }

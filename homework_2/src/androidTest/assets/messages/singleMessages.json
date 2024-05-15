@@ -5,11 +5,13 @@
     "messages": [
       {
         "id": 0,
+        "sender_full_name": "Ivanov Ivan",
         "content": "first message",
         "subject": "testing"
       },
       {
         "id": 1,
+        "sender_full_name": "Sedov Petr",
         "content": "second message",
         "subject": "testing",
         "reactions": [

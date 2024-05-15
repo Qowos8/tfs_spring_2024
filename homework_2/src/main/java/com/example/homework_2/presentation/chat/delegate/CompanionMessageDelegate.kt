@@ -51,7 +51,7 @@ class CompanionMessageDelegate(
         fun bind(message: MessageItem) {
             viewBinding.apply {
                 userNameTextView.text = message.userFullName
-                messageTextView.text =
+                companionMessageTextView.text =
                     message.content?.let { HtmlToString.convertToString(it).trim() }
 
                 flex.removeAllViews()
