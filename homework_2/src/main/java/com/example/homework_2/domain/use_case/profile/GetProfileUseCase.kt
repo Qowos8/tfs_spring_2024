@@ -4,5 +4,5 @@ import com.example.homework_2.domain.entity.ProfileItem
 import kotlinx.coroutines.flow.Flow
 
 interface GetProfileUseCase {
-    fun invoke(): Flow<ProfileItem>
+    operator fun invoke(): Flow<ProfileItem>
 }

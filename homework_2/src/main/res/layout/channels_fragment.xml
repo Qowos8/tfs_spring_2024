@@ -12,13 +12,14 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:boxStrokeColor="@color/black"
-        android:textColorHint="@color/white"
-        app:endIconTint="@color/white"
         app:endIconMode="custom"
+        android:textColorHint="@color/white"
+        app:boxStrokeColor="@color/black"
+        app:endIconTint="@color/white"
         app:endIconDrawable="@drawable/baseline_search_24"
         app:cursorColor="@color/white"
-        app:boxBackgroundColor="@color/bottom_background_color">
+        app:boxBackgroundColor="@color/bottom_background_color"
+        app:hintTextColor="@color/white">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/channels_edit_text"
@@ -26,6 +27,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/search_hint"
             android:textSize="22sp"
+            android:textColor="@color/white"
             android:paddingHorizontal="32dp"
             android:singleLine="true"
             android:textColorHint="@color/white"

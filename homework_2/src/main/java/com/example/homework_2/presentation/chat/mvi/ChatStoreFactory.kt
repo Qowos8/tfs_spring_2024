@@ -9,7 +9,7 @@ class ChatStoreFactory @Inject constructor(
 
     private val store by lazy {
         ElmStore(
-            initialState = ChatState.Init,
+            initialState = ChatHolderState(),
             reducer = reducer,
             actor = actor
         )

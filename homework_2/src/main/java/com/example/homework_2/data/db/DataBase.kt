@@ -17,7 +17,7 @@ import com.example.homework_2.data.db.entity.TopicDbItem
     StreamDbItem::class,
     TopicDbItem::class,
     ReactionDBItem::class
-], version = 7)
+], version = 8)
 abstract class DataBase: RoomDatabase() {
 
     abstract fun profileDao(): ProfileDao

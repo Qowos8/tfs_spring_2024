@@ -25,5 +25,5 @@ class MessageDbItem (
     @ColumnInfo("reactions")
     val reactions: String,
     @ColumnInfo("timestamp")
-    val timestamp: Long? = null,
+    val timestamp: Long,
 )

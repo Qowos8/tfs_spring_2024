@@ -16,12 +16,12 @@ class ChatActorTest {
     fun `execute WHEN command is GetMessages AND request is successful THEN return Success event`() = runTest {
         val streamId = 55355
         val topicName = "test"
-
+        val holderState = ChatHolderState(topicName = topicName, streamId = streamId)
         setupActor(
             getMessages = { streamId, topicName -> getSuccessMessages(streamId, topicName) }
         )
 
-        val resultFlow = actor.execute(ChatCommand.GetDBMessages(topicName, streamId))
+        val resultFlow = actor.execute(ChatCommand.GetDBMessages(holderState))
 
         val result = resultFlow.first()
 
@@ -46,7 +46,7 @@ class ChatActorTest {
                 )
             },
             updateMessagesUseCase = { _, _, _, _ -> emptyList() },
-            getNextMessages = { _, _, _ -> },
+            getNextMessagesUseCase = { _, _, _ -> },
         )
     }
 
@@ -55,6 +55,7 @@ class ChatActorTest {
             MessageItem(
                 id = streamId,
                 topicName = topicName,
+                timestamp = 0
             )
         )
     }

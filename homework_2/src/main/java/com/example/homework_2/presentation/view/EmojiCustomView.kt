@@ -38,7 +38,7 @@ class EmojiCustomView @JvmOverloads constructor(
 
     private val textPaint = TextPaint().apply {
         color = Color.WHITE
-        textSize = 24f.sp(context)
+        textSize = 16f.sp(context)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

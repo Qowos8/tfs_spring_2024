@@ -4,8 +4,8 @@ import com.example.homework_2.domain.entity.ProfileItem
 
 sealed class AnotherProfileEvent {
     sealed class Ui : AnotherProfileEvent() {
-        class Init(val userId: Int): Ui()
-        class LoadUser(val userId:Int): Ui()
+        class LoadDBUser(val userId: Int): Ui()
+        class UpdateUser(val userId:Int): Ui()
     }
 
     sealed class Domain : AnotherProfileEvent() {

@@ -7,4 +7,7 @@ interface PeopleRepository {
     fun getPeople(): Flow<List<ProfileItem>>
 
     suspend fun updatePeople()
+
+    suspend fun searchUsers(query: String, initial: List<ProfileItem>): List<ProfileItem>
+
 }

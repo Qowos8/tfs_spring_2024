@@ -5,11 +5,9 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.provider.CalendarContract
-import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.homework_1.KeyModule.ACTION_NAME
 import com.example.homework_1.KeyModule.DATA_KEY
-import java.lang.RuntimeException
 
 internal class CalendarService : Service() {
 
@@ -38,13 +36,9 @@ internal class CalendarService : Service() {
                         eventDataList.add(title)
                     }
                     sendEvents(ArrayList(eventDataList))
-                } else {
-                    Log.e("CalendarService", "Index not found")
                 }
             }
             cursor.close()
-        } else {
-            Log.e("CalendarService", "Cursor is empty")
         }
         return START_NOT_STICKY
     }

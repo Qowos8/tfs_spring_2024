@@ -1,12 +1,11 @@
 package com.example.homework_2.presentation.chat.mvi
 
-import android.util.Log
 import com.example.homework_2.data.network.mapper.toDomain
 import com.example.homework_2.data.network.model.event.NarrowItem
 import com.example.homework_2.domain.entity.MessageItem
 import com.example.homework_2.domain.use_case.chat.DeleteReactionUseCase
 import com.example.homework_2.domain.use_case.chat.GetMessagesUseCase
-import com.example.homework_2.domain.use_case.chat.GetNextMessages
+import com.example.homework_2.domain.use_case.chat.GetNextMessagesUseCase
 import com.example.homework_2.domain.use_case.chat.RegisterEventUseCase
 import com.example.homework_2.domain.use_case.chat.SendMessageUseCase
 import com.example.homework_2.domain.use_case.chat.SendReactionUseCase
@@ -30,46 +29,37 @@ class ChatActor @Inject constructor(
     private val trackEventUseCase: TrackEventUseCase,
     private val getMessagesUseCase: GetMessagesUseCase,
     private val updateMessagesUseCase: UpdateMessagesUseCase,
-    private val getNextMessages: GetNextMessages,
+    private val getNextMessagesUseCase: GetNextMessagesUseCase,
 ) : Actor<ChatCommand, ChatEvent>() {
-
-    private var currentId = ""
-    private var streamId: Int = 0
-    private var topicName: String = ""
-
     private var allMessages: MutableList<MessageItem> = mutableListOf()
-    private var previousResponse: MutableList<MessageItem>? = null
 
     override fun execute(command: ChatCommand): Flow<ChatEvent> {
         return when (command) {
-            is ChatCommand.RegisterEvent -> flow { registerEvent(this) }
+            is ChatCommand.RegisterEvent -> flow {
+                registerEvent(this, command.state)
+            }
 
             is ChatCommand.DeleteReaction -> deleteReaction(command.emojiName, command.messageId)
 
             is ChatCommand.AddReaction -> sendReaction(command.emojiName, command.messageId)
 
-            is ChatCommand.SendMessage -> sendMessage(
-                command.streamName,
-                command.topicName,
-                command.content
-            )
+            is ChatCommand.SendMessage -> sendMessage(command.state, command.content)
 
-            is ChatCommand.GetDBMessages -> getMessages(command.streamId, command.topicName)
+            is ChatCommand.GetDBMessages -> getMessages(command.state)
+
             is ChatCommand.UpdateMessages -> updateMessages(
-                streamName = command.streamName,
-                topicName = command.topicName,
-                streamId = command.streamId,
-                nextCount = command.nextCount
+                command.state,
+                command.nextCount
             )
         }
     }
 
-    private fun getMessages(streamId: Int, topicName: String): Flow<ChatEvent> {
-        return getMessagesUseCase(streamId, topicName)
+    private fun getMessages(
+        state: ChatHolderState,
+    ): Flow<ChatEvent> {
+        return getMessagesUseCase(state.streamId, state.topicName)
             .mapEvents(
                 eventMapper = {
-                    this.streamId = streamId
-                    this.topicName = topicName
                     if (it.isNotEmpty()) {
                         ChatEvent.Domain.CacheSuccess(it)
                     } else {
@@ -77,26 +67,26 @@ class ChatActor @Inject constructor(
                     }
                 },
                 errorMapper = {
-                    ChatEvent.Domain.Error(it.message.toString())
+                    ChatEvent.Domain.Error(NETWORK_ERROR)
                 }
             )
     }
 
     private fun updateMessages(
-        topicName: String,
-        streamName: String,
-        streamId: Int,
+        state: ChatHolderState,
         nextCount: Int,
     ): Flow<ChatEvent> {
         return flow {
             val narrow = Json.encodeToString(
                 listOf(
-                    NarrowItem(streamName, STREAM),
-                    NarrowItem(topicName, TOPIC)
+                    NarrowItem(state.streamName, STREAM),
+                    NarrowItem(state.topicName, TOPIC)
                 )
             )
             runCatchingNonCancellation {
-                updateMessagesUseCase.invoke(narrow, streamId, topicName, nextCount)
+                updateMessagesUseCase.invoke(
+                    narrow, state.streamId, state.topicName, nextCount
+                )
             }.onSuccess {
                 emit(it)
             }
@@ -109,21 +99,25 @@ class ChatActor @Inject constructor(
                 }
             },
             errorMapper = {
-                ChatEvent.Domain.Error(NETWORK_ERROR + "updateMessages")
+                ChatEvent.Domain.Error(NETWORK_ERROR)
             }
         )
     }
 
     private fun sendMessage(
-        streamName: String,
-        topicName: String,
+        state: ChatHolderState,
         content: String,
     ): Flow<ChatEvent> {
         return flow {
-            emit(sendMessageUseCase(streamName, topicName, content))
+            emit(
+                sendMessageUseCase(
+                    state.streamName,
+                    state.topicName, content
+                )
+            )
         }.mapEvents(
             errorMapper = {
-                ChatEvent.Domain.Error(it.message.toString())
+                ChatEvent.Domain.Error(NETWORK_ERROR)
             }
         )
     }
@@ -133,10 +127,15 @@ class ChatActor @Inject constructor(
         messageId: Int,
     ): Flow<ChatEvent> {
         return flow {
-            emit(sendReactionUseCase(emojiName, messageId))
+            emit(
+                sendReactionUseCase(
+                    emojiName = emojiName,
+                    messageId = messageId
+                )
+            )
         }.mapEvents(
             errorMapper = {
-                ChatEvent.Domain.Error(it.message.toString())
+                ChatEvent.Domain.Error(NETWORK_ERROR)
             }
         )
     }
@@ -149,13 +148,14 @@ class ChatActor @Inject constructor(
             emit(deleteReactionUseCase(emojiName, messageId))
         }.mapEvents(
             errorMapper = {
-                ChatEvent.Domain.Error(it.message.toString())
+                ChatEvent.Domain.Error(NETWORK_ERROR)
             }
         )
     }
 
     private suspend fun registerEvent(
         flowCollector: FlowCollector<ChatEvent>,
+        state: ChatHolderState,
     ) {
         runCatchingNonCancellation {
             registerEventUseCase(
@@ -163,28 +163,31 @@ class ChatActor @Inject constructor(
                 eventTypes = Json.encodeToString(TYPES)
             )
         }.onSuccess {
-            currentId = it.id
-            trackEvent(flowCollector)
+            trackEvent(flowCollector, it.id, state)
         }.onFailure {
-//            flowCollector.emit(ChatEvent.Domain.Error(NETWORK_ERROR + "registerEvent"))
             delay(2000)
-            registerEvent(flowCollector)
+            registerEvent(flowCollector, state)
         }
     }
 
-    private suspend fun trackEvent(flowCollector: FlowCollector<ChatEvent>) {
+    private suspend fun trackEvent(
+        flowCollector: FlowCollector<ChatEvent>,
+        registerId: String,
+        state: ChatHolderState,
+    ) {
         runCatchingNonCancellation {
-            trackEventUseCase(currentId, TIMEOUT)
+            trackEventUseCase(registerId, TIMEOUT)
         }.onSuccess { eventResponse ->
             for (event in eventResponse.events) {
-                getNextMessages.invoke(streamId, topicName, event.message!!.toDomain())
+                getNextMessagesUseCase.invoke(
+                    state.streamId, state.topicName, event.message!!.toDomain()
+                )
                 flowCollector.emit(ChatEvent.Domain.CacheSuccess(allMessages))
             }
-            previousResponse = allMessages
-            registerEvent(flowCollector)
+            registerEvent(flowCollector, state)
         }.onFailure { error ->
-            registerEvent(flowCollector)
-            flowCollector.emit(ChatEvent.Domain.Error(NETWORK_ERROR + "trackEvent"))
+            registerEvent(flowCollector, state)
+            flowCollector.emit(ChatEvent.Domain.Error(NETWORK_ERROR))
         }
     }
 

@@ -6,9 +6,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ReactionItemApi(
     @SerialName("emoji_code")
-    val emojiCode: String? ,
+    val emojiCode: String ,
     @SerialName("emoji_name")
-    val emojiName: String? ,
+    val emojiName: String ,
     @SerialName("user_id")
     val userId: Int? ,
     @SerialName("reaction_type")

@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface ChannelsRepository {
 
     suspend fun searchStream(query: String, initial: List<StreamItem>): List<StreamItem>
+    suspend fun createStream(name: String, description: String = "")
 
     fun getAll(): Flow<List<StreamItem>>
     fun getSub(): Flow<List<StreamItem>>

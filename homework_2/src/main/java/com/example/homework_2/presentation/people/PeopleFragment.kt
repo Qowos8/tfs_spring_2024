@@ -2,49 +2,44 @@ package com.example.homework_2.presentation.people
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.homework_2.R
+import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.homework_2.databinding.PeopleFragmentBinding
 import com.example.homework_2.domain.entity.ProfileItem
-import com.example.homework_2.presentation.base.ElmBaseFragment
 import com.example.homework_2.presentation.people.di.PeopleComponent
-import com.example.homework_2.presentation.people.mvi.PeopleActor
-import com.example.homework_2.presentation.people.mvi.PeopleEffect
-import com.example.homework_2.presentation.people.mvi.PeopleEvent
 import com.example.homework_2.presentation.people.mvi.PeopleState
 import com.example.homework_2.presentation.people.mvi.PeopleStoreFactory
+import com.example.homework_2.presentation.people.search.PeopleSearchState
+import com.example.homework_2.presentation.people.search.PeopleViewModel
+import com.example.homework_2.presentation.people.search.PeopleViewModelFactory
 import com.google.android.material.snackbar.Snackbar
-import vivid.money.elmslie.android.renderer.elmStoreWithRenderer
-import vivid.money.elmslie.core.store.Store
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class PeopleFragment : ElmBaseFragment<
-        PeopleEvent,
-        PeopleEffect,
-        PeopleState>(R.layout.people_fragment) {
+class PeopleFragment : Fragment() {
 
     @Inject
     lateinit var factory: PeopleStoreFactory
 
+    @Inject
+    lateinit var viewModelFactory: PeopleViewModelFactory
+
     private lateinit var binding: PeopleFragmentBinding
 
-    private var isCreate = false
-    private var isErrorShowed = false
-    private var isFirstLoad = true
-
-    override val store: Store<PeopleEvent, PeopleEffect, PeopleState>
-        by elmStoreWithRenderer(elmRenderer = this){
-            factory.provide()
-        }
-
-    override fun render(state: PeopleState) {
-        trackState(state)
+    private val viewModel: PeopleViewModel by viewModels {
+        viewModelFactory
     }
 
-    private val adapter: PeopleAdapter by lazy {
+    private val peopleAdapter: PeopleAdapter by lazy {
         PeopleAdapter(::openProfile)
     }
 
@@ -64,54 +59,81 @@ class PeopleFragment : ElmBaseFragment<
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.peopleRecycler.adapter = adapter
-        binding.peopleRecycler.itemAnimator = null
-        if (!isCreate) store.accept(PeopleEvent.Ui.Init)
+        binding.setupRecycler()
+        render()
+        binding.sendQuery()
+        collectResultQuery()
     }
 
-    private fun openProfile(item: ProfileItem) {
-        (activity as OnUserClickListener).onUserClicked(item.id)
-    }
+    private fun render() {
+        viewModel.profileState.onEach { state ->
+            when (state) {
+                PeopleState.Init -> Unit
 
-    private fun trackState(state: PeopleState) {
-        when (state) {
-            is PeopleState.Error -> {
-                if (!isErrorShowed){
+                PeopleState.Loading -> Unit
+
+                is PeopleState.Error -> {
                     Snackbar.make(binding.root, state.error, Snackbar.LENGTH_SHORT).show()
-                    isErrorShowed = true
                 }
-            }
 
-            PeopleState.Init -> {
-
-            }
-
-            PeopleState.Loading -> {
-
-            }
-
-            is PeopleState.Success -> {
-                adapter.submitList(state.users){
-                    if (isFirstLoad) {
+                is PeopleState.CacheSuccess -> {
+                    peopleAdapter.submitList(state.users) {
                         binding.peopleRecycler.scrollToPosition(0)
-                        isFirstLoad = false
+                    }
+                    if (peopleAdapter.currentList.isEmpty() || peopleAdapter.currentList.size <= 1) {
+                        viewModel.loadPeople()
                     }
                 }
             }
+        }.launchIn(lifecycleScope)
+    }
 
-            is PeopleState.CacheSuccess -> {
-                adapter.submitList(state.users){
-                    binding.peopleRecycler.scrollToPosition(0)
-                }
-                if(!isCreate) {
-                    store.accept(PeopleEvent.Ui.LoadUsers)
-                    isCreate = true
+    private fun PeopleFragmentBinding.sendQuery() {
+        usersInput.addTextChangedListener {
+            lifecycleScope.launch {
+                it.let { query ->
+                    if (query != null) {
+                        if (query.isNotEmpty()){
+                            viewModel.currentSearch.emit(query.toString())
+                        }
+                    }
                 }
             }
         }
     }
 
-    private companion object{
-        private const val CREATE_KEY = "created"
+    private fun collectResultQuery() {
+        viewModel.queryState.onEach { state ->
+            when (state) {
+                is PeopleSearchState.Error -> Snackbar.make(
+                    binding.root,
+                    state.error,
+                    Snackbar.LENGTH_SHORT
+                ).show()
+
+                PeopleSearchState.Init -> Unit
+                is PeopleSearchState.Result -> {
+                    viewModel.search(state.query)
+                }
+            }
+        }.launchIn(lifecycleScope)
+    }
+
+    private fun PeopleFragmentBinding.setupRecycler() {
+        peopleRecycler.apply {
+            adapter = peopleAdapter
+            itemAnimator = null
+            layoutManager = LinearLayoutManager(
+                requireContext(),
+                RecyclerView.VERTICAL,
+                false
+            ).apply {
+                stackFromEnd = true
+            }
+        }
+    }
+
+    private fun openProfile(item: ProfileItem) {
+        (activity as OnUserClickListener).onUserClicked(item.id)
     }
 }

@@ -5,35 +5,28 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/card_shimmer"
+            android:layout_width="185dp"
+            android:layout_height="185dp"
+            android:background="@drawable/shimmer_shape"/>
+    </com.facebook.shimmer.ShimmerFrameLayout>
     <androidx.cardview.widget.CardView
         android:id="@+id/square_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardCornerRadius="25dp">
+        app:cardCornerRadius="25dp"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/square_card_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/black" />
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/square_shimmer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardCornerRadius="25dp">
-
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/shimmer_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <View
-                android:id="@+id/card_shimmer"
-                android:layout_width="185dp"
-                android:layout_height="185dp"
-                android:background="@drawable/shimmer_shape" />
-        </com.facebook.shimmer.ShimmerFrameLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>

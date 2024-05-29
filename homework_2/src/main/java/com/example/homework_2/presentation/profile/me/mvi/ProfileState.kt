@@ -7,9 +7,11 @@ sealed class ProfileState {
 
     object Loading : ProfileState()
 
-    data class Success(val profileData: ProfileItem) : ProfileState()
-
     data class CacheSuccess(val profileData: ProfileItem) : ProfileState()
 
     data class Error(val error: String) : ProfileState()
+
+    object CacheEmpty: ProfileState()
+
+    object CacheLoaded: ProfileState()
 }

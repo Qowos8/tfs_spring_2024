@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.rule.IntentsRule
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import org.junit.rules.RuleChain
 import org.junit.rules.TestRule
@@ -17,7 +18,7 @@ class ActivityRuleUtils<T : Activity>(
     private val configuration: Application.() -> Unit
 ) : TestRule {
 
-    val wiremockRule = WireMockRule()
+    val wiremockRule = WireMockRule(WireMockConfiguration.wireMockConfig().port(8080))
     val activityScenarioRule = ActivityScenarioRule<T>(startActivityIntent)
     private val intentsRule = IntentsRule()
 
@@ -25,7 +26,7 @@ class ActivityRuleUtils<T : Activity>(
         return RuleChain.outerRule(intentsRule)
             .around(wiremockRule)
             .around(activityScenarioRule)
-            .apply { configuration(ApplicationProvider.getApplicationContext()) }
+            .apply { configuration(ApplicationProvider.getApplicationContext() as Application) }
             .apply(base, description)
     }
 }

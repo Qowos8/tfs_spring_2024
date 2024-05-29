@@ -21,16 +21,20 @@
         app:endIconMode="custom"
         android:textColorHint="@color/white"
         app:boxStrokeColor="@color/black"
-        android:background="@drawable/block_shape"
+        app:boxBackgroundColor="@color/bottom_background_color"
         app:endIconDrawable="@drawable/baseline_search_24"
         app:cursorColor="@color/white"
-        app:endIconTint="@color/white">
+        app:endIconTint="@color/white"
+        app:hintTextColor="@color/white">
     <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/users_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColorHint="@color/white"
-        android:textSize="24sp"
+        android:textSize="22sp"
+        android:textColor="@color/white"
         android:hint="@string/users_hint"
+        android:singleLine="true"
         app:hintTextColor="@color/white"
         />
     </com.google.android.material.textfield.TextInputLayout>
@@ -41,7 +45,6 @@
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/users_edit_text"
-        app:layout_constraintBottom_toTopOf="@+id/input_block"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

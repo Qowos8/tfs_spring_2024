@@ -2,6 +2,7 @@ package com.example.homework_2.presentation.profile.another.mvi
 
 import com.example.homework_2.domain.use_case.profile.GetAnotherProfileUseCase
 import com.example.homework_2.domain.use_case.profile.UpdateAnotherProfileUseCase
+import com.example.homework_2.utils.runCatchingNonCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import vivid.money.elmslie.core.store.Actor
@@ -20,8 +21,10 @@ class AnotherProfileActor @Inject constructor(
     }
 
     private fun updatePeople(userId: Int): Flow<AnotherProfileEvent>{
-        return flow<Unit> {
-            updateAnotherProfileUseCase.invoke(userId)
+        return flow {
+            runCatchingNonCancellation {
+                emit(updateAnotherProfileUseCase(userId))
+            }
         }.mapEvents(
             errorMapper = {
                 AnotherProfileEvent.Domain.Error(NETWORK_ERROR)
@@ -30,7 +33,7 @@ class AnotherProfileActor @Inject constructor(
     }
 
     private fun getPeople(userId: Int): Flow<AnotherProfileEvent>{
-        return getAnotherProfileUseCase.invoke(userId).mapEvents(
+        return getAnotherProfileUseCase(userId).mapEvents(
             eventMapper = {
                 AnotherProfileEvent.Domain.CacheSuccess(it)
             },

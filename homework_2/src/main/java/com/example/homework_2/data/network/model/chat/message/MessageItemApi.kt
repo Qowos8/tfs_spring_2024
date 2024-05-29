@@ -21,5 +21,5 @@ data class MessageItemApi(
     @SerialName("reactions")
     val reactions: List<ReactionItemApi?>? = mutableListOf(),
     @SerialName("timestamp")
-    val timestamp: Long? = null,
+    val timestamp: Long,
 )

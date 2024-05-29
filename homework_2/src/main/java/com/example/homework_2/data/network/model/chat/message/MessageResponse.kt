@@ -1,6 +1,5 @@
-package com.example.homework_2.presentation.channels.child.model.chat.message
+package com.example.homework_2.data.network.model.chat.message
 
-import com.example.homework_2.data.network.model.chat.message.MessageItemApi
 import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 

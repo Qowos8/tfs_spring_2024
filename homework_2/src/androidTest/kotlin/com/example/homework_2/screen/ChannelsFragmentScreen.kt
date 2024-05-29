@@ -1,7 +1,7 @@
 package com.example.homework_2.screen
 
 import com.example.homework_2.R
-import com.example.homework_2.presentation.channels.child.ChildFragment
+import com.example.homework_2.presentation.channels.child.ChannelsFragment
 import com.kaspersky.kaspresso.screens.KScreen
 import io.github.kakaocup.kakao.recycler.KRecyclerView
 import io.github.kakaocup.kakao.recycler.KRecyclerItem
@@ -11,7 +11,7 @@ import android.view.View
 
 object ChannelsFragmentScreen: KScreen<ChannelsFragmentScreen>() {
     override val layoutId: Int = R.layout.expandable_fragment
-    override val viewClass: Class<*> = ChildFragment::class.java
+    override val viewClass: Class<*> = ChannelsFragment::class.java
 
     val recyсlerStream = KRecyclerView(
         builder = { withId(R.id.parent_recycler)},
@@ -21,7 +21,7 @@ object ChannelsFragmentScreen: KScreen<ChannelsFragmentScreen>() {
     )
 
     val recyclerTopic = KRecyclerView(
-        builder = { withId(R.id.child_recycler)},
+        builder = { withId(R.id.parent_recycler)},
         itemTypeBuilder = {
             itemType(::KTopic)
         }
@@ -33,7 +33,6 @@ object ChannelsFragmentScreen: KScreen<ChannelsFragmentScreen>() {
 
     class KTopic(parent: Matcher<View>) : KRecyclerItem<KTopic>(parent) {
         val name = KTextView { withId(R.id.name_topic) }
-        val count = KTextView { withId(R.id.message_count) }
     }
 
 

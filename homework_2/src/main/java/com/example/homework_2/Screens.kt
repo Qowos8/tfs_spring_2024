@@ -1,8 +1,9 @@
 package com.example.homework_2
 
 import android.content.Intent
+import android.os.Bundle
 import com.example.homework_2.domain.entity.TopicItem
-import com.example.homework_2.presentation.channels.parent.ChannelsFragment
+import com.example.homework_2.presentation.channels.tab.PagerTabFragment
 import com.example.homework_2.presentation.chat.ChatActivity
 import com.example.homework_2.presentation.people.PeopleFragment
 import com.example.homework_2.presentation.profile.another.AnotherProfileActivity
@@ -15,7 +16,7 @@ object Screens {
     private const val TOPIC_NAME = "topicName"
     private const val STREAM_ID = "streamId"
 
-    fun Channels() = FragmentScreen { ChannelsFragment() }
+    fun Channels() = FragmentScreen { PagerTabFragment()}
     fun Profile() = FragmentScreen { ProfileFragment() }
     fun People() = FragmentScreen { PeopleFragment() }
 

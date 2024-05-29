@@ -1,13 +1,13 @@
 package com.example.homework_2.presentation.channels.di
 
-import com.example.homework_2.data.network.api.channels.ChannelsApi
+import com.example.homework_2.data.network.api.ChannelsApi
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
 import retrofit2.create
 
 @Module
-object ChannelsNetworkModule {
+internal object ChannelsNetworkModule {
 
     @Provides
     fun provideApi(retrofit: Retrofit): ChannelsApi {

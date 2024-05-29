@@ -24,7 +24,7 @@ class AnotherProfileReducer @Inject constructor() : ScreenDslReducer<
     }
 
     override fun Result.ui(event: AnotherProfileEvent.Ui) = when (event) {
-        is AnotherProfileEvent.Ui.LoadUser -> commands { +AnotherProfileCommand.LoadUser(event.userId) }
-        is AnotherProfileEvent.Ui.Init -> commands { +AnotherProfileCommand.Init(event.userId) }
+        is AnotherProfileEvent.Ui.UpdateUser -> commands { +AnotherProfileCommand.LoadUser(event.userId) }
+        is AnotherProfileEvent.Ui.LoadDBUser -> commands { +AnotherProfileCommand.Init(event.userId) }
     }
 }

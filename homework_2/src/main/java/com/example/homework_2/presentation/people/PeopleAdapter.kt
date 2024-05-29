@@ -1,25 +1,21 @@
 package com.example.homework_2.presentation.people
 
-import android.app.ActionBar
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.Target
 import com.example.homework_2.R
 import com.example.homework_2.data.network.model.event.PresenceResponse
 import com.example.homework_2.databinding.PeopleComponentRecyclerBinding
-import com.example.homework_2.data.network.model.profile.ProfileItemApi
 import com.example.homework_2.domain.entity.ProfileItem
 
 class PeopleAdapter(
     private val onItemClick: (ProfileItem) -> Unit,
 ) : ListAdapter<ProfileItem, PeopleAdapter.PeopleViewHolder>(PeopleDiffUtil()) {
 
-    private var usersList: List<ProfileItem> = mutableListOf()
     private var statusList: PresenceResponse? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PeopleViewHolder {
@@ -46,40 +42,44 @@ class PeopleAdapter(
             binding.apply {
                 userName.text = item.name
                 email.text = item.email
-                if(statusList != null){
-                    if(statusList!!.presences[layoutPosition].email.toString() == item.email){
-                        if(statusList!!.presences[layoutPosition].email.status == ONLINE){
+                if (statusList != null) {
+                    if (statusList!!.presences[layoutPosition].email.toString() == item.email) {
+                        if (statusList!!.presences[layoutPosition].email.status == ONLINE) {
                             userStatusCircle.setImageResource(R.drawable.online)
-                        }
-                        else if(statusList!!.presences[layoutPosition].email.timestamp - statusList!!.serverTimestamp > 600){
+                        } else if (statusList!!.presences[layoutPosition].email.timestamp - statusList!!.serverTimestamp > 600) {
                             userStatusCircle.setImageResource(R.drawable.offline)
-                        }
-                        else{
+                        } else {
                             userStatusCircle.setImageResource(R.drawable.idle)
                         }
                     }
-                }
-                else{
-                    if(!item.isActive){
+                } else {
+                    if (!item.isActive) {
                         userStatusCircle.setImageResource(R.drawable.offline)
-                    }
-                    else{
+                    } else {
                         userStatusCircle.setImageResource(R.drawable.online)
                     }
                 }
 
-                if(item.url == null){
-                    circleAvatar.circleCardImage.isVisible = true
-                    circleAvatar.cardImage.isVisible = false
-                }
-                else{
-                    circleAvatar.cardImage.isVisible = true
-                    circleAvatar.circleCardImage.isVisible = false
-                    Glide.with(circleAvatar.cardImage)
-                        .load(item.url)
-                        .override(Target.SIZE_ORIGINAL)
-                        .override(ActionBar.LayoutParams.MATCH_PARENT)
-                        .into(circleAvatar.cardImage)
+                if (item.url == null) {
+                    circleAvatar.apply {
+//                        circleCardImage.isVisible = true
+//                        circleCardImagePlaceholder.isVisible = true
+                        cardImage.isVisible = true
+                        cardImage.setImageResource(R.drawable.baseline_account_circle_24)
+                    }
+                } else {
+                    circleAvatar.apply {
+                        cardImage.isVisible = true
+//                        circleCardImagePlaceholder.isVisible = false
+//                        circleCardImage.isVisible = false
+                        val desiredWidthPx =
+                            (55 * root.context.resources.displayMetrics.density + 0.5f).toInt()
+                        Glide.with(cardImage)
+                            .load(item.url)
+                            .placeholder(R.drawable.baseline_account_circle_24)
+                            .override(desiredWidthPx, desiredWidthPx)
+                            .into(cardImage)
+                    }
                 }
                 root.setOnClickListener {
                     (onItemClick(item))
@@ -88,17 +88,7 @@ class PeopleAdapter(
         }
     }
 
-//    fun update(newList: List<ProfileItem>) {
-//        usersList = newList
-//        notifyDataSetChanged()
-//    }
-
-    fun setStatus(status: PresenceResponse){
-        statusList = status
-        notifyDataSetChanged()
-    }
-    
-    private companion object{
+    private companion object {
         private const val ONLINE = "active"
         private const val IDLE = "idle"
         private const val OFFLINE = "offline"

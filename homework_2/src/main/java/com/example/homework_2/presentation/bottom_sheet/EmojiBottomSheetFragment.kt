@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.homework_2.databinding.BottomSheetDialogFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class EmojiBottomSheetFragment : BottomSheetDialogFragment(), BottomSheetClickListener {
+class EmojiBottomSheetFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: BottomSheetDialogFragmentBinding
-    private val adapter: EmojiBottomSheetAdapter by lazy {
+    private val emojiAdapter: EmojiBottomSheetAdapter by lazy {
         EmojiBottomSheetAdapter(::onEmojiClicked)
     }
 
@@ -27,16 +27,21 @@ class EmojiBottomSheetFragment : BottomSheetDialogFragment(), BottomSheetClickLi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val layoutManager = GridLayoutManager(requireContext(), 7)
-
-        binding.apply {
-            bottomSheetRecycler.adapter = adapter
-            bottomSheetRecycler.layoutManager = layoutManager
+        binding.bottomSheetRecycler.apply {
+            adapter = emojiAdapter
+            layoutManager = GridLayoutManager(requireContext(), 7)
         }
     }
 
-    override fun onEmojiClicked(emoji: String) {
-        (activity as BottomSheetClickListener).onEmojiClicked(emoji)
+    private fun onEmojiClicked(emoji: String) {
+        val messageId = arguments?.getInt(SELECTED_MESSAGE)
+        if (messageId != null){
+            (activity as BottomSheetClickListener).onEmojiClicked(emoji, messageId)
+        }
         dismiss()
+    }
+
+    private companion object{
+        private const val SELECTED_MESSAGE = "selected"
     }
 }

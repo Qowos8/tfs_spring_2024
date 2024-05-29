@@ -4,9 +4,11 @@ import com.example.homework_2.domain.entity.MessageItem
 
 sealed class ChatEvent {
     sealed class Ui : ChatEvent() {
-        class LoadMessages(val topicName: String, val streamId: Int): Ui()
-        class UpdateMessages(val topicName: String, val streamName: String, val streamId: Int, val nextCount: Int): Ui()
-        class SendMessage(val streamName: String, val topicName: String, val content: String): Ui()
+        class Init(val topicName: String, val streamId: Int, val streamName: String): Ui()
+        object LoadMessages: Ui()
+        object LoadingPage: Ui()
+        class UpdateMessages(val nextCount: Int): Ui()
+        class SendMessage(val content: String): Ui()
         class AddReaction(val messageId: Int, val emojiName: String): Ui()
         class DeleteReaction(val messageId: Int, val emojiName: String): Ui()
         object RegisterEvent : Ui()

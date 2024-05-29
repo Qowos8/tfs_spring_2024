@@ -4,8 +4,8 @@ import com.example.homework_2.domain.entity.ProfileItem
 
 sealed interface ProfileEvent {
     sealed class Ui : ProfileEvent {
-        object Init : Ui()
-        object LoadUser : Ui()
+        object LoadDb : Ui()
+        object UpdateUser : Ui()
     }
 
     sealed interface Domain : ProfileEvent {
@@ -13,8 +13,8 @@ sealed interface ProfileEvent {
 
         object CacheEmpty : Domain
 
-        class Success(val value: ProfileItem) : Domain
-
         class Error(val error: String) : Domain
+
+        object CacheLoaded: Domain
     }
 }

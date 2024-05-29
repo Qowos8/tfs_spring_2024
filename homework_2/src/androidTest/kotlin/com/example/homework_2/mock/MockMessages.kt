@@ -20,7 +20,7 @@ class MockMessages(private val wireMockServer: WireMockServer) {
 
     companion object {
 
-        val urlPattern = urlPathMatching("api/v1/messages")
+        val urlPattern = urlPathMatching("/api/v1/messages")
 
         fun WireMockServer.message(block: MockMessages.() -> Unit) {
             MockMessages(this).apply(block)

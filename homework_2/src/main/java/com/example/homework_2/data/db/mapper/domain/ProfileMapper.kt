@@ -5,11 +5,11 @@ import com.example.homework_2.domain.entity.ProfileItem
 
 fun ProfileDbItem.toDomain(): ProfileItem {
     return ProfileItem(
-        id = this.id,
-        name = this.name,
-        isActive = this.isActive,
-        url = this.url,
-        email = this.email
+        id = id,
+        name = name,
+        isActive = isActive,
+        url = url,
+        email = email
     )
 }
 

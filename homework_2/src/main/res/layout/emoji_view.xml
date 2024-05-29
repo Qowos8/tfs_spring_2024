@@ -8,7 +8,8 @@
     android:background="@drawable/view_bg"
     android:padding="8dp"
     app:reactionCount="0"
-    app:emojiSize="24sp"
+    app:emojiSize="12sp"
     app:isSelected="true"
     app:textColor="@color/white"
-    android:layout_margin="10dp"/>
+    android:layout_marginTop="10dp"
+    android:layout_marginStart="10dp"/>

@@ -99,5 +99,4 @@ class FlexBoxLayout @JvmOverloads constructor(
     override fun generateLayoutParams(attrs: AttributeSet?): LayoutParams {
         return MarginLayoutParams(context, attrs)
     }
-
 }

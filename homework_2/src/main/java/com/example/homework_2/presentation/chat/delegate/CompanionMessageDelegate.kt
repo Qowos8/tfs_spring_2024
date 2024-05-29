@@ -1,6 +1,5 @@
 package com.example.homework_2.presentation.chat.delegate
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,19 +7,19 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.example.homework_2.data.network.model.chat.message.MessageItemApi
+import com.example.homework_2.R
 import com.example.homework_2.databinding.CompanionMessageComponentBinding
 import com.example.homework_2.domain.entity.MessageItem
+import com.example.homework_2.presentation.chat.emoji.EmojiServiceImpl
 import com.example.homework_2.presentation.delegate.AdapterDelegate
 import com.example.homework_2.presentation.delegate.DelegateItem
 import com.example.homework_2.utils.HtmlToString
 import com.example.homework_2.presentation.view.emojiSetNCU
 
 class CompanionMessageDelegate(
-    private val default: DefaultEmojiService,
+    private val emojiService: EmojiServiceImpl,
     private val onLongItemClick: (MessageItem) -> Unit,
     private val onItemClick: (MessageItem) -> Unit,
-    private val context: Context,
 ) : AdapterDelegate {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -64,17 +63,17 @@ class CompanionMessageDelegate(
                     reactionCounts.forEach { (emojiName, count) ->
                         val emojiItem = emojiSetNCU.find { it.name == emojiName }?.getCodeString()
                         if (emojiItem != null && emojiName != null) {
-                            default.addEmojiView(context, emojiItem, emojiName, count, flex, message)
+                            emojiService.addEmojiView(root.context, emojiItem, emojiName, count, flex, message)
                         }
                     }
                 }
-                default.setAddButton(addButton, flex, message, onItemClick)
+                emojiService.setAddButton(addButton, flex, message, onItemClick)
 
                 Glide.with(avatar)
                     .load(message.avatarUrl)
                     .override(Target.SIZE_ORIGINAL)
                     .apply(RequestOptions.bitmapTransform(RoundedCorners(CORNER_RADIUS)))
-                    .into(avatar)
+                    .into(avatar.findViewById(R.id.avatar_image_companion))
                 root.setOnLongClickListener {
                     onLongItemClick(message)
                     true

@@ -6,7 +6,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-object ProfileDBModule {
+internal object ProfileDBModule {
     @Provides
     fun provideDB(dataBase: DataBase): ProfileDao{
         return dataBase.profileDao()

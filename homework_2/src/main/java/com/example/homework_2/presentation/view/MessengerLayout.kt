@@ -3,9 +3,9 @@ package com.example.homework_2.presentation.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
-import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.cardview.widget.CardView
 import androidx.core.view.marginBottom
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
@@ -17,16 +17,15 @@ class MessengerLayout @JvmOverloads constructor(
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0,
     defThemeAttr: Int = 0,
-) :
-    ViewGroup(context, attributeSet, defStyleAttr, defThemeAttr) {
+) : ViewGroup(context, attributeSet, defStyleAttr, defThemeAttr) {
 
     private var layoutGravity: Int = Gravity.START
 
-    var avatar: View? = null
+    private var avatar: CardView? = null
 
     var message: LinearLayout? = null
 
-    var flexBoxLayout: FlexBoxLayout? = null
+    private var flexBoxLayout: FlexBoxLayout? = null
 
     init {
         val attrs = context.obtainStyledAttributes(attributeSet, R.styleable.MessengerLayout)

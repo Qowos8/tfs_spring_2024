@@ -1,6 +1,6 @@
 package com.example.homework_2.presentation.channels.di
 
-import com.example.homework_2.presentation.channels.child.ChildFragment
+import com.example.homework_2.presentation.channels.child.ChannelsFragment
 import dagger.Component
 
 @Component(
@@ -14,7 +14,7 @@ import dagger.Component
     ]
 )
 interface ChannelsComponent {
-    fun inject(fragment: ChildFragment)
+    fun inject(fragment: ChannelsFragment)
 
     @Component.Factory
     interface ChannelsFactory{

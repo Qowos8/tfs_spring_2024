@@ -3,18 +3,17 @@ package com.example.homework_2.data.repository_impl
 import com.example.homework_2.data.db.dao.MessageDao
 import com.example.homework_2.data.db.mapper.db.toDB
 import com.example.homework_2.data.db.mapper.domain.toDomain
-import com.example.homework_2.data.network.api.chat.ChatApi
+import com.example.homework_2.data.network.api.ChatApi
 import com.example.homework_2.data.network.mapper.toDomain
 import com.example.homework_2.data.network.model.event.Events
 import com.example.homework_2.data.network.model.event.RegisterResponse
 import com.example.homework_2.domain.entity.MessageItem
 import com.example.homework_2.domain.repository.ChatRepository
-import com.example.homework_2.utils.runCatchingNonCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class ChatRepositoryImpl @Inject constructor(
+internal class ChatRepositoryImpl @Inject constructor(
     private val api: ChatApi,
     private val dao: MessageDao,
 ) : ChatRepository {
@@ -89,7 +88,7 @@ class ChatRepositoryImpl @Inject constructor(
     }
 
     override fun getMessages(streamId: Int, topicName: String): Flow<List<MessageItem>> {
-        return dao.getAll(streamId, topicName).map { it.toDomain() }
+        return dao.getAll(streamId, topicName).map { item -> item.map { it.toDomain() } }
     }
 
     override suspend fun getNextMessage(

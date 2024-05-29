@@ -7,8 +7,6 @@ sealed class PeopleState {
 
     object Loading: PeopleState()
 
-    class Success(val users: List<ProfileItem>): PeopleState()
-
     class CacheSuccess(val users: List<ProfileItem>): PeopleState()
 
     class Error(val error: String): PeopleState()

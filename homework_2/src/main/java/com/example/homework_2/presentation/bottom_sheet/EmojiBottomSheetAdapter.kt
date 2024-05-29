@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.homework_2.presentation.view.EmojiNCU
 import com.example.homework_2.presentation.view.emojiSetNCU
+import kotlin.reflect.KFunction2
 
 class EmojiBottomSheetAdapter(private val onItemClick: (String) -> Unit) :
     RecyclerView.Adapter<EmojiBottomSheetAdapter.ViewHolder>() {

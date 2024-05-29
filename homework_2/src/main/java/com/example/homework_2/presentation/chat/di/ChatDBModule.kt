@@ -6,7 +6,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-object ChatDBModule {
+internal object ChatDBModule {
     @Provides
     fun provideDB(dataBase: DataBase): MessageDao {
         return dataBase.messageDao()

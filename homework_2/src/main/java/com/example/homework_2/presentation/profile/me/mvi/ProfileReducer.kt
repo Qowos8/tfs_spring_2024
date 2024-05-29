@@ -14,14 +14,18 @@ class ProfileReducer @Inject constructor() : ScreenDslReducer<
     override fun Result.internal(event: ProfileEvent.Domain) {
         when (event) {
             is ProfileEvent.Domain.Error -> state { ProfileState.Error(event.error) }
-            is ProfileEvent.Domain.Success -> state { ProfileState.Success(event.value) }
-            ProfileEvent.Domain.CacheEmpty -> state { ProfileState.Loading }
+            is ProfileEvent.Domain.CacheEmpty -> state { ProfileState.CacheEmpty }
             is ProfileEvent.Domain.CacheSuccess -> state { ProfileState.CacheSuccess(event.value)}
+            is ProfileEvent.Domain.CacheLoaded -> state { ProfileState.CacheLoaded }
         }
     }
 
     override fun Result.ui(event: ProfileEvent.Ui) = when (event) {
-        ProfileEvent.Ui.Init -> commands { +ProfileCommand.Init }
-        ProfileEvent.Ui.LoadUser -> commands { +ProfileCommand.LoadUser }
+        ProfileEvent.Ui.LoadDb -> {
+            commands { +ProfileCommand.Init }
+        }
+        ProfileEvent.Ui.UpdateUser -> {
+            commands { +ProfileCommand.LoadUser }
+        }
     }
 }

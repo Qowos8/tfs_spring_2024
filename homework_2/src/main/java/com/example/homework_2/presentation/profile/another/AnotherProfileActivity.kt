@@ -3,20 +3,18 @@ package com.example.homework_2.presentation.profile.another
 import android.app.ActionBar
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.Target
 import com.example.homework_2.databinding.ProfileFragmentBinding
 import com.example.homework_2.domain.entity.ProfileItem
 import com.example.homework_2.presentation.MainActivity
 import com.example.homework_2.presentation.base.ElmBaseActivity
-import com.example.homework_2.presentation.profile.another.mvi.AnotherProfileActor
 import com.example.homework_2.presentation.profile.another.mvi.AnotherProfileEffect
 import com.example.homework_2.presentation.profile.another.mvi.AnotherProfileEvent
 import com.example.homework_2.presentation.profile.another.mvi.AnotherProfileState
 import com.example.homework_2.presentation.profile.another.mvi.AnotherProfileStoreFactory
 import com.example.homework_2.presentation.profile.di.ProfileComponent
+import com.google.android.material.snackbar.Snackbar
 import vivid.money.elmslie.android.renderer.elmStoreWithRenderer
 import vivid.money.elmslie.core.store.Store
 import javax.inject.Inject
@@ -26,7 +24,6 @@ class AnotherProfileActivity : ElmBaseActivity<
         AnotherProfileEffect,
         AnotherProfileState>() {
     private lateinit var binding: ProfileFragmentBinding
-    private var userItem: Int = 0
 
     @Inject
     lateinit var factory: AnotherProfileStoreFactory
@@ -36,10 +33,6 @@ class AnotherProfileActivity : ElmBaseActivity<
                 factory.provide()
             }
 
-    override fun render(state: AnotherProfileState) {
-        trackUser(state)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ProfileComponent().inject(this)
@@ -47,17 +40,16 @@ class AnotherProfileActivity : ElmBaseActivity<
         binding = ProfileFragmentBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        userItem = MainActivity.DataHolder.userData!!
-        binding.toolbarProfile.backButton.setOnClickListener {
-            finish()
-        }
-        store.accept(AnotherProfileEvent.Ui.Init(userItem))
+        binding.toolbarProfile.backButton.setOnClickListener { finish() }
+        store.accept(AnotherProfileEvent.Ui.LoadDBUser(MainActivity.DataHolder.userData))
     }
 
-    private fun trackUser(state: AnotherProfileState) {
+    override fun render(state: AnotherProfileState) {
         when (state) {
+            AnotherProfileState.Init -> Unit
+
             is AnotherProfileState.Error -> {
-                Log.d("profile", state.error)
+                Snackbar.make(binding.root, state.error, Snackbar.LENGTH_SHORT).show()
             }
 
             AnotherProfileState.Loading -> {
@@ -68,11 +60,9 @@ class AnotherProfileActivity : ElmBaseActivity<
                 setResources(state.profileData)
                 binding.hideShimmer()
             }
-
-            AnotherProfileState.Init -> {}
             is AnotherProfileState.CacheSuccess -> {
                 setResources(state.profileData)
-                store.accept(AnotherProfileEvent.Ui.LoadUser(userItem))
+                store.accept(AnotherProfileEvent.Ui.UpdateUser(MainActivity.DataHolder.userData))
                 binding.hideShimmer()
             }
         }
@@ -83,7 +73,6 @@ class AnotherProfileActivity : ElmBaseActivity<
             userName.text = profileData.name
             Glide.with(avatarImage.squareCardImage)
                 .load(profileData.url)
-                .override(Target.SIZE_ORIGINAL)
                 .override(ActionBar.LayoutParams.MATCH_PARENT)
                 .into(avatarImage.squareCardImage)
             setStatus(profileData.isActive, this)
@@ -102,18 +91,21 @@ class AnotherProfileActivity : ElmBaseActivity<
         }
     }
 
-    private fun ProfileFragmentBinding.hideShimmer() {
-        shimmerContainerUnder.isVisible = false
-        shimmerContainerUnder.stopShimmer()
-        avatarImage.squareShimmer.isVisible = false
-        avatarImage.shimmerContainer.stopShimmer()
-    }
-
     private fun ProfileFragmentBinding.showShimmer() {
-        avatarImage.squareShimmer.isVisible = true
         shimmerContainerUnder.isVisible = true
         shimmerContainerUnder.startShimmer()
         avatarImage.shimmerContainer.startShimmer()
+        avatarImage.cardShimmer.isVisible = true
+        avatarImage.squareCard.isVisible = false
+
+    }
+
+    private fun ProfileFragmentBinding.hideShimmer() {
+        shimmerContainerUnder.isVisible = false
+        shimmerContainerUnder.stopShimmer()
+        avatarImage.shimmerContainer.stopShimmer()
+        avatarImage.cardShimmer.isVisible = false
+        avatarImage.squareCard.isVisible = true
     }
 
     private companion object {

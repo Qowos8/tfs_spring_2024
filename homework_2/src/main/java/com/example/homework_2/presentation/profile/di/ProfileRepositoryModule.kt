@@ -16,7 +16,7 @@ import dagger.Binds
 import dagger.Module
 
 @Module
-interface ProfileRepositoryModule {
+internal interface ProfileRepositoryModule {
 
     @Binds
     fun provideProfileRepository(profileRepositoryImpl: ProfileRepositoryImpl): ProfileRepository

@@ -1,22 +1,20 @@
 package com.example.homework_2.presentation.chat.delegate
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.homework_2.data.network.model.chat.message.MessageItemApi
 import com.example.homework_2.databinding.UserMessageComponentBinding
 import com.example.homework_2.domain.entity.MessageItem
+import com.example.homework_2.presentation.chat.emoji.EmojiServiceImpl
 import com.example.homework_2.presentation.delegate.AdapterDelegate
 import com.example.homework_2.presentation.delegate.DelegateItem
+import com.example.homework_2.presentation.view.EmojiNCU
 import com.example.homework_2.utils.HtmlToString
-import com.example.homework_2.presentation.view.emojiSetNCU
 
 class UserMessageDelegate(
-    private val default: DefaultEmojiService,
+    private val emojiService: EmojiServiceImpl,
     private val onLongItemClick: (MessageItem) -> Unit,
     private val onItemClick: (MessageItem) -> Unit,
-    private val context: Context,
 ) : AdapterDelegate {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -44,6 +42,7 @@ class UserMessageDelegate(
     inner class SentMessageViewHolder(
         private val viewBinding: UserMessageComponentBinding,
     ) : RecyclerView.ViewHolder(viewBinding.root) {
+
         fun bind(message: MessageItem) {
             viewBinding.apply {
                 messageTextView.text =
@@ -53,16 +52,22 @@ class UserMessageDelegate(
                 if (message.reactions?.isNotEmpty() == true) {
                     val reactionCounts = message.reactions
                         .filterNotNull()
-                        .groupBy { it.emojiName }
+                        .groupBy { it }
                         .mapValues { it.value.size }
-                    reactionCounts.forEach { (emojiName, count) ->
-                        val emojiItem = emojiSetNCU.find { it.name == emojiName }?.getCodeString()
-                        if (emojiItem != null && emojiName != null) {
-                            default.addEmojiView(context, emojiItem, emojiName, count, flex, message)
-                        }
+                    reactionCounts.forEach { (emoji, count) ->
+                        val emojiItem =
+                            EmojiNCU(emoji.emojiName, emoji.emojiCode.toInt(16)).getCodeString()
+                        emojiService.addEmojiView(
+                            root.context,
+                            emojiItem,
+                            emoji.emojiName,
+                            count,
+                            flex,
+                            message
+                        )
                     }
                 }
-                default.setAddButton(addButton, flex, message, onItemClick)
+                emojiService.setAddButton(addButton, flex, message, onItemClick)
 
                 root.setOnLongClickListener {
                     onLongItemClick(message)

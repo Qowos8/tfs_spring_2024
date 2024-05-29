@@ -14,13 +14,3 @@ data class StreamItemApi(
     @SerialName("description")
     val description: String,
 )
-
-@Serializable
-data class SubStreamItem(
-    @SerialName("stream_id")
-    val streamId: Int,
-    @SerialName("name")
-    val name: String,
-    @SerialName("description")
-    val description: String
-)

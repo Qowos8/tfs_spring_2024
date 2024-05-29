@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/channels_fragment"
-        android:name="com.example.homework_2.presentation.channels.parent.ChannelsFragment"
+        android:name="com.example.homework_2.presentation.channels.tab.PagerTabFragment"
         tools:layout="@layout/channels_fragment" />
 
     <fragment

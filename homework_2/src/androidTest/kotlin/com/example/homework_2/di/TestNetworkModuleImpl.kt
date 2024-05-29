@@ -1,6 +1,6 @@
 package com.example.homework_2.di
 
-import com.example.homework_2.data.network.api.chat.ChatApi
+import com.example.homework_2.data.network.api.ChatApi
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit

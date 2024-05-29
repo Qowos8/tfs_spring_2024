@@ -6,7 +6,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-object ChannelsDBModule {
+internal object ChannelsDBModule {
     @Provides
     fun provideDB(dataBase: DataBase): StreamDao{
         return dataBase.streamDao()
