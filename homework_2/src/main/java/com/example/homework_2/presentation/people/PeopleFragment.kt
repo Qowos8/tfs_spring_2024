@@ -81,7 +81,7 @@ class PeopleFragment : Fragment() {
                         binding.peopleRecycler.scrollToPosition(0)
                     }
                     if (peopleAdapter.currentList.isEmpty() || peopleAdapter.currentList.size <= 1) {
-                        viewModel.loadPeople()
+                        viewModel.updatePeople()
                     }
                 }
             }
