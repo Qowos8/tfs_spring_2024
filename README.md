@@ -1,4 +1,4 @@
-# TFS Android Spring 2024
+# Zulip App
 
 #### Общие требования:
 
