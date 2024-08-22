@@ -11,9 +11,6 @@
       <SelectionState runConfigName="messagesIsNotEmpty()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="messagesIsNotEmptyы()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="wireMockIsAvailable()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>

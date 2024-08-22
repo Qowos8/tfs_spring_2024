@@ -63,6 +63,13 @@ class PeopleFragment : Fragment() {
         render()
         binding.sendQuery()
         collectResultQuery()
+
+        binding.usersInput.setOnClickListener{
+
+        }
+        binding.usersInput.setOnLongClickListener{
+            true
+        }
     }
 
     private fun render() {

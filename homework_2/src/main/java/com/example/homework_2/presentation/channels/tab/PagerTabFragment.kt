@@ -34,7 +34,7 @@ class PagerTabFragment : Fragment() {
         }
         initViews()
         sendSearchQuery()
-        searchQuery?.let {
+        searchQuery.let {
             binding.channelsEditText.setText(it)
         }
     }
